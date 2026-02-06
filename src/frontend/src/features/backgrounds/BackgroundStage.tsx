@@ -1,13 +1,20 @@
-import { useBackground } from './useBackground';
+import { useBackgroundContext } from './BackgroundProvider';
 import { useEffect, useRef, useState } from 'react';
 import { buildYouTubeEmbedUrl } from './youtubeUrl';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export function BackgroundStage() {
-  const { backgroundUrl, mediaType, youtubeVideoId, error } = useBackground();
+  const { backgroundUrl, mediaType, youtubeVideoId, error, setRuntimeError } = useBackgroundContext();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoError, setVideoError] = useState<string | null>(null);
-  const [youtubeWarning, setYoutubeWarning] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
+  const [youtubeError, setYoutubeError] = useState<string | null>(null);
+
+  // Reset errors when background changes
+  useEffect(() => {
+    setVideoError(null);
+    setImageError(null);
+    setYoutubeError(null);
+  }, [backgroundUrl, mediaType, youtubeVideoId]);
 
   useEffect(() => {
     if (videoRef.current && mediaType === 'video') {
@@ -18,27 +25,37 @@ export function BackgroundStage() {
     }
   }, [backgroundUrl, mediaType]);
 
-  useEffect(() => {
-    if (mediaType === 'youtube') {
-      // Show warning after a brief delay if YouTube might not autoplay
-      const timer = setTimeout(() => {
-        setYoutubeWarning(true);
-      }, 2000);
-      return () => clearTimeout(timer);
-    } else {
-      setYoutubeWarning(false);
-    }
-  }, [mediaType, youtubeVideoId]);
+  const handleImageError = () => {
+    const errorMsg = 'Image failed to load. The URL may be unreachable or the format may not be supported.';
+    setImageError(errorMsg);
+    setRuntimeError(errorMsg);
+  };
+
+  const handleVideoError = () => {
+    const errorMsg = 'Video failed to load. The URL may be unreachable or the format may not be supported.';
+    setVideoError(errorMsg);
+    setRuntimeError(errorMsg);
+  };
+
+  const displayError = error || videoError || imageError || youtubeError;
 
   return (
     <>
       <div className="fixed inset-0 z-0 bg-background" />
       
-      {backgroundUrl && mediaType === 'image' && (
-        <div
-          className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${backgroundUrl})` }}
-        />
+      {backgroundUrl && mediaType === 'image' && !imageError && (
+        <>
+          <div
+            className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${backgroundUrl})` }}
+          />
+          <img
+            src={backgroundUrl}
+            alt=""
+            className="hidden"
+            onError={handleImageError}
+          />
+        </>
       )}
 
       {backgroundUrl && mediaType === 'video' && !videoError && (
@@ -48,47 +65,39 @@ export function BackgroundStage() {
           loop
           muted
           playsInline
-          onError={() => setVideoError('Video failed to load. Format may not be supported.')}
+          onError={handleVideoError}
         >
           <source src={backgroundUrl} />
         </video>
       )}
 
-      {mediaType === 'youtube' && youtubeVideoId && (
-        <>
-          <iframe
-            className="fixed inset-0 z-0 h-full w-full"
-            src={buildYouTubeEmbedUrl(youtubeVideoId)}
-            allow="autoplay; encrypted-media"
-            style={{
-              border: 'none',
-              pointerEvents: 'none',
-              width: '100vw',
-              height: '100vh',
-            }}
-            title="YouTube Background"
-          />
-          {youtubeWarning && (
-            <div className="fixed bottom-4 left-1/2 z-[2] w-full max-w-md -translate-x-1/2 px-4">
-              <Alert className="bg-background/90 backdrop-blur-sm">
-                <AlertDescription className="text-xs">
-                  If the video doesn't play automatically, click anywhere on the page to enable autoplay.
-                </AlertDescription>
-              </Alert>
-            </div>
-          )}
-        </>
+      {mediaType === 'youtube' && youtubeVideoId && !youtubeError && (
+        <iframe
+          className="fixed inset-0 z-0 h-full w-full"
+          src={buildYouTubeEmbedUrl(youtubeVideoId)}
+          allow="autoplay; encrypted-media"
+          style={{
+            border: 'none',
+            pointerEvents: 'none',
+            width: '100vw',
+            height: '100vh',
+          }}
+          title="YouTube Background"
+          onError={() => {
+            const errorMsg = 'YouTube video failed to load. The video may be unavailable or restricted.';
+            setYoutubeError(errorMsg);
+            setRuntimeError(errorMsg);
+          }}
+        />
       )}
 
-      {(error || videoError) && (
-        <div className="fixed inset-0 z-0 flex items-center justify-center bg-background">
-          <div className="max-w-md rounded-lg bg-destructive/10 p-6 text-center">
-            <p className="text-sm text-destructive-foreground">{error || videoError}</p>
+      {displayError && (
+        <div className="fixed inset-0 z-0 flex items-center justify-center bg-background/95 backdrop-blur-sm">
+          <div className="max-w-md rounded-lg bg-destructive/20 border border-destructive/30 p-6 text-center backdrop-blur-md">
+            <p className="text-sm text-destructive-foreground font-medium">{displayError}</p>
           </div>
         </div>
       )}
-
-      <div className="fixed inset-0 z-[1] bg-background/40 backdrop-blur-[2px]" />
     </>
   );
 }

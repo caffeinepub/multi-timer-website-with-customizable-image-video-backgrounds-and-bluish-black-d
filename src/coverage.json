@@ -1,73 +1,53 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-06T19:09:25.512Z",
+  "generatedAt": "2026-02-06T21:11:25.438Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 4,
-    "implemented": 4,
+    "total": 2,
+    "implemented": 2,
     "items": [
       {
-        "id": "REQ-10",
-        "summary": "Add a new YouTube background option in the Background Settings UI that lets the user paste a YouTube URL (watch URL, youtu.be short URL, or embed URL) and set it as the app background.",
+        "id": "REQ-29",
+        "summary": "Remove (or reduce to effectively zero) the global darkening/blur overlay that is rendered on top of active backgrounds in `BackgroundStage` so that video/image/YouTube backgrounds look as close to the original source as possible (clear and bright).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/backgrounds/BackgroundCustomizer.tsx"
+          "frontend/src/features/backgrounds/BackgroundStage.tsx",
+          "frontend/src/index.css",
+          "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/features/backgrounds/BackgroundCustomizer.tsx"
+          "frontend/src/features/backgrounds/BackgroundStage.tsx",
+          "frontend/src/index.css",
+          "frontend/src/App.tsx"
         ]
       },
       {
-        "id": "REQ-11",
-        "summary": "Extend the background state model to support a third media type for YouTube embeds, and persist it in the existing localStorage key so the YouTube background survives page refreshes.",
+        "id": "REQ-30",
+        "summary": "Ensure the background media elements themselves are not being unintentionally visually degraded (no CSS filters, opacity reductions, or layering artifacts) so that the displayed background matches the original media’s clarity.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/backgrounds/useBackground.ts"
+          "frontend/src/features/backgrounds/BackgroundStage.tsx",
+          "frontend/src/index.css"
         ],
         "matchedFiles": [
-          "frontend/src/features/backgrounds/useBackground.ts"
-        ]
-      },
-      {
-        "id": "REQ-12",
-        "summary": "Render YouTube backgrounds in the background stage using an embedded player (iframe) that behaves like a background: fills the viewport, stays behind the app UI, and does not show player controls.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/backgrounds/BackgroundStage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/backgrounds/BackgroundStage.tsx"
-        ]
-      },
-      {
-        "id": "REQ-13",
-        "summary": "Implement robust YouTube URL parsing and validation that extracts the video id from common URL formats and rejects unsupported cases with clear errors.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/backgrounds/youtubeUrl.ts",
-          "frontend/src/features/backgrounds/useBackground.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/backgrounds/youtubeUrl.ts",
-          "frontend/src/features/backgrounds/useBackground.ts"
+          "frontend/src/features/backgrounds/BackgroundStage.tsx",
+          "frontend/src/index.css"
         ]
       }
     ]
   },
   "changedFiles": [
     "build-request.json",
-    "build-template/README.md",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/features/backgrounds/BackgroundCustomizer.tsx",
+    "frontend/src/App.tsx",
     "frontend/src/features/backgrounds/BackgroundStage.tsx",
-    "frontend/src/features/backgrounds/useBackground.ts",
-    "frontend/src/features/backgrounds/youtubeUrl.ts",
+    "frontend/src/index.css",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

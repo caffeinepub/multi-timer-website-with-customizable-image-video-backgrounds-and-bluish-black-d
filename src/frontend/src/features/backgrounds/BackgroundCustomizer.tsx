@@ -1,43 +1,53 @@
-import { useState } from 'react';
-import { useBackground } from './useBackground';
+import { useState, useRef } from 'react';
+import { useBackgroundContext } from './BackgroundProvider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Upload, Link as LinkIcon, X } from 'lucide-react';
+import { Upload, Link as LinkIcon, X, Loader2 } from 'lucide-react';
 import { SiYoutube } from 'react-icons/si';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { inferMediaType } from './mediaSupport';
 
 export function BackgroundCustomizer() {
-  const { backgroundUrl, youtubeVideoId, setBackgroundFromFile, setBackgroundFromUrl, setBackgroundFromYouTubeUrl, clearBackground, error } = useBackground();
+  const { backgroundUrl, youtubeVideoId, mediaType, setBackgroundFromFile, setBackgroundFromUrl, setBackgroundFromYouTubeUrl, clearBackground, error, isProbing } = useBackgroundContext();
   const [urlInput, setUrlInput] = useState('');
   const [youtubeInput, setYoutubeInput] = useState('');
   const [localError, setLocalError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setLocalError(null);
-    const mediaType = inferMediaType(file.type);
+    const mediaTypeInferred = inferMediaType(file.type);
     
-    if (!mediaType) {
+    if (!mediaTypeInferred) {
       setLocalError('Unsupported file type. Please select an image or video file.');
       return;
     }
 
     setBackgroundFromFile(file);
+    
+    // Clear the input value so the same file can be selected again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
-  const handleUrlSubmit = () => {
+  const handleFileInputClick = () => {
+    setLocalError(null);
+  };
+
+  const handleUrlSubmit = async () => {
     if (!urlInput.trim()) {
       setLocalError('Please enter a valid URL');
       return;
     }
 
     setLocalError(null);
-    setBackgroundFromUrl(urlInput.trim());
+    await setBackgroundFromUrl(urlInput.trim());
     setUrlInput('');
   };
 
@@ -59,6 +69,8 @@ export function BackgroundCustomizer() {
     setLocalError(null);
   };
 
+  const isBackgroundActive = (backgroundUrl || youtubeVideoId) && !error;
+
   return (
     <div className="space-y-4">
       {(error || localError) && (
@@ -67,10 +79,15 @@ export function BackgroundCustomizer() {
         </Alert>
       )}
 
-      {(backgroundUrl || youtubeVideoId) && (
+      {isBackgroundActive && (
         <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">Background active</p>
+            <div className="flex flex-col gap-1">
+              <p className="text-sm font-medium text-foreground">Background active</p>
+              <p className="text-xs text-muted-foreground">
+                {mediaType === 'youtube' ? 'YouTube video' : mediaType === 'video' ? 'Video' : 'Image'}
+              </p>
+            </div>
             <Button variant="ghost" size="sm" onClick={handleClear}>
               <X className="mr-2 h-4 w-4" />
               Clear
@@ -99,10 +116,12 @@ export function BackgroundCustomizer() {
           <div className="space-y-2">
             <Label htmlFor="file-upload">Choose Image or Video</Label>
             <Input
+              ref={fileInputRef}
               id="file-upload"
               type="file"
               accept="image/*,video/*"
               onChange={handleFileUpload}
+              onClick={handleFileInputClick}
               className="cursor-pointer"
             />
             <p className="text-xs text-muted-foreground">
@@ -121,9 +140,19 @@ export function BackgroundCustomizer() {
                 placeholder="https://example.com/image.jpg"
                 value={urlInput}
                 onChange={(e) => setUrlInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleUrlSubmit()}
+                onKeyDown={(e) => e.key === 'Enter' && !isProbing && handleUrlSubmit()}
+                disabled={isProbing}
               />
-              <Button onClick={handleUrlSubmit}>Set</Button>
+              <Button onClick={handleUrlSubmit} disabled={isProbing}>
+                {isProbing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading
+                  </>
+                ) : (
+                  'Set'
+                )}
+              </Button>
             </div>
             <p className="text-xs text-muted-foreground">
               Enter a direct link to an image or video file

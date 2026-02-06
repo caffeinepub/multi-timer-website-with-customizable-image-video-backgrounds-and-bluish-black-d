@@ -1,103 +1,66 @@
 {
   "kind": "build_request",
-  "title": "Support YouTube embed backgrounds (in addition to direct image/video files and URLs)",
+  "title": "Make background video/image/YouTube rendering максимально clear & bright (match original media)",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-10",
-      "text": "Add a new YouTube background option in the Background Settings UI that lets the user paste a YouTube URL (watch URL, youtu.be short URL, or embed URL) and set it as the app background.",
+      "id": "REQ-29",
+      "text": "Remove (or reduce to effectively zero) the global darkening/blur overlay that is rendered on top of active backgrounds in `BackgroundStage` so that video/image/YouTube backgrounds look as close to the original source as possible (clear and bright).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-10",
-          "msg-11"
+          "msg-4"
         ],
         "quotes": [
-          "https://www.youtube.com/watch?v=F3vSEKruRJc",
-          "yes please"
+          "make it as clear as possible. I want it to look like the original video, clear,bright etc"
         ]
       },
       "acceptanceCriteria": [
-        "Background Settings includes a clear YouTube-specific input option in addition to existing Upload and URL options.",
-        "Pasting a valid YouTube URL sets the background without requiring a direct .mp4/.jpg link.",
-        "Invalid or unsupported YouTube URLs show a destructive alert with an English error message explaining what to fix (e.g., missing/invalid video id)."
+        "When any background is active (image, video, or YouTube) and no error is displayed, the background is not visibly dimmed or blurred by a global overlay (i.e., it appears essentially as bright/clear as the source).",
+        "Timer UI remains readable on top of the background using existing UI surfaces (e.g., cards/header/footer backgrounds) without re-introducing a noticeable full-screen dark overlay.",
+        "When a background fails and the error screen is shown, the error screen remains readable and visually distinct from the background."
       ]
     },
     {
-      "id": "REQ-11",
-      "text": "Extend the background state model to support a third media type for YouTube embeds, and persist it in the existing localStorage key so the YouTube background survives page refreshes.",
+      "id": "REQ-30",
+      "text": "Ensure the background media elements themselves are not being unintentionally visually degraded (no CSS filters, opacity reductions, or layering artifacts) so that the displayed background matches the original media’s clarity.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-10",
-          "msg-11"
+          "msg-4"
         ],
         "quotes": [
-          "If you want, I can modify your app to allow YouTube embeds as backgrounds",
-          "yes please"
+          "make it as clear as possible. I want it to look like the original video, clear,bright etc"
         ]
       },
       "acceptanceCriteria": [
-        "The background state can represent YouTube embeds distinctly from 'image' and 'video' (e.g., mediaType includes a YouTube variant).",
-        "The selected YouTube background persists via the existing localStorage mechanism and rehydrates correctly on reload.",
-        "Clearing the background removes the persisted YouTube background the same way as image/video backgrounds."
-      ]
-    },
-    {
-      "id": "REQ-12",
-      "text": "Render YouTube backgrounds in the background stage using an embedded player (iframe) that behaves like a background: fills the viewport, stays behind the app UI, and does not show player controls.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-10",
-          "msg-11"
-        ],
-        "quotes": [
-          "allow YouTube embeds as backgrounds",
-          "yes please"
-        ]
-      },
-      "acceptanceCriteria": [
-        "When a YouTube background is active, the app renders an iframe-based YouTube embed that covers the full screen similar to the existing video/image background behavior.",
-        "The embed is configured to minimize UI (no visible controls) and to autoplay muted when possible; if autoplay is blocked by the browser, the app shows a clear English error/instruction message rather than a broken background.",
-        "Existing image/video background behavior remains unchanged."
-      ]
-    },
-    {
-      "id": "REQ-13",
-      "text": "Implement robust YouTube URL parsing and validation that extracts the video id from common URL formats and rejects unsupported cases with clear errors.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-9",
-          "msg-10",
-          "msg-11"
-        ],
-        "quotes": [
-          "https://www.youtube.com/watch?v=F3vSEKruRJc",
-          "Want that?",
-          "yes please"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Supported inputs include at least: https://www.youtube.com/watch?v=VIDEO_ID, https://youtu.be/VIDEO_ID, and https://www.youtube.com/embed/VIDEO_ID (with or without extra query params).",
-        "The system extracts and stores the canonical video id used for embedding.",
-        "Unsupported formats (e.g., missing id, playlist-only URLs) are rejected with an English error message and do not overwrite the previously working background."
+        "For video backgrounds, the `<video>` element renders at full opacity with no dimming filter applied, and fills the viewport (object-cover) without additional softening effects.",
+        "For image backgrounds, the rendered background image appears at full opacity with no dimming filter applied, and fills the viewport (cover/center) without additional softening effects.",
+        "For YouTube backgrounds, the iframe background appears without additional app-side dimming/blur layers affecting it (beyond what the YouTube player itself may do)."
       ]
     }
   ],
   "constraints": [
-    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
-    "Do not introduce third-party authentication beyond Internet Identity (not needed for this feature).",
-    "Do not add additional backend services; keep backend as-is unless strictly required (this feature should be frontend-only)."
+    "Frontend immutable paths must not be edited: `frontend/src/hooks/useInternetIdentity.ts`, `frontend/src/hooks/useInternetIdentity.tsx`, `frontend/src/hooks/useActor.ts`, `frontend/src/main.tsx`, `frontend/src/components/ui`.",
+    "Keep all changes within the existing React + Tailwind structure; do not add new backend services or external dependencies."
   ],
   "nonGoals": [
-    "Do not download, re-host, or convert YouTube videos into direct media files.",
-    "Do not add an in-app YouTube search/browse experience; only URL-based setting is required.",
-    "Do not implement background audio controls or volume mixing for YouTube."
+    "Do not add new background features (e.g., new background sources, advanced color grading, HDR, or per-background brightness controls) unless required to achieve the requested clarity.",
+    "Do not change timer functionality or mode behavior beyond what is necessary to keep the UI readable after making backgrounds clearer.",
+    "Do not modify backend code (Motoko) for this request."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }

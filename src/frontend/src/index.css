@@ -64,7 +64,7 @@
     }
     body {
         @apply bg-background text-foreground;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 }
 
@@ -72,5 +72,6 @@
     .timer-display {
         font-variant-numeric: tabular-nums;
         letter-spacing: 0.05em;
+        text-shadow: 0 2px 4px oklch(var(--background) / 0.9);
     }
 }

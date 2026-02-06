@@ -4,6 +4,7 @@
  * - https://www.youtube.com/watch?v=VIDEO_ID
  * - https://youtu.be/VIDEO_ID
  * - https://www.youtube.com/embed/VIDEO_ID
+ * - https://m.youtube.com/watch?v=VIDEO_ID (mobile)
  * 
  * Returns the video ID or an error message.
  */
@@ -11,8 +12,12 @@ export function parseYouTubeUrl(url: string): { videoId: string } | { error: str
   try {
     const urlObj = new URL(url);
     
-    // Handle youtube.com/watch?v=VIDEO_ID
-    if (urlObj.hostname === 'www.youtube.com' || urlObj.hostname === 'youtube.com') {
+    // Handle youtube.com/watch?v=VIDEO_ID (including www, m, and bare youtube.com)
+    if (
+      urlObj.hostname === 'www.youtube.com' || 
+      urlObj.hostname === 'youtube.com' ||
+      urlObj.hostname === 'm.youtube.com'
+    ) {
       if (urlObj.pathname === '/watch') {
         const videoId = urlObj.searchParams.get('v');
         if (videoId && videoId.length === 11) {
@@ -23,19 +28,28 @@ export function parseYouTubeUrl(url: string): { videoId: string } | { error: str
       
       // Handle youtube.com/embed/VIDEO_ID
       if (urlObj.pathname.startsWith('/embed/')) {
-        const videoId = urlObj.pathname.split('/embed/')[1]?.split('?')[0];
+        const videoId = urlObj.pathname.split('/embed/')[1]?.split('?')[0]?.split('/')[0];
         if (videoId && videoId.length === 11) {
           return { videoId };
         }
         return { error: 'Invalid YouTube URL: missing or invalid video ID in embed URL.' };
       }
       
-      return { error: 'Unsupported YouTube URL format. Use a watch, embed, or youtu.be link.' };
+      // Handle youtube.com/v/VIDEO_ID (older format)
+      if (urlObj.pathname.startsWith('/v/')) {
+        const videoId = urlObj.pathname.split('/v/')[1]?.split('?')[0]?.split('/')[0];
+        if (videoId && videoId.length === 11) {
+          return { videoId };
+        }
+        return { error: 'Invalid YouTube URL: missing or invalid video ID.' };
+      }
+      
+      return { error: 'Unsupported YouTube URL format. Please use a watch, embed, or youtu.be link.' };
     }
     
     // Handle youtu.be/VIDEO_ID
     if (urlObj.hostname === 'youtu.be') {
-      const videoId = urlObj.pathname.slice(1).split('?')[0];
+      const videoId = urlObj.pathname.slice(1).split('?')[0].split('/')[0];
       if (videoId && videoId.length === 11) {
         return { videoId };
       }
@@ -62,6 +76,7 @@ export function buildYouTubeEmbedUrl(videoId: string): string {
     rel: '0',
     modestbranding: '1',
     playsinline: '1',
+    enablejsapi: '1',
   });
   
   return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;

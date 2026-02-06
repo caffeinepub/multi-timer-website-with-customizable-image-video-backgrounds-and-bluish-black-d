@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { inferMediaType } from './mediaSupport';
+import { useState, useEffect, useCallback } from 'react';
+import { inferMediaType, inferMediaTypeFromUrl, isValidUrl, probeImage, probeVideo, getUrlErrorMessage } from './mediaSupport';
 import { parseYouTubeUrl } from './youtubeUrl';
 
 interface BackgroundState {
@@ -7,6 +7,7 @@ interface BackgroundState {
   mediaType: 'image' | 'video' | 'youtube' | null;
   youtubeVideoId?: string | null;
   error: string | null;
+  isProbing?: boolean;
 }
 
 const STORAGE_KEY = 'multitimer-background';
@@ -32,7 +33,7 @@ export function useBackground() {
     }
   }, [state]);
 
-  const setBackgroundFromFile = (file: File) => {
+  const setBackgroundFromFile = useCallback((file: File) => {
     const mediaType = inferMediaType(file.type);
     if (!mediaType) {
       setState({
@@ -51,31 +52,111 @@ export function useBackground() {
       youtubeVideoId: null,
       error: null,
     });
-  };
+  }, []);
 
-  const setBackgroundFromUrl = (url: string) => {
-    const extension = url.split('.').pop()?.toLowerCase() || '';
-    const videoExts = ['mp4', 'webm', 'ogg', 'mov'];
-    const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'];
+  const setBackgroundFromUrl = useCallback(async (url: string) => {
+    // Clear previous state
+    setState((prev) => ({ 
+      backgroundUrl: null,
+      mediaType: null,
+      youtubeVideoId: null,
+      error: null, 
+      isProbing: true 
+    }));
 
-    let mediaType: 'image' | 'video' | null = null;
-    if (videoExts.includes(extension)) {
-      mediaType = 'video';
-    } else if (imageExts.includes(extension)) {
-      mediaType = 'image';
-    } else {
-      mediaType = 'image';
+    // Validate URL format
+    if (!isValidUrl(url)) {
+      setState({
+        backgroundUrl: null,
+        mediaType: null,
+        youtubeVideoId: null,
+        error: getUrlErrorMessage('invalid'),
+        isProbing: false,
+      });
+      return;
     }
 
-    setState({
-      backgroundUrl: url,
-      mediaType,
-      youtubeVideoId: null,
-      error: null,
-    });
-  };
+    // Try to infer type from extension first
+    const inferredType = inferMediaTypeFromUrl(url);
 
-  const setBackgroundFromYouTubeUrl = (url: string) => {
+    if (inferredType) {
+      // We have a hint from the extension, verify it loads
+      if (inferredType === 'image') {
+        const imageLoads = await probeImage(url);
+        if (imageLoads) {
+          setState({
+            backgroundUrl: url,
+            mediaType: 'image',
+            youtubeVideoId: null,
+            error: null,
+            isProbing: false,
+          });
+          return;
+        }
+      } else if (inferredType === 'video') {
+        const videoLoads = await probeVideo(url);
+        if (videoLoads) {
+          setState({
+            backgroundUrl: url,
+            mediaType: 'video',
+            youtubeVideoId: null,
+            error: null,
+            isProbing: false,
+          });
+          return;
+        }
+      }
+      
+      // Extension suggested a type but it failed to load
+      setState({
+        backgroundUrl: null,
+        mediaType: null,
+        youtubeVideoId: null,
+        error: getUrlErrorMessage('load-failed'),
+        isProbing: false,
+      });
+      return;
+    }
+
+    // No extension hint, probe both types
+    const [imageLoads, videoLoads] = await Promise.all([
+      probeImage(url),
+      probeVideo(url),
+    ]);
+
+    if (imageLoads) {
+      setState({
+        backgroundUrl: url,
+        mediaType: 'image',
+        youtubeVideoId: null,
+        error: null,
+        isProbing: false,
+      });
+      return;
+    }
+
+    if (videoLoads) {
+      setState({
+        backgroundUrl: url,
+        mediaType: 'video',
+        youtubeVideoId: null,
+        error: null,
+        isProbing: false,
+      });
+      return;
+    }
+
+    // Neither worked
+    setState({
+      backgroundUrl: null,
+      mediaType: null,
+      youtubeVideoId: null,
+      error: getUrlErrorMessage('load-failed'),
+      isProbing: false,
+    });
+  }, []);
+
+  const setBackgroundFromYouTubeUrl = useCallback((url: string) => {
     const result = parseYouTubeUrl(url);
     
     if ('error' in result) {
@@ -92,19 +173,20 @@ export function useBackground() {
       youtubeVideoId: result.videoId,
       error: null,
     });
-  };
+  }, []);
 
-  const clearBackground = () => {
-    if (state.backgroundUrl?.startsWith('blob:')) {
-      URL.revokeObjectURL(state.backgroundUrl);
-    }
+  const clearBackground = useCallback(() => {
     setState({
       backgroundUrl: null,
       mediaType: null,
       youtubeVideoId: null,
       error: null,
     });
-  };
+  }, []);
+
+  const setRuntimeError = useCallback((error: string | null) => {
+    setState((prev) => ({ ...prev, error }));
+  }, []);
 
   return {
     ...state,
@@ -112,5 +194,6 @@ export function useBackground() {
     setBackgroundFromUrl,
     setBackgroundFromYouTubeUrl,
     clearBackground,
+    setRuntimeError,
   };
 }

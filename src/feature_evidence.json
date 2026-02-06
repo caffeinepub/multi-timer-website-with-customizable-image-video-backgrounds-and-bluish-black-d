@@ -2,10 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-new-youtube-background-option-in-the-background-settings-ui-that-lets-the-user-paste-a-youtube-url-watch-url-youtu-be-short-url-or-embed-url-and-set-it-as-the-app-background",
-      "featureTitle": "Add a new YouTube background option in the Background Settings UI that lets the user paste a YouTube URL (watch URL, youtu.be short URL, or embed URL) and set it as the app background.",
+      "featureId": "feature-remove-or-reduce-to-effectively-zero-the-global-darkening-blur-overlay-that-is-rendered-on-top-of-active-backgrounds-in-backgroundstage-so-that-video-image-youtube-backgrounds-look-as-close-to-the-original-source-as-possible-clear-and-bright",
+      "featureTitle": "Remove (or reduce to effectively zero) the global darkening/blur overlay that is rendered on top of active backgrounds in `BackgroundStage` so that video/image/YouTube backgrounds look as close to the original source as possible (clear and bright).",
       "files": [
-        "frontend/src/features/backgrounds/BackgroundCustomizer.tsx"
+        "frontend/src/App.tsx",
+        "frontend/src/features/backgrounds/BackgroundStage.tsx",
+        "frontend/src/index.css"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -15,15 +17,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-10"
+        "REQ-29"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-extend-the-background-state-model-to-support-a-third-media-type-for-youtube-embeds-and-persist-it-in-the-existing-localstorage-key-so-the-youtube-background-survives-page-refreshes",
-      "featureTitle": "Extend the background state model to support a third media type for YouTube embeds, and persist it in the existing localStorage key so the YouTube background survives page refreshes.",
+      "featureId": "feature-ensure-the-background-media-elements-themselves-are-not-being-unintentionally-visually-degraded-no-css-filters-opacity-reductions-or-layering-artifacts-so-that-the-displayed-background-matches-the-original-media-s-clarity",
+      "featureTitle": "Ensure the background media elements themselves are not being unintentionally visually degraded (no CSS filters, opacity reductions, or layering artifacts) so that the displayed background matches the original media’s clarity.",
       "files": [
-        "frontend/src/features/backgrounds/useBackground.ts"
+        "frontend/src/features/backgrounds/BackgroundStage.tsx",
+        "frontend/src/index.css"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -33,44 +36,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-11"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-render-youtube-backgrounds-in-the-background-stage-using-an-embedded-player-iframe-that-behaves-like-a-background-fills-the-viewport-stays-behind-the-app-ui-and-does-not-show-player-controls",
-      "featureTitle": "Render YouTube backgrounds in the background stage using an embedded player (iframe) that behaves like a background: fills the viewport, stays behind the app UI, and does not show player controls.",
-      "files": [
-        "frontend/src/features/backgrounds/BackgroundStage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-12"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-robust-youtube-url-parsing-and-validation-that-extracts-the-video-id-from-common-url-formats-and-rejects-unsupported-cases-with-clear-errors",
-      "featureTitle": "Implement robust YouTube URL parsing and validation that extracts the video id from common URL formats and rejects unsupported cases with clear errors.",
-      "files": [
-        "frontend/src/features/backgrounds/useBackground.ts",
-        "frontend/src/features/backgrounds/youtubeUrl.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-13"
+        "REQ-30"
       ],
       "confidence": "high"
     }
