@@ -1,0 +1,151 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 5,
+  "summary": "Website with multiple timer modes (Pomodoro, stopwatch, interval, countdown, repeating) and customizable backgrounds (images/videos) with a default bluish-black theme and no file-type limitations, plus an optional YouTube-embed background mode.",
+  "architectural_notes": [
+    "Current background URL support expects direct media file links (e.g., .mp4/.webm/.jpg); add an alternate path for YouTube watch URLs using an embedded player/iframe and handle autoplay/mute restrictions."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-create-a-single-page-timer-app-ui-that-lets-the-user-switch-between-these-timer-modes-pomodoro-stopwatch-interval-timer-countdown-timer-and-repeating-timer",
+      "title": "Create a single-page timer app UI that lets the user switch between these timer modes: Pomodoro, Stopwatch, Interval Timer, Countdown Timer, and Repeating Timer.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-pomodoro-mode-with-configurable-durations-work-length-short-break-length-long-break-length-and-long-break-frequency-and-controls-to-start-pause-skip-and-reset-the-current-segment",
+      "title": "Implement Pomodoro mode with configurable durations (work length, short break length, long break length, and long-break frequency) and controls to start/pause, skip, and reset the current segment.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-stopwatch-mode-with-start-pause-reset-and-lap-recording",
+      "title": "Implement Stopwatch mode with start/pause, reset, and lap recording.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-countdown-mode-where-the-user-sets-a-target-duration-and-can-start-pause-and-reset-the-countdown",
+      "title": "Implement Countdown mode where the user sets a target duration and can start/pause and reset the countdown.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-interval-timer-mode-where-the-user-defines-a-set-of-repeating-intervals-e-g-work-rest-and-number-of-rounds-with-controls-to-start-pause-skip-interval-and-reset",
+      "title": "Implement Interval Timer mode where the user defines a set of repeating intervals (e.g., work/rest) and number of rounds, with controls to start/pause, skip interval, and reset.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-repeating-timer-mode-where-the-user-sets-a-duration-and-an-optional-repeat-count-or-infinite-repeat-and-the-timer-automatically-restarts-each-time-it-reaches-zero",
+      "title": "Implement Repeating Timer mode where the user sets a duration and an optional repeat count (or infinite repeat) and the timer automatically restarts each time it reaches zero.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-background-customization-that-allows-the-user-to-set-the-site-background-using-either-uploaded-local-files-or-a-direct-url-supporting-both-images-and-videos",
+      "title": "Add background customization that allows the user to set the site background using either uploaded local files or a direct URL, supporting both images and videos.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-do-not-impose-artificial-file-type-restrictions-on-background-uploads-e-g-do-not-restrict-to-jpeg-accept-any-browser-supported-image-or-video-formats-and-provide-a-clear-error-only-when-the-browser-cannot-preview-play-the-selected-media",
+      "title": "Do not impose artificial file-type restrictions on background uploads (e.g., do not restrict to JPEG); accept any browser-supported image or video formats and provide a clear error only when the browser cannot preview/play the selected media.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-default-visual-theme-for-the-app-before-any-user-background-is-chosen-using-a-bluish-black-look-ensuring-readability-of-timer-controls-on-top-of-the-background",
+      "title": "Create a default visual theme for the app (before any user background is chosen) using a “bluish black” look, ensuring readability of timer controls on top of the background.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-new-youtube-background-option-in-the-background-settings-ui-that-lets-the-user-paste-a-youtube-url-watch-url-youtu-be-short-url-or-embed-url-and-set-it-as-the-app-background",
+      "title": "Add a new YouTube background option in the Background Settings UI that lets the user paste a YouTube URL (watch URL, youtu.be short URL, or embed URL) and set it as the app background.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-extend-the-background-state-model-to-support-a-third-media-type-for-youtube-embeds-and-persist-it-in-the-existing-localstorage-key-so-the-youtube-background-survives-page-refreshes",
+      "title": "Extend the background state model to support a third media type for YouTube embeds, and persist it in the existing localStorage key so the YouTube background survives page refreshes.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-render-youtube-backgrounds-in-the-background-stage-using-an-embedded-player-iframe-that-behaves-like-a-background-fills-the-viewport-stays-behind-the-app-ui-and-does-not-show-player-controls",
+      "title": "Render YouTube backgrounds in the background stage using an embedded player (iframe) that behaves like a background: fills the viewport, stays behind the app UI, and does not show player controls.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-robust-youtube-url-parsing-and-validation-that-extracts-the-video-id-from-common-url-formats-and-rejects-unsupported-cases-with-clear-errors",
+      "title": "Implement robust YouTube URL parsing and validation that extracts the video id from common URL formats and rejects unsupported cases with clear errors.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Implement multiple timer types: Pomodoro, stopwatch, interval, countdown, and repeating timers",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Allow users to customize website background using uploaded/selected images and videos (no restrictive file-type limitations)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Create a default site theme with a nice bluish-black color prior to user customization",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Keep the app free to use with no feature limitations tied to file formats (e.g., not restricted to JPEG)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Support using YouTube videos as backgrounds via an embed/player option (in addition to direct image/video files/URLs)",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "projectName": "Multi-timer website with customizable image/video backgrounds and bluish-black default theme",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

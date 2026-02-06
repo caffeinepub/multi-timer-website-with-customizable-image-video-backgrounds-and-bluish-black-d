@@ -1,0 +1,25 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-06T19:09:25.510Z",
+  "summary": "The diff implements YouTube background support end-to-end: a new YouTube tab/input in Background Settings, a new background mediaType ('youtube') with localStorage persistence, robust-ish URL parsing for common YouTube formats, and full-viewport iframe rendering configured for background playback (autoplay/mute/loop/controls off) with an on-screen autoplay guidance message.",
+  "missing_requirements": [],
+  "hallucinated_features": [
+    {
+      "description": "Introduces usage of an additional icon library (`react-icons`) for the YouTube tab icon.",
+      "reason": "The BuildRequest did not ask to add/introduce any new UI/icon dependencies; the diff shows a new import from `react-icons/si`, implying an extra dependency or at least new usage beyond the specified requirements.",
+      "evidence": [
+        "frontend/src/features/backgrounds/BackgroundCustomizer.tsx (import { SiYoutube } from 'react-icons/si';)"
+      ]
+    }
+  ],
+  "confidence": 0.72,
+  "changed_files": [
+    "frontend-file-summaries.txt",
+    "frontend/src/features/backgrounds/BackgroundCustomizer.tsx",
+    "frontend/src/features/backgrounds/BackgroundStage.tsx",
+    "frontend/src/features/backgrounds/useBackground.ts",
+    "frontend/src/features/backgrounds/youtubeUrl.ts",
+    "project_state.json"
+  ]
+}

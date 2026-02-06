@@ -1,0 +1,103 @@
+{
+  "kind": "build_request",
+  "title": "Support YouTube embed backgrounds (in addition to direct image/video files and URLs)",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-10",
+      "text": "Add a new YouTube background option in the Background Settings UI that lets the user paste a YouTube URL (watch URL, youtu.be short URL, or embed URL) and set it as the app background.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-10",
+          "msg-11"
+        ],
+        "quotes": [
+          "https://www.youtube.com/watch?v=F3vSEKruRJc",
+          "yes please"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Background Settings includes a clear YouTube-specific input option in addition to existing Upload and URL options.",
+        "Pasting a valid YouTube URL sets the background without requiring a direct .mp4/.jpg link.",
+        "Invalid or unsupported YouTube URLs show a destructive alert with an English error message explaining what to fix (e.g., missing/invalid video id)."
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "text": "Extend the background state model to support a third media type for YouTube embeds, and persist it in the existing localStorage key so the YouTube background survives page refreshes.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-10",
+          "msg-11"
+        ],
+        "quotes": [
+          "If you want, I can modify your app to allow YouTube embeds as backgrounds",
+          "yes please"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The background state can represent YouTube embeds distinctly from 'image' and 'video' (e.g., mediaType includes a YouTube variant).",
+        "The selected YouTube background persists via the existing localStorage mechanism and rehydrates correctly on reload.",
+        "Clearing the background removes the persisted YouTube background the same way as image/video backgrounds."
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "text": "Render YouTube backgrounds in the background stage using an embedded player (iframe) that behaves like a background: fills the viewport, stays behind the app UI, and does not show player controls.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-10",
+          "msg-11"
+        ],
+        "quotes": [
+          "allow YouTube embeds as backgrounds",
+          "yes please"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When a YouTube background is active, the app renders an iframe-based YouTube embed that covers the full screen similar to the existing video/image background behavior.",
+        "The embed is configured to minimize UI (no visible controls) and to autoplay muted when possible; if autoplay is blocked by the browser, the app shows a clear English error/instruction message rather than a broken background.",
+        "Existing image/video background behavior remains unchanged."
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "text": "Implement robust YouTube URL parsing and validation that extracts the video id from common URL formats and rejects unsupported cases with clear errors.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-9",
+          "msg-10",
+          "msg-11"
+        ],
+        "quotes": [
+          "https://www.youtube.com/watch?v=F3vSEKruRJc",
+          "Want that?",
+          "yes please"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Supported inputs include at least: https://www.youtube.com/watch?v=VIDEO_ID, https://youtu.be/VIDEO_ID, and https://www.youtube.com/embed/VIDEO_ID (with or without extra query params).",
+        "The system extracts and stores the canonical video id used for embedding.",
+        "Unsupported formats (e.g., missing id, playlist-only URLs) are rejected with an English error message and do not overwrite the previously working background."
+      ]
+    }
+  ],
+  "constraints": [
+    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
+    "Do not introduce third-party authentication beyond Internet Identity (not needed for this feature).",
+    "Do not add additional backend services; keep backend as-is unless strictly required (this feature should be frontend-only)."
+  ],
+  "nonGoals": [
+    "Do not download, re-host, or convert YouTube videos into direct media files.",
+    "Do not add an in-app YouTube search/browse experience; only URL-based setting is required.",
+    "Do not implement background audio controls or volume mixing for YouTube."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

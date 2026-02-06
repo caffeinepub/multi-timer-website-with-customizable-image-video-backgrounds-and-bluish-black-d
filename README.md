@@ -1,2 +1,3 @@
-# multi-timer-website-with-customizable-image-video-backgrounds-and-bluish-black-d
-Exported from Caffeine project: Multi-timer website with customizable image/video backgrounds and bluish-black default theme
+## 
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

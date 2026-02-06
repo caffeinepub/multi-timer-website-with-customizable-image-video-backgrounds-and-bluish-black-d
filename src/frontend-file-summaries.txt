@@ -1,0 +1,22 @@
+{
+  "frontend/src/index.css": "Global styles with bluish-black OKLCH color theme for both light and dark modes, featuring custom timer display utilities.",
+  "frontend/tailwind.config.js": "Tailwind configuration with Inter font family, extended color tokens, custom border radius, shadows, and animations for the timer app.",
+  "frontend/src/App.tsx": "Main application component with tab-based timer mode selector, background customization sheet, and layout structure with header and footer.",
+  "frontend/src/features/backgrounds/BackgroundStage.tsx": "Full-viewport background renderer supporting images, videos, and YouTube embeds with error handling, readability overlay, and autoplay guidance.",
+  "frontend/src/features/backgrounds/BackgroundCustomizer.tsx": "UI component with three tabs (Upload, URL, YouTube) for setting background media with format validation and error handling.",
+  "frontend/src/features/backgrounds/useBackground.ts": "React hook managing background state (URL, media type including YouTube, video ID, errors) with localStorage persistence and cleanup.",
+  "frontend/src/features/backgrounds/mediaSupport.ts": "Helper utilities for inferring media types and generating user-friendly error messages for unsupported formats.",
+  "frontend/src/features/timers/shared/useAccurateInterval.ts": "Custom React hook providing accurate interval timing that persists across tab throttling.",
+  "frontend/src/features/timers/shared/timeFormat.ts": "Utility functions for formatting time displays in mm:ss, hh:mm:ss, and millisecond formats.",
+  "frontend/src/features/timers/pomodoro/PomodoroTimer.tsx": "Pomodoro timer UI with configurable work/break durations, segment indicators, and control buttons.",
+  "frontend/src/features/timers/pomodoro/usePomodoro.ts": "Pomodoro state machine managing work/break cycles, long break intervals, and accurate countdown timing with localStorage persistence.",
+  "frontend/src/features/timers/stopwatch/StopwatchTimer.tsx": "Stopwatch UI with elapsed time display, lap recording, and scrollable lap list.",
+  "frontend/src/features/timers/stopwatch/useStopwatch.ts": "Stopwatch logic with millisecond-accurate elapsed time tracking and lap recording functionality.",
+  "frontend/src/features/timers/countdown/CountdownTimer.tsx": "Countdown timer UI with hour/minute/second inputs and playback controls.",
+  "frontend/src/features/timers/countdown/useCountdown.ts": "Countdown timer logic with configurable duration, accurate timing, and localStorage persistence.",
+  "frontend/src/features/timers/interval/IntervalTimer.tsx": "Interval timer UI with A/B interval configuration, round tracking, progress bar, and skip functionality.",
+  "frontend/src/features/timers/interval/useIntervalTimer.ts": "Interval timer state management alternating between two intervals across multiple rounds with localStorage persistence.",
+  "frontend/src/features/timers/repeating/RepeatingTimer.tsx": "Repeating timer UI with duration settings, finite/infinite repeat modes, and completion tracking.",
+  "frontend/src/features/timers/repeating/useRepeatingTimer.ts": "Repeating timer logic with auto-restart functionality supporting both finite and infinite repeat modes.",
+  "frontend/src/features/backgrounds/youtubeUrl.ts": "Utility functions for parsing YouTube URLs (watch, youtu.be, embed formats) and building embed URLs with autoplay/loop parameters."
+}

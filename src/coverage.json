@@ -1,0 +1,76 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-06T19:09:25.512Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 4,
+    "implemented": 4,
+    "items": [
+      {
+        "id": "REQ-10",
+        "summary": "Add a new YouTube background option in the Background Settings UI that lets the user paste a YouTube URL (watch URL, youtu.be short URL, or embed URL) and set it as the app background.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/features/backgrounds/BackgroundCustomizer.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/features/backgrounds/BackgroundCustomizer.tsx"
+        ]
+      },
+      {
+        "id": "REQ-11",
+        "summary": "Extend the background state model to support a third media type for YouTube embeds, and persist it in the existing localStorage key so the YouTube background survives page refreshes.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/features/backgrounds/useBackground.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/features/backgrounds/useBackground.ts"
+        ]
+      },
+      {
+        "id": "REQ-12",
+        "summary": "Render YouTube backgrounds in the background stage using an embedded player (iframe) that behaves like a background: fills the viewport, stays behind the app UI, and does not show player controls.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/features/backgrounds/BackgroundStage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/features/backgrounds/BackgroundStage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-13",
+        "summary": "Implement robust YouTube URL parsing and validation that extracts the video id from common URL formats and rejects unsupported cases with clear errors.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/features/backgrounds/youtubeUrl.ts",
+          "frontend/src/features/backgrounds/useBackground.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/features/backgrounds/youtubeUrl.ts",
+          "frontend/src/features/backgrounds/useBackground.ts"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "build-request.json",
+    "build-template/README.md",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/features/backgrounds/BackgroundCustomizer.tsx",
+    "frontend/src/features/backgrounds/BackgroundStage.tsx",
+    "frontend/src/features/backgrounds/useBackground.ts",
+    "frontend/src/features/backgrounds/youtubeUrl.ts",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

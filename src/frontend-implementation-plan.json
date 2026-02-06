@@ -1,0 +1,76 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "YouTube embed backgrounds support",
+  "requirements": [
+    {
+      "id": "REQ-10",
+      "summary": "Add a YouTube-specific option in Background Settings to accept common YouTube URL formats and set as background",
+      "acceptanceCriteria": [
+        "Background Settings includes a clear YouTube-specific input option in addition to existing Upload and URL options.",
+        "Pasting a valid YouTube URL sets the background without requiring a direct .mp4/.jpg link.",
+        "Invalid or unsupported YouTube URLs show a destructive alert with an English error message explaining what to fix (e.g., missing/invalid video id)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/backgrounds/BackgroundCustomizer.tsx",
+          "operation": "modify",
+          "description": "Add a third Background Settings tab for YouTube URLs (alongside Upload and URL). Use the existing shadcn-ui Tabs, Input, Button, Label, and destructive Alert patterns to keep UI consistent (Verify the component's usage instructions before implementing). Wire the new YouTube input to a dedicated setter in useBackground (e.g., setBackgroundFromYouTubeUrl) and ensure invalid entries display a destructive alert message without clearing or overwriting the previously working background."
+        }
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "summary": "Extend background state to support a distinct YouTube media type and persist/rehydrate it via the existing localStorage key",
+      "acceptanceCriteria": [
+        "The background state can represent YouTube embeds distinctly from 'image' and 'video' (e.g., mediaType includes a YouTube variant).",
+        "The selected YouTube background persists via the existing localStorage mechanism and rehydrates correctly on reload.",
+        "Clearing the background removes the persisted YouTube background the same way as image/video backgrounds."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/backgrounds/useBackground.ts",
+          "operation": "modify",
+          "description": "Extend the background state model to include a third media type variant for YouTube (e.g., mediaType: 'youtube') and store the canonical YouTube video id (not the raw pasted URL) so it can rehydrate reliably. Update persistence to continue using the existing localStorage key but persist only the background selection data needed to restore (and clear) the YouTube background on refresh; keep existing image/video behavior unchanged. Ensure invalid YouTube parsing/validation sets an error message without overwriting the last-known-good background state."
+        }
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "summary": "Render YouTube backgrounds as a full-viewport, behind-UI iframe embed with minimized player UI and autoplay-muted behavior",
+      "acceptanceCriteria": [
+        "When a YouTube background is active, the app renders an iframe-based YouTube embed that covers the full screen similar to the existing video/image background behavior.",
+        "The embed is configured to minimize UI (no visible controls) and to autoplay muted when possible; if autoplay is blocked by the browser, the app shows a clear English error/instruction message rather than a broken background.",
+        "Existing image/video background behavior remains unchanged."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/backgrounds/BackgroundStage.tsx",
+          "operation": "modify",
+          "description": "Add a YouTube rendering branch when mediaType is 'youtube' that creates a fixed, full-screen iframe behind the app UI (matching current layering). Configure the embed URL parameters to minimize player UI (no visible controls) and attempt autoplay muted where possible. Add a clear on-screen instruction/error state for YouTube backgrounds when playback likely didn't start (e.g., a non-blocking overlay message indicating autoplay may be blocked and the user should interact with the page), while keeping the existing image/video branches unchanged."
+        }
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "summary": "Implement robust YouTube URL parsing/validation to extract video id from common formats and reject unsupported cases with clear errors",
+      "acceptanceCriteria": [
+        "Supported inputs include at least: https://www.youtube.com/watch?v=VIDEO_ID, https://youtu.be/VIDEO_ID, and https://www.youtube.com/embed/VIDEO_ID (with or without extra query params).",
+        "The system extracts and stores the canonical video id used for embedding.",
+        "Unsupported formats (e.g., missing id, playlist-only URLs) are rejected with an English error message and do not overwrite the previously working background."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/backgrounds/youtubeUrl.ts",
+          "operation": "create",
+          "description": "Create a focused utility that parses and validates YouTube URLs. It should accept watch URLs, youtu.be short URLs, and embed URLs (tolerating extra query params), extract a canonical video id suitable for embedding, and return a clear English error for unsupported inputs (missing/invalid id, playlist-only URLs, etc.)."
+        },
+        {
+          "path": "frontend/src/features/backgrounds/useBackground.ts",
+          "operation": "modify",
+          "description": "Integrate the new YouTube URL parsing/validation utility to implement a safe setter for YouTube backgrounds that (1) validates and extracts the canonical video id, (2) updates state/persistence on success, and (3) on failure sets an English error message without overwriting the prior background selection."
+        }
+      ]
+    }
+  ]
+}
