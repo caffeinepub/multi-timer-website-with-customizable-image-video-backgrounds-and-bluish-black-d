@@ -1,132 +1,71 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Persist timer execution across tab switches, update primary button color, and add Reminders + timer completion alerts",
+  "title": "Minutes+seconds Interval Timer inputs and clearer Publish & Share guidance",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Keep all timer modes running accurately when switching between timer tabs by preventing unmount/remount and preserving running state.",
+      "summary": "Add minutes+seconds inputs for Interval A and Interval B while continuing to store durations internally as total seconds.",
       "acceptanceCriteria": [
-        "Start any timer and confirm it is running.",
-        "Switch to a different timer tab; the previously running timer continues progressing in the background (its internal time keeps updating).",
-        "Switch back to the original timer tab; its displayed time reflects the correct elapsed/remaining time (no reset, no unexpected pause).",
-        "This behavior works for all timer modes: Pomodoro, Stopwatch, Countdown, Interval, Repeating."
+        "Interval Timer shows separate numeric inputs for minutes and seconds for Interval A.",
+        "Interval Timer shows separate numeric inputs for minutes and seconds for Interval B.",
+        "Editing minutes/seconds updates the underlying stored interval duration correctly as total seconds.",
+        "Existing stored interval settings (currently stored as seconds) continue to load without errors and display the correct minutes/seconds decomposition.",
+        "While the timer is running, the minutes/seconds inputs remain disabled (consistent with current behavior of interval inputs)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/features/timers/shared/MinutesSecondsInput.tsx",
+          "operation": "create",
+          "description": "Create a small composite input that renders two shadcn-ui Input-based numeric fields (via EditableNumberInput) for minutes and seconds, derives values from a total-seconds prop, and emits updated total seconds via callback. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/timers/interval/IntervalTimer.tsx",
           "operation": "modify",
-          "description": "Update the main timer tab rendering to keep timer tab content mounted while switching tabs (e.g., via the shadcn-ui Tabs/TabsContent capability to force-mount or by rendering all timer views and only visually hiding inactive ones). Verify the component's usage instructions before implementing."
+          "description": "Replace the single seconds-only inputs for Interval A and Interval B with the new MinutesSecondsInput (minutes + seconds) while keeping settings.intervalA/settings.intervalB stored as total seconds; ensure the new inputs are disabled when isRunning is true. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Apply #9E1C37 as the app-wide primary button background color (light/dark) without modifying any `frontend/src/components/ui` files.",
+      "summary": "Update interval duration validation/clamping to support minute-based entry and longer intervals, with consistent limits across minutes/seconds fields and correct long countdown display.",
       "acceptanceCriteria": [
-        "Primary/action buttons render with background color #9E1C37 (verified via computed styles in the browser).",
-        "Button text remains readable with sufficient contrast.",
-        "No changes are made to any files in `frontend/src/components/ui`."
+        "Seconds sub-field is clamped to 0–59.",
+        "Minutes sub-field has a reasonable upper bound and prevents negative values.",
+        "Total interval duration cannot be set to 0 seconds (must be at least 1 second overall).",
+        "The displayed countdown (MM:SS or HH:MM:SS) remains correct for longer intervals."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/features/timers/shared/MinutesSecondsInput.tsx",
           "operation": "modify",
-          "description": "Update theme variables (light and dark) so the primary color resolves to hex #9E1C37 in computed styles (convert #9E1C37 to the project’s color variable format and adjust `--primary` / `--primary-foreground` accordingly for contrast), without touching shadcn-ui component source. Verify the component's usage instructions before implementing."
+          "description": "Implement validation rules: clamp seconds to 0–59, clamp minutes to 0–(reasonable upper bound, e.g. 999), and enforce a minimum total duration of 1 second (auto-correct 0:00 to 0:01). Ensure composed total seconds is also clamped to the derived max. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/timers/interval/IntervalTimer.tsx",
+          "operation": "modify",
+          "description": "Remove the current 600-second max constraint for Interval A/B and rely on the minutes+seconds validation bounds; ensure labels and helper text (if any) reflect minute-based entry. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/timers/shared/timeFormat.ts",
+          "operation": "modify",
+          "description": "Review and adjust (if needed) formatting to ensure longer intervals still display correctly as MM:SS or HH:MM:SS; keep behavior consistent across timers."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Add a new top-level Reminders tab and implement local, persistent reminder CRUD (title + due date/time) stored in browser localStorage.",
+      "summary": "Clarify Publish & Share sheet copy to distinguish preview/draft URL vs public URL and provide a concise go-live checklist, with a prominent embedded-preview warning.",
       "acceptanceCriteria": [
-        "The main tab bar includes a \"Reminders\" tab that switches to a Reminders view.",
-        "Users can add a reminder with at least: title (text) and due date/time.",
-        "Users can edit and delete existing reminders.",
-        "Reminders persist across page reloads using localStorage."
+        "Publish & Share sheet clearly distinguishes between the current preview/draft URL and the public URL that appears after going live.",
+        "If the app is embedded in an iframe preview, the UI prominently warns that the shown URL is for preview and instructs the user to use the Live tab’s Go live button for a public URL.",
+        "All user-facing text is in English and fits within the existing sheet layout without overflowing on mobile widths."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/reminders/useReminders.ts",
-          "operation": "create",
-          "description": "Create a reminders hook that supports create/read/update/delete and persists reminders to localStorage, including a stable id, title, and due date/time, with load-on-mount and write-on-change behavior."
-        },
-        {
-          "path": "frontend/src/features/reminders/RemindersView.tsx",
-          "operation": "create",
-          "description": "Create the Reminders UI view using shadcn-ui building blocks (e.g., Card, Button, Input, Dialog/Sheet, Label) to list reminders and provide add/edit/delete flows. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/features/publishShare/PublishShareSheet.tsx",
           "operation": "modify",
-          "description": "Wire the RemindersView into the existing top-level Tabs navigation by adding a \"Reminders\" TabsTrigger and TabsContent, and adjust the tab bar layout (e.g., grid columns) to accommodate the new tab. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Add a user-toggleable end-of-timer alert (UI and/or sound) that triggers on timer completion, implemented fully client-side.",
-      "acceptanceCriteria": [
-        "There is a user-facing toggle in Settings to enable/disable end-of-timer alerts.",
-        "When enabled, completing a Countdown/Pomodoro segment/Interval cycle end/Repeating completion triggers an alert experience in the UI.",
-        "When disabled, no alert is shown/played on completion.",
-        "Implementation does not require backend changes or external services."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/alerts/TimerAlertsProvider.tsx",
-          "operation": "create",
-          "description": "Create a client-side alerts provider that persists an \"alerts enabled\" setting to localStorage and exposes a notify-on-complete capability (e.g., show an in-app toast/banner and optionally play a short sound) for timer completion events."
-        },
-        {
-          "path": "frontend/src/features/alerts/TimerAlertSettings.tsx",
-          "operation": "create",
-          "description": "Create a Settings sub-view that uses shadcn-ui components (e.g., Switch, Label, Card) to toggle end-of-timer alerts on/off via the TimerAlertsProvider. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wrap the app (or relevant subtree) with TimerAlertsProvider and add an \"Alerts\" section/tab inside the existing Settings sheet so users can toggle completion alerts. Use existing shadcn-ui Sheet/Tabs capabilities. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/features/timers/countdown/useCountdown.ts",
-          "operation": "modify",
-          "description": "Add an optional onComplete callback (or equivalent) and invoke it exactly once when the countdown reaches 0, while preserving existing start/pause/reset behavior."
-        },
-        {
-          "path": "frontend/src/features/timers/pomodoro/usePomodoro.ts",
-          "operation": "modify",
-          "description": "Add an optional onSegmentComplete (or equivalent) callback and invoke it when a Pomodoro segment completes/advances, so alerts can trigger even when the Pomodoro tab is not active."
-        },
-        {
-          "path": "frontend/src/features/timers/interval/useIntervalTimer.ts",
-          "operation": "modify",
-          "description": "Add an optional onIntervalComplete/onCycleComplete callback and invoke it on interval transitions and/or when the full set of rounds completes (per the chosen alert semantics)."
-        },
-        {
-          "path": "frontend/src/features/timers/repeating/useRepeatingTimer.ts",
-          "operation": "modify",
-          "description": "Add an optional onComplete callback and invoke it when the repeating timer finishes all repeats (and/or each repeat if desired by the selected semantics), ensuring it respects the user toggle via the provider."
-        },
-        {
-          "path": "frontend/src/features/timers/countdown/CountdownTimer.tsx",
-          "operation": "modify",
-          "description": "Wire TimerAlertsProvider into the countdown UI by passing the provider’s completion notifier into the updated countdown hook (and ensure the UI remains unchanged aside from alert behavior). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/features/timers/pomodoro/PomodoroTimer.tsx",
-          "operation": "modify",
-          "description": "Wire TimerAlertsProvider into the pomodoro UI by passing the provider’s completion notifier into the updated pomodoro hook. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/features/timers/interval/IntervalTimer.tsx",
-          "operation": "modify",
-          "description": "Wire TimerAlertsProvider into the interval UI by passing the provider’s completion notifier into the updated interval hook. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/features/timers/repeating/RepeatingTimer.tsx",
-          "operation": "modify",
-          "description": "Wire TimerAlertsProvider into the repeating UI by passing the provider’s completion notifier into the updated repeating hook. Verify the component's usage instructions before implementing."
+          "description": "Update the sheet UI/copy to (1) label the current URL as Preview/Draft (this session), (2) add a clearly labeled Public URL section explaining it will appear after going live (without fabricating a public link), (3) include a short step checklist to go live, and (4) show a prominent embedded-preview warning when useIsEmbeddedPreview() is true. Keep within existing layout and mobile-friendly text sizing; continue using existing shadcn-ui Sheet/Button patterns. Verify the component's usage instructions before implementing."
         }
       ]
     }

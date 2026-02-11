@@ -1,102 +1,89 @@
 {
   "kind": "build_request",
-  "title": "Keep timers running across tab switches, update button color, and add Reminders tab",
+  "title": "Add minutes input for Interval Timer and improve publishing flow",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Ensure each timer (Pomodoro, Stopwatch, Countdown, Interval, Repeating) continues running correctly when the user switches to a different timer tab and then switches back, without pausing, resetting, or losing elapsed/remaining time due to component unmounting/remounting.",
+      "text": "Update the Interval Timer configuration UI to include a minutes input section for Interval A and Interval B (in addition to seconds), so users can set intervals using minutes+seconds while the timer continues to run using total seconds internally.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-10"
         ],
         "quotes": [
-          "make the timers work even if I click on another one, in the tab."
+          "add a minute section in the interval"
         ]
       },
       "acceptanceCriteria": [
-        "Start any timer and confirm it is running.",
-        "Switch to a different timer tab; the previously running timer continues progressing in the background (its internal time keeps updating).",
-        "Switch back to the original timer tab; its displayed time reflects the correct elapsed/remaining time (no reset, no unexpected pause).",
-        "This behavior works for all timer modes: Pomodoro, Stopwatch, Countdown, Interval, Repeating."
+        "Interval Timer shows separate numeric inputs for minutes and seconds for Interval A.",
+        "Interval Timer shows separate numeric inputs for minutes and seconds for Interval B.",
+        "Editing minutes/seconds updates the underlying stored interval duration correctly as total seconds.",
+        "Existing stored interval settings (currently stored as seconds) continue to load without errors and display the correct minutes/seconds decomposition.",
+        "While the timer is running, the minutes/seconds inputs remain disabled (consistent with current behavior of interval inputs)."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Update the primary button styling so buttons use hex color #9E1C37 as the primary (default) button background color across the app (including light/dark themes), without editing files under the read-only `frontend/src/components/ui` path.",
+      "text": "Adjust Interval Timer validation limits to support minute-based entry (e.g., allow intervals longer than the current 600-second cap) and ensure clamping/validation remains consistent for both minutes and seconds fields.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-10"
         ],
         "quotes": [
-          "make the buttons hex code #9E1C37"
+          "add a minute section in the interval"
         ]
       },
       "acceptanceCriteria": [
-        "Primary/action buttons render with background color #9E1C37 (verified via computed styles in the browser).",
-        "Button text remains readable with sufficient contrast.",
-        "No changes are made to any files in `frontend/src/components/ui`."
+        "Seconds sub-field is clamped to 0–59.",
+        "Minutes sub-field has a reasonable upper bound and prevents negative values.",
+        "Total interval duration cannot be set to 0 seconds (must be at least 1 second overall).",
+        "The displayed countdown (MM:SS or HH:MM:SS) remains correct for longer intervals."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Add a new top-level \"Reminders\" tab/section to the main app navigation alongside the existing timer tabs, and implement a basic reminders UI that lets users create, view, edit, and delete reminders stored locally in the browser.",
+      "text": "Improve the in-app publishing guidance so the user can reliably “publish my website” from the existing Publish & Share sheet, including clearer copy for draft/preview vs public URL and a short checklist of the steps to go live.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-10"
         ],
         "quotes": [
-          "add a reminder tab in the website"
+          "publish my website"
         ]
       },
       "acceptanceCriteria": [
-        "The main tab bar includes a \"Reminders\" tab that switches to a Reminders view.",
-        "Users can add a reminder with at least: title (text) and due date/time.",
-        "Users can edit and delete existing reminders.",
-        "Reminders persist across page reloads using localStorage."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Add a small, timer-adjacent enhancement in response to \"what else can you add?\": provide an optional, user-toggleable end-of-timer alert that triggers when a timer completes (e.g., in-app dialog/toast and/or a short sound), implemented entirely client-side.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-4"
-        ],
-        "quotes": [
-          "and what else can you add?"
-        ]
-      },
-      "acceptanceCriteria": [
-        "There is a user-facing toggle in Settings to enable/disable end-of-timer alerts.",
-        "When enabled, completing a Countdown/Pomodoro segment/Interval cycle end/Repeating completion triggers an alert experience in the UI.",
-        "When disabled, no alert is shown/played on completion.",
-        "Implementation does not require backend changes or external services."
+        "Publish & Share sheet clearly distinguishes between the current preview/draft URL and the public URL that appears after going live.",
+        "If the app is embedded in an iframe preview, the UI prominently warns that the shown URL is for preview and instructs the user to use the Live tab’s Go live button for a public URL.",
+        "All user-facing text is in English and fits within the existing sheet layout without overflowing on mobile widths."
       ]
     }
   ],
   "constraints": [
-    "Do not edit any files under `frontend/src/components/ui` (compose them instead).",
-    "Backend must remain a single Motoko actor in `backend/main.mo`; only add backend logic if strictly necessary for the requested features.",
-    "No external databases or third-party auth providers; local persistence should use browser storage where appropriate."
+    "Do not edit any files under frontend/src/components/ui (Shadcn UI sources are read-only).",
+    "Do not edit immutable hook bootstrap files: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx.",
+    "Backend must remain single-actor in backend/main.mo; add backend changes only if strictly required (this request should be frontend-only)."
   ],
   "nonGoals": [
-    "Multi-user reminders synced across devices/accounts.",
-    "Push notifications, SMS/email reminders, or any external messaging integration.",
-    "Real-time collaboration or chat features."
+    "Adding server-side persistence or syncing timer settings across devices/users.",
+    "Implementing custom domains, external hosting, or non-Internet Computer deployment steps.",
+    "Adding third-party authentication beyond Internet Identity."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
   },
   "userProfileUpdate": {
-    "goalsToAdd": [],
+    "goalsToAdd": [
+      "Support minute-based interval configuration in the interval timer.",
+      "Publish the app to a public production URL."
+    ],
     "goalsToRemove": [],
-    "preferencesToAdd": [],
+    "preferencesToAdd": [
+      "Use English for user-facing text."
+    ],
     "preferencesToRemove": [],
     "miscToAdd": [],
     "miscToRemove": [],

@@ -14,12 +14,12 @@
   "frontend/src/features/timers/stopwatch/useStopwatch.ts": "Stopwatch logic with millisecond-accurate elapsed time tracking and lap recording functionality.",
   "frontend/src/features/timers/countdown/CountdownTimer.tsx": "Countdown timer UI component wired to TimerAlertsProvider for completion notifications.",
   "frontend/src/features/timers/countdown/useCountdown.ts": "Countdown timer hook with optional onComplete callback that fires once when timer reaches zero, preserving all existing start/pause/reset behavior.",
-  "frontend/src/features/timers/interval/IntervalTimer.tsx": "Interval timer UI component wired to TimerAlertsProvider for cycle completion notifications.",
+  "frontend/src/features/timers/interval/IntervalTimer.tsx": "Interval timer UI component with minutes+seconds inputs for Interval A and B (stored internally as total seconds), wired to TimerAlertsProvider for cycle completion notifications, with disabled inputs during running state.",
   "frontend/src/features/timers/interval/useIntervalTimer.ts": "Interval timer hook with optional onIntervalComplete and onCycleComplete callbacks for interval transitions and full cycle completion.",
   "frontend/src/features/timers/repeating/RepeatingTimer.tsx": "Repeating timer UI component wired to TimerAlertsProvider for completion notifications.",
   "frontend/src/features/timers/repeating/useRepeatingTimer.ts": "Repeating timer hook with optional onComplete callback that fires when all repeats finish (or each repeat if desired).",
   "frontend/src/features/backgrounds/youtubeUrl.ts": "Utility functions for parsing YouTube URLs (supporting watch, youtu.be, embed, mobile, and /v/ formats) and building embed URLs with autoplay/loop/mute parameters plus enablejsapi.",
-  "frontend/src/features/publishShare/PublishShareSheet.tsx": "Sheet UI component that displays the current URL, provides copy link and open in new tab actions, and shows Caffeine publishing instructions with embedded preview detection.",
+  "frontend/src/features/publishShare/PublishShareSheet.tsx": "Sheet UI component that displays current URL (labeled as Preview/Draft when embedded), provides copy/open actions, shows prominent embedded-preview warning when in iframe, and includes clear step-by-step instructions for publishing via the Live tab's Go live button.",
   "frontend/src/features/publishShare/useIsEmbeddedPreview.ts": "React hook that detects whether the app is running inside an iframe (editor preview) using safe window comparison with cross-origin error handling.",
   "frontend/src/features/backgrounds/BackgroundProvider.tsx": "React context provider that shares background state including YouTube volume control, brightness control, clearBackground and setRuntimeError methods, managing blob URL lifecycle with automatic cleanup.",
   "frontend/src/features/music/musicSupport.ts": "Utility functions for parsing and classifying music URLs (Spotify, Apple Music, direct audio) and building embed URLs with clear error messages for unsupported links.",
@@ -38,5 +38,6 @@
   "frontend/src/features/alerts/TimerAlertsProvider.tsx": "React context provider that manages timer completion alerts with localStorage persistence, toast notifications, and optional audio beep using Web Audio API.",
   "frontend/src/features/alerts/TimerAlertSettings.tsx": "Settings UI component with a switch to toggle timer completion alerts on/off using the TimerAlertsProvider context.",
   "frontend/src/features/reminders/useReminders.ts": "React hook managing CRUD operations for reminders (title, due date) with localStorage persistence.",
-  "frontend/src/features/reminders/RemindersView.tsx": "Full reminders UI with add/edit/delete dialogs, scrollable list sorted by due date, and empty state messaging."
+  "frontend/src/features/reminders/RemindersView.tsx": "Full reminders UI with add/edit/delete dialogs, scrollable list sorted by due date, and empty state messaging.",
+  "frontend/src/features/timers/shared/MinutesSecondsInput.tsx": "Composite input component that renders separate minutes and seconds numeric fields using EditableNumberInput, derives values from total seconds prop, validates (seconds 0-59, minutes 0-999, minimum 1 second total), and emits updated total seconds via callback."
 }

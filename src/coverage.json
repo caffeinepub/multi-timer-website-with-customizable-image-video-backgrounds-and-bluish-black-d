@@ -1,81 +1,51 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-11T04:21:26.060Z",
+  "generatedAt": "2026-02-11T16:09:19.464Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 4,
-    "implemented": 4,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Ensure each timer (Pomodoro, Stopwatch, Countdown, Interval, Repeating) continues running correctly when the user switches to a different timer tab and then switches back, without pausing, resetting, or losing elapsed/remaining time due to component unmounting/remounting.",
+        "summary": "Update the Interval Timer configuration UI to include a minutes input section for Interval A and Interval B (in addition to seconds), so users can set intervals using minutes+seconds while the timer continues to run using total seconds internally.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/App.tsx"
+          "frontend/src/features/timers/shared/MinutesSecondsInput.tsx",
+          "frontend/src/features/timers/interval/IntervalTimer.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/App.tsx"
+          "frontend/src/features/timers/shared/MinutesSecondsInput.tsx",
+          "frontend/src/features/timers/interval/IntervalTimer.tsx"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Update the primary button styling so buttons use hex color #9E1C37 as the primary (default) button background color across the app (including light/dark themes), without editing files under the read-only `frontend/src/components/ui` path.",
+        "summary": "Adjust Interval Timer validation limits to support minute-based entry (e.g., allow intervals longer than the current 600-second cap) and ensure clamping/validation remains consistent for both minutes and seconds fields.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/index.css"
+          "frontend/src/features/timers/shared/MinutesSecondsInput.tsx",
+          "frontend/src/features/timers/interval/IntervalTimer.tsx",
+          "frontend/src/features/timers/shared/timeFormat.ts"
         ],
         "matchedFiles": [
-          "frontend/src/index.css"
+          "frontend/src/features/timers/shared/MinutesSecondsInput.tsx",
+          "frontend/src/features/timers/interval/IntervalTimer.tsx"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Add a new top-level \"Reminders\" tab/section to the main app navigation alongside the existing timer tabs, and implement a basic reminders UI that lets users create, view, edit, and delete reminders stored locally in the browser.",
+        "summary": "Improve the in-app publishing guidance so the user can reliably “publish my website” from the existing Publish & Share sheet, including clearer copy for draft/preview vs public URL and a short checklist of the steps to go live.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/reminders/useReminders.ts",
-          "frontend/src/features/reminders/RemindersView.tsx",
-          "frontend/src/App.tsx"
+          "frontend/src/features/publishShare/PublishShareSheet.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/features/reminders/useReminders.ts",
-          "frontend/src/features/reminders/RemindersView.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-4",
-        "summary": "Add a small, timer-adjacent enhancement in response to \"what else can you add?\": provide an optional, user-toggleable end-of-timer alert that triggers when a timer completes (e.g., in-app dialog/toast and/or a short sound), implemented entirely client-side.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/alerts/TimerAlertsProvider.tsx",
-          "frontend/src/features/alerts/TimerAlertSettings.tsx",
-          "frontend/src/App.tsx",
-          "frontend/src/features/timers/countdown/useCountdown.ts",
-          "frontend/src/features/timers/pomodoro/usePomodoro.ts",
-          "frontend/src/features/timers/interval/useIntervalTimer.ts",
-          "frontend/src/features/timers/repeating/useRepeatingTimer.ts",
-          "frontend/src/features/timers/countdown/CountdownTimer.tsx",
-          "frontend/src/features/timers/pomodoro/PomodoroTimer.tsx",
-          "frontend/src/features/timers/interval/IntervalTimer.tsx",
-          "frontend/src/features/timers/repeating/RepeatingTimer.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/alerts/TimerAlertsProvider.tsx",
-          "frontend/src/features/alerts/TimerAlertSettings.tsx",
-          "frontend/src/App.tsx",
-          "frontend/src/features/timers/countdown/useCountdown.ts",
-          "frontend/src/features/timers/pomodoro/usePomodoro.ts",
-          "frontend/src/features/timers/interval/useIntervalTimer.ts",
-          "frontend/src/features/timers/repeating/useRepeatingTimer.ts",
-          "frontend/src/features/timers/countdown/CountdownTimer.tsx",
-          "frontend/src/features/timers/pomodoro/PomodoroTimer.tsx",
-          "frontend/src/features/timers/interval/IntervalTimer.tsx",
-          "frontend/src/features/timers/repeating/RepeatingTimer.tsx"
+          "frontend/src/features/publishShare/PublishShareSheet.tsx"
         ]
       }
     ]
@@ -85,20 +55,9 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
-    "frontend/src/features/alerts/TimerAlertSettings.tsx",
-    "frontend/src/features/alerts/TimerAlertsProvider.tsx",
-    "frontend/src/features/reminders/RemindersView.tsx",
-    "frontend/src/features/reminders/useReminders.ts",
-    "frontend/src/features/timers/countdown/CountdownTimer.tsx",
-    "frontend/src/features/timers/countdown/useCountdown.ts",
+    "frontend/src/features/publishShare/PublishShareSheet.tsx",
     "frontend/src/features/timers/interval/IntervalTimer.tsx",
-    "frontend/src/features/timers/interval/useIntervalTimer.ts",
-    "frontend/src/features/timers/pomodoro/PomodoroTimer.tsx",
-    "frontend/src/features/timers/pomodoro/usePomodoro.ts",
-    "frontend/src/features/timers/repeating/RepeatingTimer.tsx",
-    "frontend/src/features/timers/repeating/useRepeatingTimer.ts",
-    "frontend/src/index.css",
+    "frontend/src/features/timers/shared/MinutesSecondsInput.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

@@ -1,42 +1,32 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "TickTask web app with working timers, updated branding/styling, and a new Reminders section.",
+  "summary": "Web app with reminders/timers; user wants interval configuration updates and to publish the site.",
   "architectural_notes": [],
-  "known_issues": [
-    "Timers do not currently work correctly when the user clicks on another timer within the same tab (timer may stop or behave incorrectly)."
-  ],
-  "isFixRequest": true,
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-ensure-each-timer-pomodoro-stopwatch-countdown-interval-repeating-continues-running-correctly-when-the-user-switches-to-a-different-timer-tab-and-then-switches-back-without-pausing-resetting-or-losing-elapsed-remaining-time-due-to-component-unmounting-remounting",
-      "title": "Ensure each timer (Pomodoro, Stopwatch, Countdown, Interval, Repeating) continues running correctly when the user switches to a different timer tab and then switches back, without pausing, resetting, or losing elapsed/remaining time due to component unmounting/remounting.",
+      "id": "feature-update-the-interval-timer-configuration-ui-to-include-a-minutes-input-section-for-interval-a-and-interval-b-in-addition-to-seconds-so-users-can-set-intervals-using-minutes-seconds-while-the-timer-continues-to-run-using-total-seconds-internally",
+      "title": "Update the Interval Timer configuration UI to include a minutes input section for Interval A and Interval B (in addition to seconds), so users can set intervals using minutes+seconds while the timer continues to run using total seconds internally.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-update-the-primary-button-styling-so-buttons-use-hex-color-9e1c37-as-the-primary-default-button-background-color-across-the-app-including-light-dark-themes-without-editing-files-under-the-read-only-frontend-src-components-ui-path",
-      "title": "Update the primary button styling so buttons use hex color #9E1C37 as the primary (default) button background color across the app (including light/dark themes), without editing files under the read-only `frontend/src/components/ui` path.",
+      "id": "feature-adjust-interval-timer-validation-limits-to-support-minute-based-entry-e-g-allow-intervals-longer-than-the-current-600-second-cap-and-ensure-clamping-validation-remains-consistent-for-both-minutes-and-seconds-fields",
+      "title": "Adjust Interval Timer validation limits to support minute-based entry (e.g., allow intervals longer than the current 600-second cap) and ensure clamping/validation remains consistent for both minutes and seconds fields.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-a-new-top-level-reminders-tab-section-to-the-main-app-navigation-alongside-the-existing-timer-tabs-and-implement-a-basic-reminders-ui-that-lets-users-create-view-edit-and-delete-reminders-stored-locally-in-the-browser",
-      "title": "Add a new top-level \"Reminders\" tab/section to the main app navigation alongside the existing timer tabs, and implement a basic reminders UI that lets users create, view, edit, and delete reminders stored locally in the browser.",
+      "id": "feature-improve-the-in-app-publishing-guidance-so-the-user-can-reliably-publish-my-website-from-the-existing-publish-share-sheet-including-clearer-copy-for-draft-preview-vs-public-url-and-a-short-checklist-of-the-steps-to-go-live",
+      "title": "Improve the in-app publishing guidance so the user can reliably “publish my website” from the existing Publish & Share sheet, including clearer copy for draft/preview vs public URL and a short checklist of the steps to go live.",
       "reqIds": [
         "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-small-timer-adjacent-enhancement-in-response-to-what-else-can-you-add-provide-an-optional-user-toggleable-end-of-timer-alert-that-triggers-when-a-timer-completes-e-g-in-app-dialog-toast-and-or-a-short-sound-implemented-entirely-client-side",
-      "title": "Add a small, timer-adjacent enhancement in response to \"what else can you add?\": provide an optional, user-toggleable end-of-timer alert that triggers when a timer completes (e.g., in-app dialog/toast and/or a short sound), implemented entirely client-side.",
-      "reqIds": [
-        "REQ-4"
       ],
       "version": 1
     }
@@ -44,24 +34,18 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Ensure timers continue running correctly when switching between timers within the tab (no pausing/resetting on selection changes).",
+      "summary": "Add a minute section to the interval configuration (support minute-based interval input).",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-2",
-      "summary": "Update button styling to use hex color #9E1C37.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Add a Reminders tab/section to the website.",
+      "summary": "Publish the website (move deployed draft to a public/production release).",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "TickTask",
+  "projectName": "Add minutes input for Interval Timer and improve publishing flow",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

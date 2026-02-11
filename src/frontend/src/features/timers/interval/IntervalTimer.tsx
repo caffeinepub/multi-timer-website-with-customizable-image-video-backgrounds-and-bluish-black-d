@@ -7,6 +7,7 @@ import { formatTime } from '../shared/timeFormat';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { EditableNumberInput } from '../shared/EditableNumberInput';
+import { MinutesSecondsInput } from '../shared/MinutesSecondsInput';
 import { useTimerAlerts } from '@/features/alerts/TimerAlertsProvider';
 
 export function IntervalTimer() {
@@ -93,28 +94,20 @@ export function IntervalTimer() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="space-y-2">
-            <Label htmlFor="interval-a">Interval A (sec)</Label>
-            <EditableNumberInput
-              id="interval-a"
-              value={settings.intervalA}
-              onChange={handleIntervalAChange}
-              min={1}
-              max={600}
-              disabled={isRunning}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="interval-b">Interval B (sec)</Label>
-            <EditableNumberInput
-              id="interval-b"
-              value={settings.intervalB}
-              onChange={handleIntervalBChange}
-              min={1}
-              max={600}
-              disabled={isRunning}
-            />
-          </div>
+          <MinutesSecondsInput
+            id="interval-a"
+            label="Interval A"
+            value={settings.intervalA}
+            onChange={handleIntervalAChange}
+            disabled={isRunning}
+          />
+          <MinutesSecondsInput
+            id="interval-b"
+            label="Interval B"
+            value={settings.intervalB}
+            onChange={handleIntervalBChange}
+            disabled={isRunning}
+          />
           <div className="space-y-2">
             <Label htmlFor="rounds">Rounds</Label>
             <EditableNumberInput

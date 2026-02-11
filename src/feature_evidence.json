@@ -2,10 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-ensure-each-timer-pomodoro-stopwatch-countdown-interval-repeating-continues-running-correctly-when-the-user-switches-to-a-different-timer-tab-and-then-switches-back-without-pausing-resetting-or-losing-elapsed-remaining-time-due-to-component-unmounting-remounting",
-      "featureTitle": "Ensure each timer (Pomodoro, Stopwatch, Countdown, Interval, Repeating) continues running correctly when the user switches to a different timer tab and then switches back, without pausing, resetting, or losing elapsed/remaining time due to component unmounting/remounting.",
+      "featureId": "feature-update-the-interval-timer-configuration-ui-to-include-a-minutes-input-section-for-interval-a-and-interval-b-in-addition-to-seconds-so-users-can-set-intervals-using-minutes-seconds-while-the-timer-continues-to-run-using-total-seconds-internally",
+      "featureTitle": "Update the Interval Timer configuration UI to include a minutes input section for Interval A and Interval B (in addition to seconds), so users can set intervals using minutes+seconds while the timer continues to run using total seconds internally.",
       "files": [
-        "frontend/src/App.tsx"
+        "frontend/src/features/timers/interval/IntervalTimer.tsx",
+        "frontend/src/features/timers/shared/MinutesSecondsInput.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -20,10 +21,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-the-primary-button-styling-so-buttons-use-hex-color-9e1c37-as-the-primary-default-button-background-color-across-the-app-including-light-dark-themes-without-editing-files-under-the-read-only-frontend-src-components-ui-path",
-      "featureTitle": "Update the primary button styling so buttons use hex color #9E1C37 as the primary (default) button background color across the app (including light/dark themes), without editing files under the read-only `frontend/src/components/ui` path.",
+      "featureId": "feature-adjust-interval-timer-validation-limits-to-support-minute-based-entry-e-g-allow-intervals-longer-than-the-current-600-second-cap-and-ensure-clamping-validation-remains-consistent-for-both-minutes-and-seconds-fields",
+      "featureTitle": "Adjust Interval Timer validation limits to support minute-based entry (e.g., allow intervals longer than the current 600-second cap) and ensure clamping/validation remains consistent for both minutes and seconds fields.",
       "files": [
-        "frontend/src/index.css"
+        "frontend/src/features/timers/interval/IntervalTimer.tsx",
+        "frontend/src/features/timers/shared/MinutesSecondsInput.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -38,12 +40,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-a-new-top-level-reminders-tab-section-to-the-main-app-navigation-alongside-the-existing-timer-tabs-and-implement-a-basic-reminders-ui-that-lets-users-create-view-edit-and-delete-reminders-stored-locally-in-the-browser",
-      "featureTitle": "Add a new top-level \"Reminders\" tab/section to the main app navigation alongside the existing timer tabs, and implement a basic reminders UI that lets users create, view, edit, and delete reminders stored locally in the browser.",
+      "featureId": "feature-improve-the-in-app-publishing-guidance-so-the-user-can-reliably-publish-my-website-from-the-existing-publish-share-sheet-including-clearer-copy-for-draft-preview-vs-public-url-and-a-short-checklist-of-the-steps-to-go-live",
+      "featureTitle": "Improve the in-app publishing guidance so the user can reliably “publish my website” from the existing Publish & Share sheet, including clearer copy for draft/preview vs public URL and a short checklist of the steps to go live.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/features/reminders/RemindersView.tsx",
-        "frontend/src/features/reminders/useReminders.ts"
+        "frontend/src/features/publishShare/PublishShareSheet.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -54,34 +54,6 @@
       ],
       "testIds": [
         "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-small-timer-adjacent-enhancement-in-response-to-what-else-can-you-add-provide-an-optional-user-toggleable-end-of-timer-alert-that-triggers-when-a-timer-completes-e-g-in-app-dialog-toast-and-or-a-short-sound-implemented-entirely-client-side",
-      "featureTitle": "Add a small, timer-adjacent enhancement in response to \"what else can you add?\": provide an optional, user-toggleable end-of-timer alert that triggers when a timer completes (e.g., in-app dialog/toast and/or a short sound), implemented entirely client-side.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/features/alerts/TimerAlertSettings.tsx",
-        "frontend/src/features/alerts/TimerAlertsProvider.tsx",
-        "frontend/src/features/timers/countdown/CountdownTimer.tsx",
-        "frontend/src/features/timers/countdown/useCountdown.ts",
-        "frontend/src/features/timers/interval/IntervalTimer.tsx",
-        "frontend/src/features/timers/interval/useIntervalTimer.ts",
-        "frontend/src/features/timers/pomodoro/PomodoroTimer.tsx",
-        "frontend/src/features/timers/pomodoro/usePomodoro.ts",
-        "frontend/src/features/timers/repeating/RepeatingTimer.tsx",
-        "frontend/src/features/timers/repeating/useRepeatingTimer.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
       ],
       "confidence": "high"
     }

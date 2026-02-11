@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Share2, Copy, ExternalLink, Check, Info } from 'lucide-react';
+import { Share2, Copy, ExternalLink, Check, Info, AlertCircle } from 'lucide-react';
 import { useIsEmbeddedPreview } from './useIsEmbeddedPreview';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export function PublishShareSheet() {
   const [copied, setCopied] = useState(false);
@@ -39,9 +40,23 @@ export function PublishShareSheet() {
         </SheetHeader>
 
         <div className="mt-6 space-y-6">
+          {/* Embedded Preview Warning - Prominent */}
+          {isEmbedded && (
+            <Alert variant="default" className="border-primary/50 bg-primary/5">
+              <AlertCircle className="h-4 w-4 text-primary" />
+              <AlertDescription className="text-sm">
+                <strong>Preview Mode:</strong> You're viewing the editor preview. 
+                The URL below is temporary. To get a public URL, use the <strong>Live</strong> tab 
+                and click <strong>Go live</strong>.
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Current URL Display */}
           <div className="space-y-2">
-            <label className="text-sm font-medium">App URL</label>
+            <label className="text-sm font-medium">
+              {isEmbedded ? 'Preview URL (This Session)' : 'Current URL'}
+            </label>
             <div className="flex items-center gap-2">
               <div className="flex-1 rounded-md border bg-muted/50 px-3 py-2 text-sm break-all">
                 {currentUrl}
@@ -79,33 +94,26 @@ export function PublishShareSheet() {
             </Button>
           </div>
 
-          {/* Publishing Instructions */}
+          {/* Public URL Section */}
           <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
             <div className="flex items-start gap-2">
               <Info className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
               <div className="space-y-2 text-sm">
-                <p className="font-medium">How to publish your timer app:</p>
-                <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
-                  <li>Look at the <strong>top right</strong> of the Caffeine interface</li>
-                  <li>Click the <strong>Live</strong> tab</li>
+                <p className="font-medium">Get Your Public URL</p>
+                <p className="text-muted-foreground">
+                  To publish your app and get a permanent public URL:
+                </p>
+                <ol className="list-decimal list-inside space-y-1.5 text-muted-foreground ml-1">
+                  <li>Click the <strong>Live</strong> tab (top right of Caffeine)</li>
                   <li>Click the <strong>Go live</strong> button</li>
                   <li>Wait a few seconds for deployment</li>
-                  <li>Your public URL will appear at the top of the Live panel</li>
+                  <li>Your public URL will appear at the top</li>
                 </ol>
-              </div>
-            </div>
-
-            {/* Extra hint for embedded preview */}
-            {isEmbedded && (
-              <div className="mt-3 pt-3 border-t border-border/50">
-                <p className="text-xs text-muted-foreground">
-                  <strong>Note:</strong> You're currently viewing the editor preview. 
-                  The URL shown above is for this preview context. After publishing via 
-                  the <strong>Go live</strong> button, your public URL will be displayed 
-                  in the Live tab.
+                <p className="text-xs text-muted-foreground pt-2">
+                  The public URL will remain accessible even after you close the editor.
                 </p>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </SheetContent>
