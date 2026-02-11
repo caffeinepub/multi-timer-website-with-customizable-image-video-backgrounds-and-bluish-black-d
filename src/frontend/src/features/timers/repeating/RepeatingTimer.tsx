@@ -8,8 +8,10 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { EditableNumberInput } from '../shared/EditableNumberInput';
 import { RotaryDial } from '../shared/RotaryDial';
+import { useTimerAlerts } from '@/features/alerts/TimerAlertsProvider';
 
 export function RepeatingTimer() {
+  const { notifyCompletion } = useTimerAlerts();
   const {
     timeLeft,
     isRunning,
@@ -19,7 +21,9 @@ export function RepeatingTimer() {
     start,
     pause,
     reset,
-  } = useRepeatingTimer();
+  } = useRepeatingTimer({
+    onComplete: () => notifyCompletion('All repeating timer cycles completed!'),
+  });
 
   const minutes = Math.floor(settings.duration / 60);
   const seconds = settings.duration % 60;
@@ -58,9 +62,8 @@ export function RepeatingTimer() {
             {formatTime(timeLeft)}
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
-            {settings.infinite
-              ? `Completed: ${completedRepeats} repeat${completedRepeats !== 1 ? 's' : ''}`
-              : `Repeat ${completedRepeats + 1} of ${settings.repeatCount}`}
+            Completed: {completedRepeats}
+            {!settings.infinite && ` / ${settings.repeatCount}`}
           </p>
         </div>
 
@@ -82,55 +85,59 @@ export function RepeatingTimer() {
           </Button>
         </div>
 
-        <div className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="space-y-2">
-              <Label htmlFor="rep-minutes">Minutes</Label>
-              <EditableNumberInput
-                id="rep-minutes"
-                value={minutes}
-                onChange={handleMinutesChange}
-                min={0}
-                max={59}
-                disabled={isRunning}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="rep-seconds">Seconds</Label>
-              <EditableNumberInput
-                id="rep-seconds"
-                value={seconds}
-                onChange={handleSecondsChange}
-                min={0}
-                max={59}
-                disabled={isRunning}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="repeat-count">Repeat Count</Label>
-              <EditableNumberInput
-                id="repeat-count"
-                value={settings.repeatCount}
-                onChange={handleRepeatCountChange}
-                min={1}
-                max={100}
-                disabled={isRunning || settings.infinite}
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="infinite-mode"
-              checked={settings.infinite}
-              onCheckedChange={(checked) => updateSettings({ infinite: checked })}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="minutes">Minutes</Label>
+            <EditableNumberInput
+              id="minutes"
+              value={minutes}
+              onChange={handleMinutesChange}
+              min={0}
+              max={59}
               disabled={isRunning}
             />
-            <Label htmlFor="infinite-mode" className="cursor-pointer">
-              Infinite repeats
-            </Label>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="seconds">Seconds</Label>
+            <EditableNumberInput
+              id="seconds"
+              value={seconds}
+              onChange={handleSecondsChange}
+              min={0}
+              max={59}
+              disabled={isRunning}
+            />
           </div>
         </div>
+
+        <div className="flex items-center justify-between rounded-lg border border-border p-4">
+          <div className="space-y-0.5">
+            <Label htmlFor="infinite-mode">Infinite Mode</Label>
+            <p className="text-sm text-muted-foreground">
+              Timer will repeat indefinitely
+            </p>
+          </div>
+          <Switch
+            id="infinite-mode"
+            checked={settings.infinite}
+            onCheckedChange={(checked) => updateSettings({ infinite: checked })}
+            disabled={isRunning}
+          />
+        </div>
+
+        {!settings.infinite && (
+          <div className="space-y-2">
+            <Label htmlFor="repeat-count">Repeat Count</Label>
+            <EditableNumberInput
+              id="repeat-count"
+              value={settings.repeatCount}
+              onChange={handleRepeatCountChange}
+              min={1}
+              max={100}
+              disabled={isRunning}
+            />
+          </div>
+        )}
 
         <div className="flex justify-center gap-8 pt-4">
           <RotaryDial

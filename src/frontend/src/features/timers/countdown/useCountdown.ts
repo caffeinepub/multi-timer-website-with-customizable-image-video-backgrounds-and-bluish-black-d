@@ -3,7 +3,11 @@ import { useAccurateInterval } from '../shared/useAccurateInterval';
 
 const STORAGE_KEY = 'countdown-duration';
 
-export function useCountdown() {
+interface UseCountdownOptions {
+  onComplete?: () => void;
+}
+
+export function useCountdown(options?: UseCountdownOptions) {
   const [duration, setDurationState] = useState(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? parseInt(stored) : 300;
@@ -13,6 +17,7 @@ export function useCountdown() {
   const [isRunning, setIsRunning] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [pausedTime, setPausedTime] = useState<number | null>(null);
+  const [hasCompletedRef, setHasCompletedRef] = useState(false);
 
   const setDuration = useCallback((newDuration: number) => {
     const validDuration = Math.max(1, newDuration);
@@ -29,6 +34,7 @@ export function useCountdown() {
       setStartTime(Date.now());
     }
     setIsRunning(true);
+    setHasCompletedRef(false);
   }, [pausedTime, duration]);
 
   const pause = useCallback(() => {
@@ -42,6 +48,7 @@ export function useCountdown() {
     setTimeLeft(duration);
     setStartTime(null);
     setPausedTime(null);
+    setHasCompletedRef(false);
   }, [duration]);
 
   useAccurateInterval(
@@ -50,9 +57,13 @@ export function useCountdown() {
         const elapsed = Math.floor((Date.now() - startTime) / 1000);
         const remaining = Math.max(0, duration - elapsed);
 
-        if (remaining === 0) {
+        if (remaining === 0 && !hasCompletedRef) {
           setIsRunning(false);
           setStartTime(null);
+          setHasCompletedRef(true);
+          if (options?.onComplete) {
+            options.onComplete();
+          }
         }
         setTimeLeft(remaining);
       }

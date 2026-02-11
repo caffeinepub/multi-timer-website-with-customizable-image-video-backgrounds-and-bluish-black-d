@@ -1,43 +1,67 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
-  "architectural_notes": [
-    "App can fail to load if the configured background image URL is missing/unreachable (BackgroundStage errors when fetch fails)."
-  ],
+  "summary": "TickTask web app with working timers, updated branding/styling, and a new Reminders section.",
+  "architectural_notes": [],
   "known_issues": [
-    "Deployment/version switch is still serving Version 18 instead of requested Version 14.",
-    "App currently errors due to missing background image URL; needs background cleared/reset so the app loads."
+    "Timers do not currently work correctly when the user clicks on another timer within the same tab (timer may stop or behave incorrectly)."
   ],
   "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-when-the-app-starts-detect-if-a-persisted-background-in-localstorage-cannot-be-loaded-image-video-url-unreachable-unsupported-and-automatically-clear-the-background-so-the-app-renders-normally-without-a-blocking-background-error-state",
-      "title": "When the app starts, detect if a persisted background in localStorage cannot be loaded (image/video URL unreachable/unsupported) and automatically clear the background so the app renders normally without a blocking background error state.",
+      "id": "feature-ensure-each-timer-pomodoro-stopwatch-countdown-interval-repeating-continues-running-correctly-when-the-user-switches-to-a-different-timer-tab-and-then-switches-back-without-pausing-resetting-or-losing-elapsed-remaining-time-due-to-component-unmounting-remounting",
+      "title": "Ensure each timer (Pomodoro, Stopwatch, Countdown, Interval, Repeating) continues running correctly when the user switches to a different timer tab and then switches back, without pausing, resetting, or losing elapsed/remaining time due to component unmounting/remounting.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-update-background-persistence-logic-so-transient-runtime-errors-from-backgroundstage-e-g-image-video-load-failures-do-not-get-persisted-in-a-way-that-makes-the-app-repeatedly-boot-into-an-error-state-after-refresh",
-      "title": "Update background persistence logic so transient runtime errors from BackgroundStage (e.g., image/video load failures) do not get persisted in a way that makes the app repeatedly boot into an error state after refresh.",
+      "id": "feature-update-the-primary-button-styling-so-buttons-use-hex-color-9e1c37-as-the-primary-default-button-background-color-across-the-app-including-light-dark-themes-without-editing-files-under-the-read-only-frontend-src-components-ui-path",
+      "title": "Update the primary button styling so buttons use hex color #9E1C37 as the primary (default) button background color across the app (including light/dark themes), without editing files under the read-only `frontend/src/components/ui` path.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-an-in-app-recovery-action-that-is-accessible-even-when-the-background-error-overlay-is-visible-provide-a-clear-button-in-the-overlay-to-reset-clear-the-current-background-and-dismiss-the-error-state",
-      "title": "Add an in-app recovery action that is accessible even when the background error overlay is visible: provide a clear button in the overlay to reset/clear the current background and dismiss the error state.",
+      "id": "feature-add-a-new-top-level-reminders-tab-section-to-the-main-app-navigation-alongside-the-existing-timer-tabs-and-implement-a-basic-reminders-ui-that-lets-users-create-view-edit-and-delete-reminders-stored-locally-in-the-browser",
+      "title": "Add a new top-level \"Reminders\" tab/section to the main app navigation alongside the existing timer tabs, and implement a basic reminders UI that lets users create, view, edit, and delete reminders stored locally in the browser.",
       "reqIds": [
         "REQ-3"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-a-small-timer-adjacent-enhancement-in-response-to-what-else-can-you-add-provide-an-optional-user-toggleable-end-of-timer-alert-that-triggers-when-a-timer-completes-e-g-in-app-dialog-toast-and-or-a-short-sound-implemented-entirely-client-side",
+      "title": "Add a small, timer-adjacent enhancement in response to \"what else can you add?\": provide an optional, user-toggleable end-of-timer alert that triggers when a timer completes (e.g., in-app dialog/toast and/or a short sound), implemented entirely client-side.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
     }
   ],
-  "new_feature_requests": [],
-  "projectName": "Auto-clear broken persisted background so the app loads without the error overlay",
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Ensure timers continue running correctly when switching between timers within the tab (no pausing/resetting on selection changes).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Update button styling to use hex color #9E1C37.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Add a Reminders tab/section to the website.",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "projectName": "TickTask",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

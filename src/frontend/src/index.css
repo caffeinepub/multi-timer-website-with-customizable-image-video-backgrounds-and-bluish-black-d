@@ -5,15 +5,15 @@
 @layer base {
     :root {
         --radius: 0.75rem;
-        /* Pastel Pink theme */
+        /* Updated primary color to #9E1C37 */
         --background: 0.97 0.02 340;
         --foreground: 0.25 0.08 340;
         --card: 0.95 0.03 340;
         --card-foreground: 0.25 0.08 340;
         --popover: 0.96 0.03 340;
         --popover-foreground: 0.25 0.08 340;
-        --primary: 0.85 0.10 340;
-        --primary-foreground: 0.20 0.08 340;
+        --primary: 0.42 0.18 10;
+        --primary-foreground: 0.98 0.02 340;
         --secondary: 0.88 0.08 345;
         --secondary-foreground: 0.20 0.08 340;
         --muted: 0.92 0.04 340;
@@ -24,7 +24,7 @@
         --destructive-foreground: 0.98 0.02 340;
         --border: 0.90 0.05 340;
         --input: 0.90 0.05 340;
-        --ring: 0.85 0.10 340;
+        --ring: 0.42 0.18 10;
         --chart-1: 0.85 0.10 340;
         --chart-2: 0.86 0.09 335;
         --chart-3: 0.87 0.11 345;
@@ -39,8 +39,8 @@
         --card-foreground: 0.95 0.02 340;
         --popover: 0.18 0.08 340;
         --popover-foreground: 0.95 0.02 340;
-        --primary: 0.75 0.15 340;
-        --primary-foreground: 0.15 0.08 340;
+        --primary: 0.48 0.20 10;
+        --primary-foreground: 0.98 0.02 340;
         --secondary: 0.70 0.13 345;
         --secondary-foreground: 0.15 0.08 340;
         --muted: 0.25 0.06 340;
@@ -51,7 +51,7 @@
         --destructive-foreground: 0.98 0.02 340;
         --border: 0.28 0.08 340;
         --input: 0.28 0.08 340;
-        --ring: 0.75 0.15 340;
+        --ring: 0.48 0.20 10;
         --chart-1: 0.75 0.15 340;
         --chart-2: 0.72 0.14 335;
         --chart-3: 0.77 0.16 345;

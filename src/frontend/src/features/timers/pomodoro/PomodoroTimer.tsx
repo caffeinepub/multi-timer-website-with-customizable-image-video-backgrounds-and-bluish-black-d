@@ -7,8 +7,10 @@ import { formatTime } from '../shared/timeFormat';
 import { Badge } from '@/components/ui/badge';
 import { EditableNumberInput } from '../shared/EditableNumberInput';
 import { RotaryDial } from '../shared/RotaryDial';
+import { useTimerAlerts } from '@/features/alerts/TimerAlertsProvider';
 
 export function PomodoroTimer() {
+  const { notifyCompletion } = useTimerAlerts();
   const {
     timeLeft,
     isRunning,
@@ -20,7 +22,16 @@ export function PomodoroTimer() {
     pause,
     reset,
     skip,
-  } = usePomodoro();
+  } = usePomodoro({
+    onSegmentComplete: (segment) => {
+      const messages = {
+        work: 'Work session completed! Time for a break.',
+        shortBreak: 'Short break completed! Ready to work?',
+        longBreak: 'Long break completed! Ready to work?',
+      };
+      notifyCompletion(messages[segment]);
+    },
+  });
 
   const segmentLabels = {
     work: 'Work',

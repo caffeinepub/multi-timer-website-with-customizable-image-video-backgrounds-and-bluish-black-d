@@ -19,7 +19,11 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
 
 const STORAGE_KEY = 'pomodoro-state';
 
-export function usePomodoro() {
+interface UsePomodoroOptions {
+  onSegmentComplete?: (segment: Segment) => void;
+}
+
+export function usePomodoro(options?: UsePomodoroOptions) {
   const [settings, setSettings] = useState<PomodoroSettings>(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
@@ -106,12 +110,16 @@ export function usePomodoro() {
       nextSegment = 'work';
     }
 
+    if (options?.onSegmentComplete) {
+      options.onSegmentComplete(currentSegment);
+    }
+
     setCurrentSegment(nextSegment);
     const duration = getSegmentDuration(nextSegment);
     setTimeLeft(duration);
     setStartTime(isRunning ? Date.now() : null);
     setPausedTime(null);
-  }, [currentSegment, completedPomodoros, settings.longBreakInterval, getSegmentDuration, isRunning]);
+  }, [currentSegment, completedPomodoros, settings.longBreakInterval, getSegmentDuration, isRunning, options]);
 
   useAccurateInterval(
     () => {

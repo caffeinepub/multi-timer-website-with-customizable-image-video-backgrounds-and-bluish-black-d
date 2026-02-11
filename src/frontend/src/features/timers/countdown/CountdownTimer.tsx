@@ -6,9 +6,13 @@ import { useCountdown } from './useCountdown';
 import { formatTime } from '../shared/timeFormat';
 import { EditableNumberInput } from '../shared/EditableNumberInput';
 import { RotaryDial } from '../shared/RotaryDial';
+import { useTimerAlerts } from '@/features/alerts/TimerAlertsProvider';
 
 export function CountdownTimer() {
-  const { timeLeft, isRunning, duration, setDuration, start, pause, reset } = useCountdown();
+  const { notifyCompletion } = useTimerAlerts();
+  const { timeLeft, isRunning, duration, setDuration, start, pause, reset } = useCountdown({
+    onComplete: () => notifyCompletion('Countdown timer completed!'),
+  });
 
   const hours = Math.floor(duration / 3600);
   const minutes = Math.floor((duration % 3600) / 60);

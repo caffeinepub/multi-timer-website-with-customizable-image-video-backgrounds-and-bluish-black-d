@@ -15,7 +15,11 @@ const DEFAULT_SETTINGS: RepeatingSettings = {
 
 const STORAGE_KEY = 'repeating-timer-state';
 
-export function useRepeatingTimer() {
+interface UseRepeatingTimerOptions {
+  onComplete?: () => void;
+}
+
+export function useRepeatingTimer(options?: UseRepeatingTimerOptions) {
   const [settings, setSettings] = useState<RepeatingSettings>(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
@@ -80,6 +84,9 @@ export function useRepeatingTimer() {
             setIsRunning(false);
             setTimeLeft(0);
             setStartTime(null);
+            if (options?.onComplete) {
+              options.onComplete();
+            }
           } else {
             setTimeLeft(settings.duration);
             setStartTime(Date.now());

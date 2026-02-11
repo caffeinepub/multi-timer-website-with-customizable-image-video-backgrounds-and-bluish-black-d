@@ -1,73 +1,93 @@
 {
   "kind": "build_request",
-  "title": "Auto-clear broken persisted background so the app loads without the error overlay",
-  "priority": "high",
+  "title": "Keep timers running across tab switches, update button color, and add Reminders tab",
+  "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "When the app starts, detect if a persisted background in localStorage cannot be loaded (image/video URL unreachable/unsupported) and automatically clear the background so the app renders normally without a blocking background error state.",
+      "text": "Ensure each timer (Pomodoro, Stopwatch, Countdown, Interval, Repeating) continues running correctly when the user switches to a different timer tab and then switches back, without pausing, resetting, or losing elapsed/remaining time due to component unmounting/remounting.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-4"
         ],
         "quotes": [
-          "App currently errors due to missing background image URL; needs background cleared/reset so the app loads.",
-          "duh",
-          "yes"
+          "make the timers work even if I click on another one, in the tab."
         ]
       },
       "acceptanceCriteria": [
-        "If localStorage contains a backgroundUrl/mediaType for an image or video that fails to load, the app clears the saved background and does not show the full-screen background error overlay on page load.",
-        "If localStorage contains a YouTube background videoId that fails to initialize/load, the app clears the saved background and does not remain stuck in an error overlay on refresh.",
-        "Clearing the broken persisted background removes the relevant persisted background entry so refreshing the page does not reintroduce the error."
+        "Start any timer and confirm it is running.",
+        "Switch to a different timer tab; the previously running timer continues progressing in the background (its internal time keeps updating).",
+        "Switch back to the original timer tab; its displayed time reflects the correct elapsed/remaining time (no reset, no unexpected pause).",
+        "This behavior works for all timer modes: Pomodoro, Stopwatch, Countdown, Interval, Repeating."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Update background persistence logic so transient runtime errors from BackgroundStage (e.g., image/video load failures) do not get persisted in a way that makes the app repeatedly boot into an error state after refresh.",
+      "text": "Update the primary button styling so buttons use hex color #9E1C37 as the primary (default) button background color across the app (including light/dark themes), without editing files under the read-only `frontend/src/components/ui` path.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-4"
         ],
         "quotes": [
-          "The error shown in your image comes directly from the app’s code. It means the background image URL stored in your app is pointing to something that no longer exists.",
-          "Quick fix: I can reset your background to blank so the app loads normally."
+          "make the buttons hex code #9E1C37"
         ]
       },
       "acceptanceCriteria": [
-        "Refreshing the page after a runtime background load error does not automatically restore the error overlay unless the user still has an active, valid background configured.",
-        "Background settings (brightness, YouTube volume) continue to persist as before."
+        "Primary/action buttons render with background color #9E1C37 (verified via computed styles in the browser).",
+        "Button text remains readable with sufficient contrast.",
+        "No changes are made to any files in `frontend/src/components/ui`."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Add an in-app recovery action that is accessible even when the background error overlay is visible: provide a clear button in the overlay to reset/clear the current background and dismiss the error state.",
+      "text": "Add a new top-level \"Reminders\" tab/section to the main app navigation alongside the existing timer tabs, and implement a basic reminders UI that lets users create, view, edit, and delete reminders stored locally in the browser.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-4"
         ],
         "quotes": [
-          "Want me to clear the background image now?",
-          "yes"
+          "add a reminder tab in the website"
         ]
       },
       "acceptanceCriteria": [
-        "When the background error overlay is shown, it includes a visible control labeled in English (e.g., \"Clear background\") that clears the background and removes the overlay immediately.",
-        "The recovery action works for image, video, and YouTube background error states."
+        "The main tab bar includes a \"Reminders\" tab that switches to a Reminders view.",
+        "Users can add a reminder with at least: title (text) and due date/time.",
+        "Users can edit and delete existing reminders.",
+        "Reminders persist across page reloads using localStorage."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Add a small, timer-adjacent enhancement in response to \"what else can you add?\": provide an optional, user-toggleable end-of-timer alert that triggers when a timer completes (e.g., in-app dialog/toast and/or a short sound), implemented entirely client-side.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "and what else can you add?"
+        ]
+      },
+      "acceptanceCriteria": [
+        "There is a user-facing toggle in Settings to enable/disable end-of-timer alerts.",
+        "When enabled, completing a Countdown/Pomodoro segment/Interval cycle end/Repeating completion triggers an alert experience in the UI.",
+        "When disabled, no alert is shown/played on completion.",
+        "Implementation does not require backend changes or external services."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui (shadcn components); compose them instead.",
-    "Do not modify immutable hook files listed in SYSTEM_CONTEXT (e.g., frontend/src/hooks/useInternetIdentity.ts[x], frontend/src/hooks/useActor.ts, frontend/src/main.tsx).",
-    "Backend remains single-actor; no new backend features are required for this fix."
+    "Do not edit any files under `frontend/src/components/ui` (compose them instead).",
+    "Backend must remain a single Motoko actor in `backend/main.mo`; only add backend logic if strictly necessary for the requested features.",
+    "No external databases or third-party auth providers; local persistence should use browser storage where appropriate."
   ],
   "nonGoals": [
-    "Fixing the deployment/version rollback behavior (Version 14 vs Version 18) is out of scope for this request.",
-    "Adding new background sources/providers beyond the existing file/URL/YouTube options is out of scope."
+    "Multi-user reminders synced across devices/accounts.",
+    "Push notifications, SMS/email reminders, or any external messaging integration.",
+    "Real-time collaboration or chat features."
   ],
   "imageRequirements": {
     "required": [],

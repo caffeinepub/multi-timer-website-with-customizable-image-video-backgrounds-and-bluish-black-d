@@ -1,11 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Prevent the app from booting into a blocking background error state when a persisted background (image/video/YouTube) can’t load, by auto-clearing the broken background and providing an in-overlay recovery action.
+**Goal:** Improve timer reliability across tab switches, update primary button color, add a Reminders section with local persistence, and provide an optional end-of-timer alert.
 
 **Planned changes:**
-- On app start, validate the persisted background configuration and attempt a lightweight load/initialize; if it fails (unreachable/unsupported image/video URL or failing YouTube video), automatically clear the persisted background so the app renders normally.
-- Update background persistence so transient runtime load errors from the background stage do not get saved in a way that causes repeated error overlays after refresh.
-- Add a recovery control to the background error overlay (e.g., “Clear background”) that clears the current background and dismisses the overlay for image, video, and YouTube error states.
+- Update timer state management so all timer modes continue running accurately when switching between timer tabs (no pause/reset due to unmount/remount).
+- Change primary/action button styling across the app to use background color `#9E1C37` (in both light and dark themes) without modifying anything under `frontend/src/components/ui`.
+- Add a new top-level **Reminders** tab with a basic CRUD UI (create/view/edit/delete) for reminders containing at least a title and due date/time, persisted via `localStorage`.
+- Add a Settings toggle to enable/disable end-of-timer alerts; when enabled, show an in-app alert (and/or sound) upon timer completion for relevant timer modes.
 
-**User-visible outcome:** If a saved background can’t be loaded, the app will automatically reset to no background and load normally; if an error overlay appears, users can click “Clear background” to recover immediately and a refresh won’t re-trigger the same stuck error state.
+**User-visible outcome:** Timers keep correct time even when switching tabs, primary buttons appear in `#9E1C37`, a new Reminders tab allows managing locally saved reminders, and users can toggle end-of-timer alerts in Settings.

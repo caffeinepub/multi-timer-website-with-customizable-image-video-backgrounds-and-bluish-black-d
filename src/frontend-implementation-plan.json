@@ -1,61 +1,132 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Auto-recover from broken persisted backgrounds and prevent boot-time error overlay loops",
+  "title": "Persist timer execution across tab switches, update primary button color, and add Reminders + timer completion alerts",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "On startup, validate any persisted background config and automatically clear it when the media cannot be loaded so the app renders normally.",
+      "summary": "Keep all timer modes running accurately when switching between timer tabs by preventing unmount/remount and preserving running state.",
       "acceptanceCriteria": [
-        "If localStorage contains a backgroundUrl/mediaType for an image or video that fails to load, the app clears the saved background and does not show the full-screen background error overlay on page load.",
-        "If localStorage contains a YouTube background videoId that fails to initialize/load, the app clears the saved background and does not remain stuck in an error overlay on refresh.",
-        "Clearing the broken persisted background removes the relevant persisted background entry so refreshing the page does not reintroduce the error."
+        "Start any timer and confirm it is running.",
+        "Switch to a different timer tab; the previously running timer continues progressing in the background (its internal time keeps updating).",
+        "Switch back to the original timer tab; its displayed time reflects the correct elapsed/remaining time (no reset, no unexpected pause).",
+        "This behavior works for all timer modes: Pomodoro, Stopwatch, Countdown, Interval, Repeating."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/backgrounds/useBackground.ts",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Add a boot-time validation pass for persisted background configuration: treat persisted blob: URLs as invalid, probe persisted image/video URLs (using existing probeImage/probeVideo helpers) and automatically clear only the background fields (backgroundUrl/mediaType/youtubeVideoId) when validation fails while retaining brightness/youtubeVolume defaults. Ensure any legacy persisted error value does not cause the app to start in an error state."
-        },
-        {
-          "path": "frontend/src/features/backgrounds/BackgroundStage.tsx",
-          "operation": "modify",
-          "description": "When a YouTube background reports a fatal load/initialize error (not an autoplay/interaction warning), automatically clear the background configuration so a refresh does not re-enter a blocking overlay state; keep runtime error display for the current session as needed."
+          "description": "Update the main timer tab rendering to keep timer tab content mounted while switching tabs (e.g., via the shadcn-ui Tabs/TabsContent capability to force-mount or by rendering all timer views and only visually hiding inactive ones). Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Adjust background persistence so runtime load errors don’t get saved and cause repeated error overlays after refresh, while keeping brightness/YouTube volume persistence.",
+      "summary": "Apply #9E1C37 as the app-wide primary button background color (light/dark) without modifying any `frontend/src/components/ui` files.",
       "acceptanceCriteria": [
-        "Refreshing the page after a runtime background load error does not automatically restore the error overlay unless the user still has an active, valid background configured.",
-        "Background settings (brightness, YouTube volume) continue to persist as before."
+        "Primary/action buttons render with background color #9E1C37 (verified via computed styles in the browser).",
+        "Button text remains readable with sufficient contrast.",
+        "No changes are made to any files in `frontend/src/components/ui`."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/backgrounds/useBackground.ts",
+          "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Refactor localStorage persistence to store only durable configuration (backgroundUrl/mediaType/youtubeVideoId/brightness/youtubeVolume) and explicitly exclude transient runtime fields (error/isProbing). Ensure clearing or invalidation sets backgroundUrl/mediaType/youtubeVideoId to null in persisted config (so it won’t reapply on refresh) while keeping brightness/youtubeVolume persisted."
-        },
-        {
-          "path": "frontend/src/features/backgrounds/BackgroundProvider.tsx",
-          "operation": "modify",
-          "description": "Confirm provider wiring still correctly revokes prior blob URLs after the persistence refactor (since blob URLs should no longer be restored on boot), and that context continues to expose clearBackground and setRuntimeError for recovery flows."
+          "description": "Update theme variables (light and dark) so the primary color resolves to hex #9E1C37 in computed styles (convert #9E1C37 to the project’s color variable format and adjust `--primary` / `--primary-foreground` accordingly for contrast), without touching shadcn-ui component source. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Provide an always-available recovery action inside the background error overlay to clear the current background and dismiss the error state.",
+      "summary": "Add a new top-level Reminders tab and implement local, persistent reminder CRUD (title + due date/time) stored in browser localStorage.",
       "acceptanceCriteria": [
-        "When the background error overlay is shown, it includes a visible control labeled in English (e.g., \"Clear background\") that clears the background and removes the overlay immediately.",
-        "The recovery action works for image, video, and YouTube background error states."
+        "The main tab bar includes a \"Reminders\" tab that switches to a Reminders view.",
+        "Users can add a reminder with at least: title (text) and due date/time.",
+        "Users can edit and delete existing reminders.",
+        "Reminders persist across page reloads using localStorage."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/backgrounds/BackgroundStage.tsx",
+          "path": "frontend/src/features/reminders/useReminders.ts",
+          "operation": "create",
+          "description": "Create a reminders hook that supports create/read/update/delete and persists reminders to localStorage, including a stable id, title, and due date/time, with load-on-mount and write-on-change behavior."
+        },
+        {
+          "path": "frontend/src/features/reminders/RemindersView.tsx",
+          "operation": "create",
+          "description": "Create the Reminders UI view using shadcn-ui building blocks (e.g., Card, Button, Input, Dialog/Sheet, Label) to list reminders and provide add/edit/delete flows. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Update the error overlay UI to include a clear recovery action: use the shadcn-ui Button component to render a visible \"Clear background\" control that calls clearBackground() and clears any runtime error so the overlay dismisses immediately. Verify the component's usage instructions before implementing."
+          "description": "Wire the RemindersView into the existing top-level Tabs navigation by adding a \"Reminders\" TabsTrigger and TabsContent, and adjust the tab bar layout (e.g., grid columns) to accommodate the new tab. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Add a user-toggleable end-of-timer alert (UI and/or sound) that triggers on timer completion, implemented fully client-side.",
+      "acceptanceCriteria": [
+        "There is a user-facing toggle in Settings to enable/disable end-of-timer alerts.",
+        "When enabled, completing a Countdown/Pomodoro segment/Interval cycle end/Repeating completion triggers an alert experience in the UI.",
+        "When disabled, no alert is shown/played on completion.",
+        "Implementation does not require backend changes or external services."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/alerts/TimerAlertsProvider.tsx",
+          "operation": "create",
+          "description": "Create a client-side alerts provider that persists an \"alerts enabled\" setting to localStorage and exposes a notify-on-complete capability (e.g., show an in-app toast/banner and optionally play a short sound) for timer completion events."
+        },
+        {
+          "path": "frontend/src/features/alerts/TimerAlertSettings.tsx",
+          "operation": "create",
+          "description": "Create a Settings sub-view that uses shadcn-ui components (e.g., Switch, Label, Card) to toggle end-of-timer alerts on/off via the TimerAlertsProvider. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wrap the app (or relevant subtree) with TimerAlertsProvider and add an \"Alerts\" section/tab inside the existing Settings sheet so users can toggle completion alerts. Use existing shadcn-ui Sheet/Tabs capabilities. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/timers/countdown/useCountdown.ts",
+          "operation": "modify",
+          "description": "Add an optional onComplete callback (or equivalent) and invoke it exactly once when the countdown reaches 0, while preserving existing start/pause/reset behavior."
+        },
+        {
+          "path": "frontend/src/features/timers/pomodoro/usePomodoro.ts",
+          "operation": "modify",
+          "description": "Add an optional onSegmentComplete (or equivalent) callback and invoke it when a Pomodoro segment completes/advances, so alerts can trigger even when the Pomodoro tab is not active."
+        },
+        {
+          "path": "frontend/src/features/timers/interval/useIntervalTimer.ts",
+          "operation": "modify",
+          "description": "Add an optional onIntervalComplete/onCycleComplete callback and invoke it on interval transitions and/or when the full set of rounds completes (per the chosen alert semantics)."
+        },
+        {
+          "path": "frontend/src/features/timers/repeating/useRepeatingTimer.ts",
+          "operation": "modify",
+          "description": "Add an optional onComplete callback and invoke it when the repeating timer finishes all repeats (and/or each repeat if desired by the selected semantics), ensuring it respects the user toggle via the provider."
+        },
+        {
+          "path": "frontend/src/features/timers/countdown/CountdownTimer.tsx",
+          "operation": "modify",
+          "description": "Wire TimerAlertsProvider into the countdown UI by passing the provider’s completion notifier into the updated countdown hook (and ensure the UI remains unchanged aside from alert behavior). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/timers/pomodoro/PomodoroTimer.tsx",
+          "operation": "modify",
+          "description": "Wire TimerAlertsProvider into the pomodoro UI by passing the provider’s completion notifier into the updated pomodoro hook. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/timers/interval/IntervalTimer.tsx",
+          "operation": "modify",
+          "description": "Wire TimerAlertsProvider into the interval UI by passing the provider’s completion notifier into the updated interval hook. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/timers/repeating/RepeatingTimer.tsx",
+          "operation": "modify",
+          "description": "Wire TimerAlertsProvider into the repeating UI by passing the provider’s completion notifier into the updated repeating hook. Verify the component's usage instructions before implementing."
         }
       ]
     }

@@ -1,23 +1,72 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-11T00:01:41.912Z",
-  "summary": "The diff implements boot-time validation/clearing for persisted image/video backgrounds, avoids persisting transient runtime error state, and adds an in-overlay \"Clear background\" recovery action. It also adds YouTube fatal-error auto-clear behavior. One non-requested change updates project_state.json metadata.",
-  "missing_requirements": [],
-  "hallucinated_features": [
+  "generatedAt": "2026-02-11T04:21:26.057Z",
+  "summary": "REQ-3 (Reminders) and REQ-4 (toggleable completion alerts) appear to be implemented via new reminders feature files and a TimerAlerts provider/settings wired into multiple timer types. REQ-1 (timers continue across tab switches) is likely addressed by force-mounting timer tabs (per diff summary notes), though the App.tsx diff is truncated. REQ-2 (primary button color #9E1C37) is partially addressed by updating CSS theme tokens, but the diff does not clearly show an explicit hex-based primary background being applied, so exact computed color compliance cannot be confirmed from the summary alone.",
+  "missing_requirements": [
     {
-      "description": "Updated internal project tracking metadata (project_state.json) to add/track AR-* requests with pending status.",
-      "reason": "The BuildRequest focuses on runtime background loading/persistence behavior and UI recovery controls; it does not request changes to repository metadata/tracking files.",
+      "id": "REQ-2",
+      "requirement": "Update the primary button styling so buttons use hex color #9E1C37 as the primary (default) button background color across the app (including light/dark themes), without editing files under `frontend/src/components/ui`.",
+      "reason": "The diff shows updates to CSS variables using OKLCH values with a comment claiming #9E1C37, but it does not provide evidence that the computed primary button background resolves exactly to hex #9E1C37 across themes (as required by the AC).",
       "evidence": [
-        "project_state.json"
+        "frontend/src/index.css"
       ]
     }
   ],
-  "confidence": 0.7,
+  "hallucinated_features": [
+    {
+      "description": "Background system enhancements (error overlay recovery button, brightness/volume handling, validation/probing, media support utilities) beyond requested timer persistence/button color/reminders/alerts scope.",
+      "reason": "Not requested in BuildRequest; appears as additional functionality changes.",
+      "evidence": [
+        "frontend/src/features/backgrounds/BackgroundStage.tsx",
+        "frontend/src/features/backgrounds/BackgroundCustomizer.tsx",
+        "frontend/src/features/backgrounds/useBackground.ts",
+        "frontend/src/features/backgrounds/mediaSupport.ts"
+      ]
+    },
+    {
+      "description": "TimerVisibility feature (visibility hook and bar) added/used in the main app.",
+      "reason": "Not requested; BuildRequest focuses on timer persistence across tab switches, reminders, button color, and completion alerts.",
+      "evidence": [
+        "frontend/src/App.tsx",
+        "frontend/src/features/timers/visibility/useTimerVisibility",
+        "frontend/src/features/timers/visibility/TimerVisibilityBar"
+      ]
+    },
+    {
+      "description": "Publish/share sheet and footer attribution additions in the main app.",
+      "reason": "Not requested by any REQ.",
+      "evidence": [
+        "frontend/src/App.tsx",
+        "frontend/src/features/publishShare/PublishShareSheet"
+      ]
+    },
+    {
+      "description": "Accurate interval hook described as persisting across tab throttling (timing robustness enhancement).",
+      "reason": "BuildRequest only asks to keep timers running across internal tab switches; tab-throttling resilience is an extra enhancement not explicitly requested.",
+      "evidence": [
+        "frontend/src/features/timers/shared/useAccurateInterval.ts",
+        "frontend-file-summaries.txt"
+      ]
+    }
+  ],
+  "confidence": 0.64,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/src/features/backgrounds/BackgroundStage.tsx",
-    "frontend/src/features/backgrounds/useBackground.ts",
+    "frontend/src/App.tsx",
+    "frontend/src/features/alerts/TimerAlertSettings.tsx",
+    "frontend/src/features/alerts/TimerAlertsProvider.tsx",
+    "frontend/src/features/reminders/RemindersView.tsx",
+    "frontend/src/features/reminders/useReminders.ts",
+    "frontend/src/features/timers/countdown/CountdownTimer.tsx",
+    "frontend/src/features/timers/countdown/useCountdown.ts",
+    "frontend/src/features/timers/interval/IntervalTimer.tsx",
+    "frontend/src/features/timers/interval/useIntervalTimer.ts",
+    "frontend/src/features/timers/pomodoro/PomodoroTimer.tsx",
+    "frontend/src/features/timers/pomodoro/usePomodoro.ts",
+    "frontend/src/features/timers/repeating/RepeatingTimer.tsx",
+    "frontend/src/features/timers/repeating/useRepeatingTimer.ts",
+    "frontend/src/index.css",
     "project_state.json"
   ]
 }

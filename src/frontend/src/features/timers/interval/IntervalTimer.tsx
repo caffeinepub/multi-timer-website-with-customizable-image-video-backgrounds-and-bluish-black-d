@@ -7,8 +7,10 @@ import { formatTime } from '../shared/timeFormat';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { EditableNumberInput } from '../shared/EditableNumberInput';
+import { useTimerAlerts } from '@/features/alerts/TimerAlertsProvider';
 
 export function IntervalTimer() {
+  const { notifyCompletion } = useTimerAlerts();
   const {
     timeLeft,
     isRunning,
@@ -21,7 +23,9 @@ export function IntervalTimer() {
     pause,
     reset,
     skip,
-  } = useIntervalTimer();
+  } = useIntervalTimer({
+    onCycleComplete: () => notifyCompletion('All interval rounds completed!'),
+  });
 
   const progress = settings.intervalA > 0 && settings.intervalB > 0
     ? ((currentRound - 1) / totalRounds) * 100 + (1 / totalRounds) * 
