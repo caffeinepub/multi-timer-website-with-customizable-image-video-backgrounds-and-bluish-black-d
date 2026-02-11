@@ -1,12 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Play, Pause, RotateCcw, Infinity } from 'lucide-react';
 import { useRepeatingTimer } from './useRepeatingTimer';
 import { formatTime } from '../shared/timeFormat';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
+import { EditableNumberInput } from '../shared/EditableNumberInput';
+import { RotaryDial } from '../shared/RotaryDial';
 
 export function RepeatingTimer() {
   const {
@@ -19,6 +20,21 @@ export function RepeatingTimer() {
     pause,
     reset,
   } = useRepeatingTimer();
+
+  const minutes = Math.floor(settings.duration / 60);
+  const seconds = settings.duration % 60;
+
+  const handleMinutesChange = (newMinutes: number) => {
+    updateSettings({ duration: newMinutes * 60 + seconds });
+  };
+
+  const handleSecondsChange = (newSeconds: number) => {
+    updateSettings({ duration: minutes * 60 + newSeconds });
+  };
+
+  const handleRepeatCountChange = (newCount: number) => {
+    updateSettings({ repeatCount: newCount });
+  };
 
   return (
     <Card className="bg-card/80 backdrop-blur-xl border-border/50">
@@ -70,45 +86,34 @@ export function RepeatingTimer() {
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-2">
               <Label htmlFor="rep-minutes">Minutes</Label>
-              <Input
+              <EditableNumberInput
                 id="rep-minutes"
-                type="number"
-                min="0"
-                max="59"
-                value={Math.floor(settings.duration / 60)}
-                onChange={(e) => {
-                  const minutes = parseInt(e.target.value) || 0;
-                  const seconds = settings.duration % 60;
-                  updateSettings({ duration: minutes * 60 + seconds });
-                }}
+                value={minutes}
+                onChange={handleMinutesChange}
+                min={0}
+                max={59}
                 disabled={isRunning}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="rep-seconds">Seconds</Label>
-              <Input
+              <EditableNumberInput
                 id="rep-seconds"
-                type="number"
-                min="0"
-                max="59"
-                value={settings.duration % 60}
-                onChange={(e) => {
-                  const minutes = Math.floor(settings.duration / 60);
-                  const seconds = parseInt(e.target.value) || 0;
-                  updateSettings({ duration: minutes * 60 + seconds });
-                }}
+                value={seconds}
+                onChange={handleSecondsChange}
+                min={0}
+                max={59}
                 disabled={isRunning}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="repeat-count">Repeat Count</Label>
-              <Input
+              <EditableNumberInput
                 id="repeat-count"
-                type="number"
-                min="1"
-                max="100"
                 value={settings.repeatCount}
-                onChange={(e) => updateSettings({ repeatCount: parseInt(e.target.value) || 1 })}
+                onChange={handleRepeatCountChange}
+                min={1}
+                max={100}
                 disabled={isRunning || settings.infinite}
               />
             </div>
@@ -125,6 +130,25 @@ export function RepeatingTimer() {
               Infinite repeats
             </Label>
           </div>
+        </div>
+
+        <div className="flex justify-center gap-8 pt-4">
+          <RotaryDial
+            value={Math.max(1, minutes)}
+            onChange={handleMinutesChange}
+            min={1}
+            max={60}
+            disabled={isRunning}
+            label="Minutes"
+          />
+          <RotaryDial
+            value={Math.max(1, seconds)}
+            onChange={handleSecondsChange}
+            min={1}
+            max={60}
+            disabled={isRunning}
+            label="Seconds"
+          />
         </div>
       </CardContent>
     </Card>

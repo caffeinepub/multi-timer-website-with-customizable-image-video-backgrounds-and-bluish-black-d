@@ -1,13 +1,30 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import { useCountdown } from './useCountdown';
 import { formatTime } from '../shared/timeFormat';
+import { EditableNumberInput } from '../shared/EditableNumberInput';
+import { RotaryDial } from '../shared/RotaryDial';
 
 export function CountdownTimer() {
   const { timeLeft, isRunning, duration, setDuration, start, pause, reset } = useCountdown();
+
+  const hours = Math.floor(duration / 3600);
+  const minutes = Math.floor((duration % 3600) / 60);
+  const seconds = duration % 60;
+
+  const handleHoursChange = (newHours: number) => {
+    setDuration(newHours * 3600 + minutes * 60 + seconds);
+  };
+
+  const handleMinutesChange = (newMinutes: number) => {
+    setDuration(hours * 3600 + newMinutes * 60 + seconds);
+  };
+
+  const handleSecondsChange = (newSeconds: number) => {
+    setDuration(hours * 3600 + minutes * 60 + newSeconds);
+  };
 
   return (
     <Card className="bg-card/80 backdrop-blur-xl border-border/50">
@@ -43,55 +60,56 @@ export function CountdownTimer() {
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="space-y-2">
             <Label htmlFor="hours">Hours</Label>
-            <Input
+            <EditableNumberInput
               id="hours"
-              type="number"
-              min="0"
-              max="23"
-              value={Math.floor(duration / 3600)}
-              onChange={(e) => {
-                const hours = parseInt(e.target.value) || 0;
-                const minutes = Math.floor((duration % 3600) / 60);
-                const seconds = duration % 60;
-                setDuration(hours * 3600 + minutes * 60 + seconds);
-              }}
+              value={hours}
+              onChange={handleHoursChange}
+              min={0}
+              max={23}
               disabled={isRunning}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="minutes">Minutes</Label>
-            <Input
+            <EditableNumberInput
               id="minutes"
-              type="number"
-              min="0"
-              max="59"
-              value={Math.floor((duration % 3600) / 60)}
-              onChange={(e) => {
-                const hours = Math.floor(duration / 3600);
-                const minutes = parseInt(e.target.value) || 0;
-                const seconds = duration % 60;
-                setDuration(hours * 3600 + minutes * 60 + seconds);
-              }}
+              value={minutes}
+              onChange={handleMinutesChange}
+              min={0}
+              max={59}
               disabled={isRunning}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="seconds">Seconds</Label>
-            <Input
+            <EditableNumberInput
               id="seconds"
-              type="number"
-              min="0"
-              max="59"
-              value={duration % 60}
-              onChange={(e) => {
-                const hours = Math.floor(duration / 3600);
-                const minutes = Math.floor((duration % 3600) / 60);
-                const seconds = parseInt(e.target.value) || 0;
-                setDuration(hours * 3600 + minutes * 60 + seconds);
-              }}
+              value={seconds}
+              onChange={handleSecondsChange}
+              min={0}
+              max={59}
               disabled={isRunning}
             />
           </div>
+        </div>
+
+        <div className="flex justify-center gap-8 pt-4">
+          <RotaryDial
+            value={Math.max(1, minutes)}
+            onChange={handleMinutesChange}
+            min={1}
+            max={60}
+            disabled={isRunning}
+            label="Minutes"
+          />
+          <RotaryDial
+            value={Math.max(1, seconds)}
+            onChange={handleSecondsChange}
+            min={1}
+            max={60}
+            disabled={isRunning}
+            label="Seconds"
+          />
         </div>
       </CardContent>
     </Card>

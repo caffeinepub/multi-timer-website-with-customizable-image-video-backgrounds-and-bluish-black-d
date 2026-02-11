@@ -5,58 +5,58 @@
 @layer base {
     :root {
         --radius: 0.75rem;
-        /* Bluish-black default theme */
-        --background: 0.15 0.08 250;
-        --foreground: 0.95 0.02 250;
-        --card: 0.20 0.08 250;
-        --card-foreground: 0.95 0.02 250;
-        --popover: 0.18 0.08 250;
-        --popover-foreground: 0.95 0.02 250;
-        --primary: 0.60 0.20 240;
-        --primary-foreground: 0.98 0.02 250;
-        --secondary: 0.30 0.08 250;
-        --secondary-foreground: 0.95 0.02 250;
-        --muted: 0.25 0.06 250;
-        --muted-foreground: 0.65 0.04 250;
-        --accent: 0.50 0.18 220;
-        --accent-foreground: 0.98 0.02 250;
+        /* Pastel Pink theme */
+        --background: 0.97 0.02 340;
+        --foreground: 0.25 0.08 340;
+        --card: 0.95 0.03 340;
+        --card-foreground: 0.25 0.08 340;
+        --popover: 0.96 0.03 340;
+        --popover-foreground: 0.25 0.08 340;
+        --primary: 0.85 0.10 340;
+        --primary-foreground: 0.20 0.08 340;
+        --secondary: 0.88 0.08 345;
+        --secondary-foreground: 0.20 0.08 340;
+        --muted: 0.92 0.04 340;
+        --muted-foreground: 0.50 0.06 340;
+        --accent: 0.86 0.09 335;
+        --accent-foreground: 0.20 0.08 340;
         --destructive: 0.60 0.22 15;
-        --destructive-foreground: 0.98 0.02 250;
-        --border: 0.30 0.08 250;
-        --input: 0.30 0.08 250;
-        --ring: 0.60 0.20 240;
-        --chart-1: 0.60 0.20 240;
-        --chart-2: 0.55 0.18 200;
-        --chart-3: 0.65 0.22 280;
-        --chart-4: 0.50 0.16 180;
-        --chart-5: 0.70 0.24 260;
+        --destructive-foreground: 0.98 0.02 340;
+        --border: 0.90 0.05 340;
+        --input: 0.90 0.05 340;
+        --ring: 0.85 0.10 340;
+        --chart-1: 0.85 0.10 340;
+        --chart-2: 0.86 0.09 335;
+        --chart-3: 0.87 0.11 345;
+        --chart-4: 0.84 0.08 330;
+        --chart-5: 0.88 0.12 350;
     }
 
     .dark {
-        --background: 0.12 0.08 250;
-        --foreground: 0.95 0.02 250;
-        --card: 0.18 0.08 250;
-        --card-foreground: 0.95 0.02 250;
-        --popover: 0.16 0.08 250;
-        --popover-foreground: 0.95 0.02 250;
-        --primary: 0.65 0.22 240;
-        --primary-foreground: 0.98 0.02 250;
-        --secondary: 0.25 0.08 250;
-        --secondary-foreground: 0.95 0.02 250;
-        --muted: 0.22 0.06 250;
-        --muted-foreground: 0.60 0.04 250;
-        --accent: 0.55 0.20 220;
-        --accent-foreground: 0.98 0.02 250;
+        --background: 0.15 0.08 340;
+        --foreground: 0.95 0.02 340;
+        --card: 0.20 0.08 340;
+        --card-foreground: 0.95 0.02 340;
+        --popover: 0.18 0.08 340;
+        --popover-foreground: 0.95 0.02 340;
+        --primary: 0.75 0.15 340;
+        --primary-foreground: 0.15 0.08 340;
+        --secondary: 0.70 0.13 345;
+        --secondary-foreground: 0.15 0.08 340;
+        --muted: 0.25 0.06 340;
+        --muted-foreground: 0.65 0.04 340;
+        --accent: 0.72 0.14 335;
+        --accent-foreground: 0.15 0.08 340;
         --destructive: 0.65 0.24 15;
-        --destructive-foreground: 0.98 0.02 250;
-        --border: 0.25 0.08 250;
-        --input: 0.25 0.08 250;
-        --ring: 0.65 0.22 240;
-        --chart-1: 0.65 0.22 240;
-        --chart-2: 0.60 0.20 200;
-        --chart-3: 0.70 0.24 280;
-        --chart-4: 0.55 0.18 180;
-        --chart-5: 0.75 0.26 260;
+        --destructive-foreground: 0.98 0.02 340;
+        --border: 0.28 0.08 340;
+        --input: 0.28 0.08 340;
+        --ring: 0.75 0.15 340;
+        --chart-1: 0.75 0.15 340;
+        --chart-2: 0.72 0.14 335;
+        --chart-3: 0.77 0.16 345;
+        --chart-4: 0.70 0.12 330;
+        --chart-5: 0.78 0.17 350;
     }
 
     * {
@@ -73,5 +73,88 @@
         font-variant-numeric: tabular-nums;
         letter-spacing: 0.05em;
         text-shadow: 0 2px 4px oklch(var(--background) / 0.9);
+    }
+    
+    .youtube-background-wrapper {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .youtube-background-wrapper > div,
+    .youtube-background-wrapper iframe {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+    }
+
+    /* Rotary Dial Styles */
+    .rotary-dial {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: oklch(var(--card));
+        border: 3px solid oklch(var(--primary));
+        cursor: grab;
+        user-select: none;
+        touch-action: none;
+        transition: transform 0.05s ease-out, box-shadow 0.2s ease;
+        box-shadow: 0 4px 12px oklch(var(--primary) / 0.2);
+    }
+
+    .rotary-dial:hover:not(.rotary-dial-disabled) {
+        box-shadow: 0 6px 16px oklch(var(--primary) / 0.3);
+    }
+
+    .rotary-dial:active:not(.rotary-dial-disabled),
+    .rotary-dial-dragging {
+        cursor: grabbing;
+        box-shadow: 0 2px 8px oklch(var(--primary) / 0.4);
+    }
+
+    .rotary-dial-disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        border-color: oklch(var(--muted));
+        box-shadow: none;
+    }
+
+    .rotary-dial-indicator {
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 20px;
+        background: oklch(var(--primary));
+        border-radius: 2px;
+    }
+
+    .rotary-dial-disabled .rotary-dial-indicator {
+        background: oklch(var(--muted));
+    }
+
+    .rotary-dial-center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: oklch(var(--background));
+        border: 2px solid oklch(var(--border));
+        color: oklch(var(--foreground));
     }
 }

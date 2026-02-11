@@ -1,52 +1,61 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Make background rendering clear & bright by removing global overlay and eliminating unintended visual filters",
+  "title": "Auto-recover from broken persisted backgrounds and prevent boot-time error overlay loops",
   "requirements": [
     {
-      "id": "REQ-29",
-      "summary": "Remove/reduce the full-screen darkening/blur overlay over active backgrounds while keeping timer UI readable via existing UI surfaces and keeping the error screen distinct.",
+      "id": "REQ-1",
+      "summary": "On startup, validate any persisted background config and automatically clear it when the media cannot be loaded so the app renders normally.",
       "acceptanceCriteria": [
-        "When any background is active (image, video, or YouTube) and no error is displayed, the background is not visibly dimmed or blurred by a global overlay (i.e., it appears essentially as bright/clear as the source).",
-        "Timer UI remains readable on top of the background using existing UI surfaces (e.g., cards/header/footer backgrounds) without re-introducing a noticeable full-screen dark overlay.",
-        "When a background fails and the error screen is shown, the error screen remains readable and visually distinct from the background."
+        "If localStorage contains a backgroundUrl/mediaType for an image or video that fails to load, the app clears the saved background and does not show the full-screen background error overlay on page load.",
+        "If localStorage contains a YouTube background videoId that fails to initialize/load, the app clears the saved background and does not remain stuck in an error overlay on refresh.",
+        "Clearing the broken persisted background removes the relevant persisted background entry so refreshing the page does not reintroduce the error."
       ],
       "file_operations": [
         {
+          "path": "frontend/src/features/backgrounds/useBackground.ts",
+          "operation": "modify",
+          "description": "Add a boot-time validation pass for persisted background configuration: treat persisted blob: URLs as invalid, probe persisted image/video URLs (using existing probeImage/probeVideo helpers) and automatically clear only the background fields (backgroundUrl/mediaType/youtubeVideoId) when validation fails while retaining brightness/youtubeVolume defaults. Ensure any legacy persisted error value does not cause the app to start in an error state."
+        },
+        {
           "path": "frontend/src/features/backgrounds/BackgroundStage.tsx",
           "operation": "modify",
-          "description": "Conditionally remove/disable the full-screen overlay layer when an active background (image/video/YouTube) is present and no error is being displayed; keep the error screen presentation readable and clearly separated from the background without relying on a global dimming overlay."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Adjust global overlay styling tokens/utilities so the app no longer applies noticeable full-screen dimming/blur over active backgrounds (e.g., drive overlay opacity effectively to zero and avoid blur in normal background viewing) while preserving readability via existing card/surface styling."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Slightly strengthen existing UI surface readability (e.g., header/footer/tabs/visibility bar card translucency/backdrop settings) so timer controls remain readable over brighter backgrounds without reintroducing a full-screen overlay."
+          "description": "When a YouTube background reports a fatal load/initialize error (not an autoplay/interaction warning), automatically clear the background configuration so a refresh does not re-enter a blocking overlay state; keep runtime error display for the current session as needed."
         }
       ]
     },
     {
-      "id": "REQ-30",
-      "summary": "Ensure background media elements (image/video/YouTube) render without unintended opacity reductions, CSS filters, or layering artifacts so they match original media clarity.",
+      "id": "REQ-2",
+      "summary": "Adjust background persistence so runtime load errors don’t get saved and cause repeated error overlays after refresh, while keeping brightness/YouTube volume persistence.",
       "acceptanceCriteria": [
-        "For video backgrounds, the `<video>` element renders at full opacity with no dimming filter applied, and fills the viewport (object-cover) without additional softening effects.",
-        "For image backgrounds, the rendered background image appears at full opacity with no dimming filter applied, and fills the viewport (cover/center) without additional softening effects.",
-        "For YouTube backgrounds, the iframe background appears without additional app-side dimming/blur layers affecting it (beyond what the YouTube player itself may do)."
+        "Refreshing the page after a runtime background load error does not automatically restore the error overlay unless the user still has an active, valid background configured.",
+        "Background settings (brightness, YouTube volume) continue to persist as before."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/backgrounds/useBackground.ts",
+          "operation": "modify",
+          "description": "Refactor localStorage persistence to store only durable configuration (backgroundUrl/mediaType/youtubeVideoId/brightness/youtubeVolume) and explicitly exclude transient runtime fields (error/isProbing). Ensure clearing or invalidation sets backgroundUrl/mediaType/youtubeVideoId to null in persisted config (so it won’t reapply on refresh) while keeping brightness/youtubeVolume persisted."
+        },
+        {
+          "path": "frontend/src/features/backgrounds/BackgroundProvider.tsx",
+          "operation": "modify",
+          "description": "Confirm provider wiring still correctly revokes prior blob URLs after the persistence refactor (since blob URLs should no longer be restored on boot), and that context continues to expose clearBackground and setRuntimeError for recovery flows."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Provide an always-available recovery action inside the background error overlay to clear the current background and dismiss the error state.",
+      "acceptanceCriteria": [
+        "When the background error overlay is shown, it includes a visible control labeled in English (e.g., \"Clear background\") that clears the background and removes the overlay immediately.",
+        "The recovery action works for image, video, and YouTube background error states."
       ],
       "file_operations": [
         {
           "path": "frontend/src/features/backgrounds/BackgroundStage.tsx",
           "operation": "modify",
-          "description": "Audit and enforce that the image/video/YouTube background layers render with no app-side opacity reductions or CSS filter/blur effects; ensure layering/z-index does not introduce any unintended dimming/softening artifacts over the media."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Audit and remove/neutralize any global CSS utilities affecting background media clarity (e.g., filter/opacity/blur on overlay utilities) so background layers render at full clarity and brightness."
+          "description": "Update the error overlay UI to include a clear recovery action: use the shadcn-ui Button component to render a visible \"Clear background\" control that calls clearBackground() and clears any runtime error so the overlay dismisses immediately. Verify the component's usage instructions before implementing."
         }
       ]
     }

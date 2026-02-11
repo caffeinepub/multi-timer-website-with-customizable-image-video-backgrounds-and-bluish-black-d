@@ -1,11 +1,12 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Play, Pause, RotateCcw, SkipForward } from 'lucide-react';
 import { usePomodoro } from './usePomodoro';
 import { formatTime } from '../shared/timeFormat';
 import { Badge } from '@/components/ui/badge';
+import { EditableNumberInput } from '../shared/EditableNumberInput';
+import { RotaryDial } from '../shared/RotaryDial';
 
 export function PomodoroTimer() {
   const {
@@ -25,6 +26,22 @@ export function PomodoroTimer() {
     work: 'Work',
     shortBreak: 'Short Break',
     longBreak: 'Long Break',
+  };
+
+  const handleWorkDurationChange = (newValue: number) => {
+    updateSettings({ workDuration: newValue });
+  };
+
+  const handleShortBreakChange = (newValue: number) => {
+    updateSettings({ shortBreakDuration: newValue });
+  };
+
+  const handleLongBreakChange = (newValue: number) => {
+    updateSettings({ longBreakDuration: newValue });
+  };
+
+  const handleLongBreakIntervalChange = (newValue: number) => {
+    updateSettings({ longBreakInterval: newValue });
   };
 
   return (
@@ -75,52 +92,67 @@ export function PomodoroTimer() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="work-duration">Work Duration (min)</Label>
-            <Input
+            <EditableNumberInput
               id="work-duration"
-              type="number"
-              min="1"
-              max="60"
               value={settings.workDuration}
-              onChange={(e) => updateSettings({ workDuration: parseInt(e.target.value) || 25 })}
+              onChange={handleWorkDurationChange}
+              min={1}
+              max={60}
               disabled={isRunning}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="short-break">Short Break (min)</Label>
-            <Input
+            <EditableNumberInput
               id="short-break"
-              type="number"
-              min="1"
-              max="30"
               value={settings.shortBreakDuration}
-              onChange={(e) => updateSettings({ shortBreakDuration: parseInt(e.target.value) || 5 })}
+              onChange={handleShortBreakChange}
+              min={1}
+              max={30}
               disabled={isRunning}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="long-break">Long Break (min)</Label>
-            <Input
+            <EditableNumberInput
               id="long-break"
-              type="number"
-              min="1"
-              max="60"
               value={settings.longBreakDuration}
-              onChange={(e) => updateSettings({ longBreakDuration: parseInt(e.target.value) || 15 })}
+              onChange={handleLongBreakChange}
+              min={1}
+              max={60}
               disabled={isRunning}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="long-break-interval">Long Break After</Label>
-            <Input
+            <EditableNumberInput
               id="long-break-interval"
-              type="number"
-              min="1"
-              max="10"
               value={settings.longBreakInterval}
-              onChange={(e) => updateSettings({ longBreakInterval: parseInt(e.target.value) || 4 })}
+              onChange={handleLongBreakIntervalChange}
+              min={1}
+              max={10}
               disabled={isRunning}
             />
           </div>
+        </div>
+
+        <div className="flex justify-center gap-8 pt-4">
+          <RotaryDial
+            value={settings.workDuration}
+            onChange={handleWorkDurationChange}
+            min={1}
+            max={60}
+            disabled={isRunning}
+            label="Work (min)"
+          />
+          <RotaryDial
+            value={settings.shortBreakDuration}
+            onChange={handleShortBreakChange}
+            min={1}
+            max={30}
+            disabled={isRunning}
+            label="Short Break (min)"
+          />
         </div>
       </CardContent>
     </Card>

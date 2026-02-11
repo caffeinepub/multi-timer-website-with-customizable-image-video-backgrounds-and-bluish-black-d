@@ -1,53 +1,73 @@
 {
   "kind": "build_request",
-  "title": "Make background video/image/YouTube rendering максимально clear & bright (match original media)",
-  "priority": "normal",
+  "title": "Auto-clear broken persisted background so the app loads without the error overlay",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-29",
-      "text": "Remove (or reduce to effectively zero) the global darkening/blur overlay that is rendered on top of active backgrounds in `BackgroundStage` so that video/image/YouTube backgrounds look as close to the original source as possible (clear and bright).",
+      "id": "REQ-1",
+      "text": "When the app starts, detect if a persisted background in localStorage cannot be loaded (image/video URL unreachable/unsupported) and automatically clear the background so the app renders normally without a blocking background error state.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "recent-messages"
         ],
         "quotes": [
-          "make it as clear as possible. I want it to look like the original video, clear,bright etc"
+          "App currently errors due to missing background image URL; needs background cleared/reset so the app loads.",
+          "duh",
+          "yes"
         ]
       },
       "acceptanceCriteria": [
-        "When any background is active (image, video, or YouTube) and no error is displayed, the background is not visibly dimmed or blurred by a global overlay (i.e., it appears essentially as bright/clear as the source).",
-        "Timer UI remains readable on top of the background using existing UI surfaces (e.g., cards/header/footer backgrounds) without re-introducing a noticeable full-screen dark overlay.",
-        "When a background fails and the error screen is shown, the error screen remains readable and visually distinct from the background."
+        "If localStorage contains a backgroundUrl/mediaType for an image or video that fails to load, the app clears the saved background and does not show the full-screen background error overlay on page load.",
+        "If localStorage contains a YouTube background videoId that fails to initialize/load, the app clears the saved background and does not remain stuck in an error overlay on refresh.",
+        "Clearing the broken persisted background removes the relevant persisted background entry so refreshing the page does not reintroduce the error."
       ]
     },
     {
-      "id": "REQ-30",
-      "text": "Ensure the background media elements themselves are not being unintentionally visually degraded (no CSS filters, opacity reductions, or layering artifacts) so that the displayed background matches the original media’s clarity.",
+      "id": "REQ-2",
+      "text": "Update background persistence logic so transient runtime errors from BackgroundStage (e.g., image/video load failures) do not get persisted in a way that makes the app repeatedly boot into an error state after refresh.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "recent-messages"
         ],
         "quotes": [
-          "make it as clear as possible. I want it to look like the original video, clear,bright etc"
+          "The error shown in your image comes directly from the app’s code. It means the background image URL stored in your app is pointing to something that no longer exists.",
+          "Quick fix: I can reset your background to blank so the app loads normally."
         ]
       },
       "acceptanceCriteria": [
-        "For video backgrounds, the `<video>` element renders at full opacity with no dimming filter applied, and fills the viewport (object-cover) without additional softening effects.",
-        "For image backgrounds, the rendered background image appears at full opacity with no dimming filter applied, and fills the viewport (cover/center) without additional softening effects.",
-        "For YouTube backgrounds, the iframe background appears without additional app-side dimming/blur layers affecting it (beyond what the YouTube player itself may do)."
+        "Refreshing the page after a runtime background load error does not automatically restore the error overlay unless the user still has an active, valid background configured.",
+        "Background settings (brightness, YouTube volume) continue to persist as before."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Add an in-app recovery action that is accessible even when the background error overlay is visible: provide a clear button in the overlay to reset/clear the current background and dismiss the error state.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "Want me to clear the background image now?",
+          "yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When the background error overlay is shown, it includes a visible control labeled in English (e.g., \"Clear background\") that clears the background and removes the overlay immediately.",
+        "The recovery action works for image, video, and YouTube background error states."
       ]
     }
   ],
   "constraints": [
-    "Frontend immutable paths must not be edited: `frontend/src/hooks/useInternetIdentity.ts`, `frontend/src/hooks/useInternetIdentity.tsx`, `frontend/src/hooks/useActor.ts`, `frontend/src/main.tsx`, `frontend/src/components/ui`.",
-    "Keep all changes within the existing React + Tailwind structure; do not add new backend services or external dependencies."
+    "Do not edit files under frontend/src/components/ui (shadcn components); compose them instead.",
+    "Do not modify immutable hook files listed in SYSTEM_CONTEXT (e.g., frontend/src/hooks/useInternetIdentity.ts[x], frontend/src/hooks/useActor.ts, frontend/src/main.tsx).",
+    "Backend remains single-actor; no new backend features are required for this fix."
   ],
   "nonGoals": [
-    "Do not add new background features (e.g., new background sources, advanced color grading, HDR, or per-background brightness controls) unless required to achieve the requested clarity.",
-    "Do not change timer functionality or mode behavior beyond what is necessary to keep the UI readable after making backgrounds clearer.",
-    "Do not modify backend code (Motoko) for this request."
+    "Fixing the deployment/version rollback behavior (Version 14 vs Version 18) is out of scope for this request.",
+    "Adding new background sources/providers beyond the existing file/URL/YouTube options is out of scope."
   ],
   "imageRequirements": {
     "required": [],

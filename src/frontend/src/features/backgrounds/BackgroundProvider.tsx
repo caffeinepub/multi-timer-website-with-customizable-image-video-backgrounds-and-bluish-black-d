@@ -5,11 +5,15 @@ interface BackgroundContextValue {
   backgroundUrl: string | null;
   mediaType: 'image' | 'video' | 'youtube' | null;
   youtubeVideoId?: string | null;
+  youtubeVolume?: number;
+  brightness?: number;
   error: string | null;
   isProbing?: boolean;
   setBackgroundFromFile: (file: File) => void;
   setBackgroundFromUrl: (url: string) => Promise<void>;
   setBackgroundFromYouTubeUrl: (url: string) => void;
+  setYouTubeVolume: (volume: number) => void;
+  setBrightness: (brightness: number) => void;
   clearBackground: () => void;
   setRuntimeError: (error: string | null) => void;
 }

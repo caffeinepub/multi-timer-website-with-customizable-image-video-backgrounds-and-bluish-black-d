@@ -2,12 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-or-reduce-to-effectively-zero-the-global-darkening-blur-overlay-that-is-rendered-on-top-of-active-backgrounds-in-backgroundstage-so-that-video-image-youtube-backgrounds-look-as-close-to-the-original-source-as-possible-clear-and-bright",
-      "featureTitle": "Remove (or reduce to effectively zero) the global darkening/blur overlay that is rendered on top of active backgrounds in `BackgroundStage` so that video/image/YouTube backgrounds look as close to the original source as possible (clear and bright).",
+      "featureId": "feature-when-the-app-starts-detect-if-a-persisted-background-in-localstorage-cannot-be-loaded-image-video-url-unreachable-unsupported-and-automatically-clear-the-background-so-the-app-renders-normally-without-a-blocking-background-error-state",
+      "featureTitle": "When the app starts, detect if a persisted background in localStorage cannot be loaded (image/video URL unreachable/unsupported) and automatically clear the background so the app renders normally without a blocking background error state.",
       "files": [
-        "frontend/src/App.tsx",
         "frontend/src/features/backgrounds/BackgroundStage.tsx",
-        "frontend/src/index.css"
+        "frontend/src/features/backgrounds/useBackground.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -17,16 +16,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-29"
+        "REQ-1"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-ensure-the-background-media-elements-themselves-are-not-being-unintentionally-visually-degraded-no-css-filters-opacity-reductions-or-layering-artifacts-so-that-the-displayed-background-matches-the-original-media-s-clarity",
-      "featureTitle": "Ensure the background media elements themselves are not being unintentionally visually degraded (no CSS filters, opacity reductions, or layering artifacts) so that the displayed background matches the original media’s clarity.",
+      "featureId": "feature-update-background-persistence-logic-so-transient-runtime-errors-from-backgroundstage-e-g-image-video-load-failures-do-not-get-persisted-in-a-way-that-makes-the-app-repeatedly-boot-into-an-error-state-after-refresh",
+      "featureTitle": "Update background persistence logic so transient runtime errors from BackgroundStage (e.g., image/video load failures) do not get persisted in a way that makes the app repeatedly boot into an error state after refresh.",
       "files": [
-        "frontend/src/features/backgrounds/BackgroundStage.tsx",
-        "frontend/src/index.css"
+        "frontend/src/features/backgrounds/useBackground.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -36,7 +34,25 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-30"
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-an-in-app-recovery-action-that-is-accessible-even-when-the-background-error-overlay-is-visible-provide-a-clear-button-in-the-overlay-to-reset-clear-the-current-background-and-dismiss-the-error-state",
+      "featureTitle": "Add an in-app recovery action that is accessible even when the background error overlay is visible: provide a clear button in the overlay to reset/clear the current background and dismiss the error state.",
+      "files": [
+        "frontend/src/features/backgrounds/BackgroundStage.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
       ],
       "confidence": "high"
     }

@@ -13,11 +13,11 @@ import { IntervalTimer } from '@/features/timers/interval/IntervalTimer';
 import { RepeatingTimer } from '@/features/timers/repeating/RepeatingTimer';
 import { useTimerVisibility } from '@/features/timers/visibility/useTimerVisibility';
 import { TimerVisibilityBar } from '@/features/timers/visibility/TimerVisibilityBar';
-import { Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Tabs as SettingsTabs, TabsContent as SettingsTabsContent, TabsList as SettingsTabsList, TabsTrigger as SettingsTabsTrigger } from '@/components/ui/tabs';
 import { PublishShareSheet } from '@/features/publishShare/PublishShareSheet';
+import { Settings } from 'lucide-react';
 
 export type TimerMode = 'pomodoro' | 'stopwatch' | 'countdown' | 'interval' | 'repeating';
 
@@ -36,12 +36,12 @@ function AppContent() {
       <div className="relative z-10 flex min-h-screen flex-col pb-12">
         <header className="border-b border-border/50 bg-card/85 backdrop-blur-xl">
           <div className="container mx-auto flex items-center justify-between px-4 py-4">
-            <h1 className="text-2xl font-bold tracking-tight">MultiTimer</h1>
+            <h1 className="text-xl font-semibold text-foreground">MultiTimer</h1>
             <div className="flex items-center gap-2">
               <PublishShareSheet />
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="outline" size="icon" className="bg-card/95 backdrop-blur-sm">
+                  <Button variant="outline" size="icon" className="bg-card/95 backdrop-blur-sm" aria-label="Settings">
                     <Settings className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
@@ -119,20 +119,6 @@ function AppContent() {
             </Tabs>
           </div>
         </main>
-
-        <footer className="border-t border-border/50 bg-card/85 py-4 backdrop-blur-xl">
-          <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-            © 2026. Built with love using{' '}
-            <a
-              href="https://caffeine.ai"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-foreground hover:underline"
-            >
-              caffeine.ai
-            </a>
-          </div>
-        </footer>
       </div>
       
       <TimerVisibilityBar isVisible={isTimerVisible} onToggle={toggleVisibility} />

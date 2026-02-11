@@ -1,341 +1,43 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 19,
-  "summary": "Website with multiple timer modes and customizable backgrounds (images/videos/YouTube), now also requesting support for streaming music links (Spotify/Apple Music/any pasted link) with volume control, a minimal UI that can hide/toggle the timer via a bottom bar, and the Quicksand font.",
+  "projectStateVersion": 3,
+  "summary": "New project",
   "architectural_notes": [
-    "Current background URL support expects direct media file links (e.g., .mp4/.webm/.jpg); add an alternate path for YouTube watch URLs using an embedded player/iframe and handle autoplay/mute restrictions.",
-    "Supporting Spotify/Apple Music/\"any link\" audio will likely require embed-based playback (not direct media URLs) and must handle browser autoplay/user-gesture restrictions and cross-origin limitations.",
-    "User request: maximize background media clarity/brightness to look as close to the original video as possible; further reduce/disable any darkening/blur overlays and ensure UI readability via alternative methods (e.g., UI scrim/shadows only when timer is shown)."
+    "App can fail to load if the configured background image URL is missing/unreachable (BackgroundStage errors when fetch fails)."
   ],
   "known_issues": [
-    "Error occurs when pasting an image URL or direct video link into the background settings; background URL input/preview handling needs fixing.",
-    "Image upload still not working (user cannot upload an image).",
-    "YouTube background still not working (user cannot set a YouTube video as background)."
+    "Deployment/version switch is still serving Version 18 instead of requested Version 14.",
+    "App currently errors due to missing background image URL; needs background cleared/reset so the app loads."
   ],
-  "isFixRequest": false,
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-create-a-single-page-timer-app-ui-that-lets-the-user-switch-between-these-timer-modes-pomodoro-stopwatch-interval-timer-countdown-timer-and-repeating-timer",
-      "title": "Create a single-page timer app UI that lets the user switch between these timer modes: Pomodoro, Stopwatch, Interval Timer, Countdown Timer, and Repeating Timer.",
+      "id": "feature-when-the-app-starts-detect-if-a-persisted-background-in-localstorage-cannot-be-loaded-image-video-url-unreachable-unsupported-and-automatically-clear-the-background-so-the-app-renders-normally-without-a-blocking-background-error-state",
+      "title": "When the app starts, detect if a persisted background in localStorage cannot be loaded (image/video URL unreachable/unsupported) and automatically clear the background so the app renders normally without a blocking background error state.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-pomodoro-mode-with-configurable-durations-work-length-short-break-length-long-break-length-and-long-break-frequency-and-controls-to-start-pause-skip-and-reset-the-current-segment",
-      "title": "Implement Pomodoro mode with configurable durations (work length, short break length, long break length, and long-break frequency) and controls to start/pause, skip, and reset the current segment.",
+      "id": "feature-update-background-persistence-logic-so-transient-runtime-errors-from-backgroundstage-e-g-image-video-load-failures-do-not-get-persisted-in-a-way-that-makes-the-app-repeatedly-boot-into-an-error-state-after-refresh",
+      "title": "Update background persistence logic so transient runtime errors from BackgroundStage (e.g., image/video load failures) do not get persisted in a way that makes the app repeatedly boot into an error state after refresh.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-stopwatch-mode-with-start-pause-reset-and-lap-recording",
-      "title": "Implement Stopwatch mode with start/pause, reset, and lap recording.",
+      "id": "feature-add-an-in-app-recovery-action-that-is-accessible-even-when-the-background-error-overlay-is-visible-provide-a-clear-button-in-the-overlay-to-reset-clear-the-current-background-and-dismiss-the-error-state",
+      "title": "Add an in-app recovery action that is accessible even when the background error overlay is visible: provide a clear button in the overlay to reset/clear the current background and dismiss the error state.",
       "reqIds": [
         "REQ-3"
       ],
       "version": 1
-    },
-    {
-      "id": "feature-implement-countdown-mode-where-the-user-sets-a-target-duration-and-can-start-pause-and-reset-the-countdown",
-      "title": "Implement Countdown mode where the user sets a target duration and can start/pause and reset the countdown.",
-      "reqIds": [
-        "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-interval-timer-mode-where-the-user-defines-a-set-of-repeating-intervals-e-g-work-rest-and-number-of-rounds-with-controls-to-start-pause-skip-interval-and-reset",
-      "title": "Implement Interval Timer mode where the user defines a set of repeating intervals (e.g., work/rest) and number of rounds, with controls to start/pause, skip interval, and reset.",
-      "reqIds": [
-        "REQ-5"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-repeating-timer-mode-where-the-user-sets-a-duration-and-an-optional-repeat-count-or-infinite-repeat-and-the-timer-automatically-restarts-each-time-it-reaches-zero",
-      "title": "Implement Repeating Timer mode where the user sets a duration and an optional repeat count (or infinite repeat) and the timer automatically restarts each time it reaches zero.",
-      "reqIds": [
-        "REQ-6"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-background-customization-that-allows-the-user-to-set-the-site-background-using-either-uploaded-local-files-or-a-direct-url-supporting-both-images-and-videos",
-      "title": "Add background customization that allows the user to set the site background using either uploaded local files or a direct URL, supporting both images and videos.",
-      "reqIds": [
-        "REQ-7"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-do-not-impose-artificial-file-type-restrictions-on-background-uploads-e-g-do-not-restrict-to-jpeg-accept-any-browser-supported-image-or-video-formats-and-provide-a-clear-error-only-when-the-browser-cannot-preview-play-the-selected-media",
-      "title": "Do not impose artificial file-type restrictions on background uploads (e.g., do not restrict to JPEG); accept any browser-supported image or video formats and provide a clear error only when the browser cannot preview/play the selected media.",
-      "reqIds": [
-        "REQ-8"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-a-default-visual-theme-for-the-app-before-any-user-background-is-chosen-using-a-bluish-black-look-ensuring-readability-of-timer-controls-on-top-of-the-background",
-      "title": "Create a default visual theme for the app (before any user background is chosen) using a “bluish black” look, ensuring readability of timer controls on top of the background.",
-      "reqIds": [
-        "REQ-9"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-new-youtube-background-option-in-the-background-settings-ui-that-lets-the-user-paste-a-youtube-url-watch-url-youtu-be-short-url-or-embed-url-and-set-it-as-the-app-background",
-      "title": "Add a new YouTube background option in the Background Settings UI that lets the user paste a YouTube URL (watch URL, youtu.be short URL, or embed URL) and set it as the app background.",
-      "reqIds": [
-        "REQ-10"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-extend-the-background-state-model-to-support-a-third-media-type-for-youtube-embeds-and-persist-it-in-the-existing-localstorage-key-so-the-youtube-background-survives-page-refreshes",
-      "title": "Extend the background state model to support a third media type for YouTube embeds, and persist it in the existing localStorage key so the YouTube background survives page refreshes.",
-      "reqIds": [
-        "REQ-11"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-render-youtube-backgrounds-in-the-background-stage-using-an-embedded-player-iframe-that-behaves-like-a-background-fills-the-viewport-stays-behind-the-app-ui-and-does-not-show-player-controls",
-      "title": "Render YouTube backgrounds in the background stage using an embedded player (iframe) that behaves like a background: fills the viewport, stays behind the app UI, and does not show player controls.",
-      "reqIds": [
-        "REQ-12"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-robust-youtube-url-parsing-and-validation-that-extracts-the-video-id-from-common-url-formats-and-rejects-unsupported-cases-with-clear-errors",
-      "title": "Implement robust YouTube URL parsing and validation that extracts the video id from common URL formats and rejects unsupported cases with clear errors.",
-      "reqIds": [
-        "REQ-13"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-user-facing-publish-share-entry-point-in-the-app-header-that-helps-the-user-publish-the-site-and-get-a-link-without-relying-on-the-caffeine-preview-url-bar-include-1-a-button-to-copy-the-current-app-url-to-clipboard-2-a-button-to-open-the-current-app-url-in-a-new-browser-tab-and-3-short-instructions-explaining-how-to-publish-in-caffeine-by-switching-to-the-live-tab-and-using-the-go-live-action-if-the-live-panel-shows-your-live-site-will-appear-here-once-you-go-live",
-      "title": "Add a user-facing “Publish / Share” entry point in the app header that helps the user publish the site and get a link (without relying on the Caffeine preview URL bar). Include: (1) a button to copy the current app URL to clipboard, (2) a button to open the current app URL in a new browser tab, and (3) short instructions explaining how to publish in Caffeine by switching to the Live tab and using the Go live action if the live panel shows “Your live site will appear here once you go live”.",
-      "reqIds": [
-        "REQ-14"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-detect-when-the-app-is-running-inside-an-embedded-editor-preview-context-e-g-iframe-and-in-the-publish-share-ui-display-an-additional-note-that-the-url-shown-is-for-the-current-context-and-that-the-public-url-will-be-visible-in-the-live-view-after-publishing",
-      "title": "Detect when the app is running inside an embedded/editor preview context (e.g., iframe) and, in the Publish / Share UI, display an additional note that the URL shown is for the current context and that the public URL will be visible in the Live view after publishing.",
-      "reqIds": [
-        "REQ-15"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-fix-the-background-media-url-paste-set-flow-so-that-direct-image-urls-and-direct-video-urls-reliably-work-even-when-the-url-contains-query-strings-fragments-e-g-signed-urls-or-does-not-end-with-a-simple-file-extension",
-      "title": "Fix the background \"Media URL\" paste/set flow so that direct image URLs and direct video URLs reliably work even when the URL contains query strings/fragments (e.g., signed URLs) or does not end with a simple file extension.",
-      "reqIds": [
-        "REQ-16"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-improve-url-background-validation-and-error-handling-so-that-users-see-actionable-user-friendly-errors-when-the-provided-url-is-invalid-unreachable-blocked-by-the-browser-e-g-cors-related-loading-failures-or-the-media-format-is-not-supported-by-the-current-browser",
-      "title": "Improve URL background validation and error handling so that users see actionable, user-friendly errors when the provided URL is invalid, unreachable, blocked by the browser (e.g., CORS-related loading failures), or the media format is not supported by the current browser.",
-      "reqIds": [
-        "REQ-17"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-ensure-the-background-url-setter-does-not-incorrectly-default-unknown-urls-to-image-in-a-way-that-breaks-video-backgrounds-classification-must-be-robust-enough-to-avoid-treating-common-direct-video-links-as-images-and-vice-versa",
-      "title": "Ensure the background URL setter does not incorrectly default unknown URLs to \"image\" in a way that breaks video backgrounds; classification must be robust enough to avoid treating common direct video links as images and vice versa.",
-      "reqIds": [
-        "REQ-18"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-ensure-the-background-settings-ui-upload-url-youtube-and-the-background-renderer-share-a-single-background-state-instance-so-that-setting-a-background-immediately-updates-the-visible-background",
-      "title": "Ensure the Background Settings UI (upload/URL/YouTube) and the background renderer share a single background state instance so that setting a background immediately updates the visible background.",
-      "reqIds": [
-        "REQ-19"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-fix-local-file-upload-handling-so-the-user-can-repeatedly-select-the-same-file-and-see-reliable-behavior-and-ensure-blob-object-url-cleanup-does-not-break-the-currently-rendered-background",
-      "title": "Fix local-file upload handling so the user can repeatedly select the same file and see reliable behavior, and ensure blob/object-URL cleanup does not break the currently-rendered background.",
-      "reqIds": [
-        "REQ-20"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-make-youtube-background-setting-robust-and-user-actionable-when-a-valid-youtube-url-is-provided-render-it-as-the-background-when-it-cannot-play-e-g-browser-blocks-autoplay-in-the-current-context-show-a-clear-english-user-facing-message-explaining-what-to-do-next",
-      "title": "Make YouTube background setting robust and user-actionable: when a valid YouTube URL is provided, render it as the background; when it cannot play (e.g., browser blocks autoplay in the current context), show a clear, English user-facing message explaining what to do next.",
-      "reqIds": [
-        "REQ-21"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-new-music-setting-that-allows-the-user-to-paste-a-link-and-attempt-to-play-it-as-background-audio-with-explicit-support-for-spotify-links-apple-music-links-and-direct-audio-file-urls-and-graceful-handling-for-other-arbitrary-links",
-      "title": "Add a new “Music” setting that allows the user to paste a link and attempt to play it as background audio, with explicit support for Spotify links, Apple Music links, and direct audio-file URLs (and graceful handling for other arbitrary links).",
-      "reqIds": [
-        "REQ-22"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-user-facing-volume-control-for-background-audio-playback-and-ensure-it-behaves-predictably-across-music-source-types",
-      "title": "Add a user-facing volume control for background audio playback, and ensure it behaves predictably across music source types.",
-      "reqIds": [
-        "REQ-23"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-when-a-background-is-active-image-video-or-youtube-hide-the-timer-ui-by-default-and-provide-a-bottom-screen-line-bar-with-a-toggle-to-show-hide-the-timer-on-demand",
-      "title": "When a background is active (image, video, or YouTube), hide the timer UI by default and provide a bottom-screen line/bar with a toggle to show/hide the timer on demand.",
-      "reqIds": [
-        "REQ-24"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-change-the-app-s-global-typography-to-use-the-quicksand-font-for-the-primary-ui-text",
-      "title": "Change the app’s global typography to use the Quicksand font for the primary UI text.",
-      "reqIds": [
-        "REQ-25"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-make-the-active-background-media-image-video-youtube-visually-clearer-by-reducing-the-strength-of-the-global-darkening-blur-overlay-that-is-rendered-on-top-of-the-background-in-backgroundstage-while-keeping-the-timer-ui-readable",
-      "title": "Make the active background media (image/video/YouTube) visually clearer by reducing the strength of the global darkening/blur overlay that is rendered on top of the background in `BackgroundStage`, while keeping the timer UI readable.",
-      "reqIds": [
-        "REQ-26"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-make-active-backgrounds-image-video-youtube-visually-clearer-by-further-reducing-the-strength-of-the-global-darkening-overlay-rendered-in-backgroundstage-while-keeping-the-timer-ui-readable-on-top-of-the-background",
-      "title": "Make active backgrounds (image/video/YouTube) visually clearer by further reducing the strength of the global darkening overlay rendered in `BackgroundStage`, while keeping the timer UI readable on top of the background.",
-      "reqIds": [
-        "REQ-27"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-remove-the-youtube-autoplay-help-banner-in-backgroundstage-the-message-starting-with-if-the-video-doesn-t-play-automatically-so-it-never-appears",
-      "title": "Remove the YouTube autoplay help banner in `BackgroundStage` (the message starting with \"If the video doesn't play automatically...\") so it never appears.",
-      "reqIds": [
-        "REQ-28"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-remove-or-reduce-to-effectively-zero-the-global-darkening-blur-overlay-that-is-rendered-on-top-of-active-backgrounds-in-backgroundstage-so-that-video-image-youtube-backgrounds-look-as-close-to-the-original-source-as-possible-clear-and-bright",
-      "title": "Remove (or reduce to effectively zero) the global darkening/blur overlay that is rendered on top of active backgrounds in `BackgroundStage` so that video/image/YouTube backgrounds look as close to the original source as possible (clear and bright).",
-      "reqIds": [
-        "REQ-29"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-ensure-the-background-media-elements-themselves-are-not-being-unintentionally-visually-degraded-no-css-filters-opacity-reductions-or-layering-artifacts-so-that-the-displayed-background-matches-the-original-media-s-clarity",
-      "title": "Ensure the background media elements themselves are not being unintentionally visually degraded (no CSS filters, opacity reductions, or layering artifacts) so that the displayed background matches the original media’s clarity.",
-      "reqIds": [
-        "REQ-30"
-      ],
-      "version": 1
     }
   ],
-  "new_feature_requests": [
-    {
-      "id": "AR-1",
-      "summary": "Implement multiple timer types: Pomodoro, stopwatch, interval, countdown, and repeating timers",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Allow users to customize website background using uploaded/selected images and videos (no restrictive file-type limitations)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Create a default site theme with a nice bluish-black color prior to user customization",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-4",
-      "summary": "Keep the app free to use with no feature limitations tied to file formats (e.g., not restricted to JPEG)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-5",
-      "summary": "Support using YouTube videos as backgrounds via an embed/player option (in addition to direct image/video files/URLs)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-6",
-      "summary": "Publish/deploy the timer website to a live public URL (go live)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-7",
-      "summary": "Allow audio/music backgrounds from Spotify and Apple Music links (and generally accept pasted links for audio playback where possible)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-8",
-      "summary": "Add a user-facing volume control for background audio/music playback",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-9",
-      "summary": "When a background is inserted/active, hide the timer by default (minimal mode)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-10",
-      "summary": "Add a bottom line/bar UI with a toggle to show/hide the timer on demand",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-11",
-      "summary": "Change app typography to use the Quicksand font",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-12",
-      "summary": "Adjust background rendering to appear clearer (improve clarity/visibility of the chosen background media)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-13",
-      "summary": "Remove (or make dismissible) the autoplay/help banner message (e.g., \"if the video doesn't play automatically...\") from the UI",
-      "reqIds": [],
-      "status": "pending"
-    }
-  ],
-  "projectName": "Multi-timer website with customizable image/video backgrounds and bluish-black default theme",
+  "new_feature_requests": [],
+  "projectName": "Auto-clear broken persisted background so the app loads without the error overlay",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

@@ -1,12 +1,12 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Play, Pause, RotateCcw, SkipForward } from 'lucide-react';
 import { useIntervalTimer } from './useIntervalTimer';
 import { formatTime } from '../shared/timeFormat';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { EditableNumberInput } from '../shared/EditableNumberInput';
 
 export function IntervalTimer() {
   const {
@@ -29,6 +29,18 @@ export function IntervalTimer() {
         ? ((settings.intervalA - timeLeft) / settings.intervalA) * 100
         : ((settings.intervalB - timeLeft) / settings.intervalB) * 100)
     : 0;
+
+  const handleIntervalAChange = (newValue: number) => {
+    updateSettings({ intervalA: newValue });
+  };
+
+  const handleIntervalBChange = (newValue: number) => {
+    updateSettings({ intervalB: newValue });
+  };
+
+  const handleRoundsChange = (newValue: number) => {
+    updateSettings({ rounds: newValue });
+  };
 
   return (
     <Card className="bg-card/80 backdrop-blur-xl border-border/50">
@@ -79,37 +91,34 @@ export function IntervalTimer() {
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="space-y-2">
             <Label htmlFor="interval-a">Interval A (sec)</Label>
-            <Input
+            <EditableNumberInput
               id="interval-a"
-              type="number"
-              min="1"
-              max="600"
               value={settings.intervalA}
-              onChange={(e) => updateSettings({ intervalA: parseInt(e.target.value) || 30 })}
+              onChange={handleIntervalAChange}
+              min={1}
+              max={600}
               disabled={isRunning}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="interval-b">Interval B (sec)</Label>
-            <Input
+            <EditableNumberInput
               id="interval-b"
-              type="number"
-              min="1"
-              max="600"
               value={settings.intervalB}
-              onChange={(e) => updateSettings({ intervalB: parseInt(e.target.value) || 10 })}
+              onChange={handleIntervalBChange}
+              min={1}
+              max={600}
               disabled={isRunning}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="rounds">Rounds</Label>
-            <Input
+            <EditableNumberInput
               id="rounds"
-              type="number"
-              min="1"
-              max="50"
               value={settings.rounds}
-              onChange={(e) => updateSettings({ rounds: parseInt(e.target.value) || 8 })}
+              onChange={handleRoundsChange}
+              min={1}
+              max={50}
               disabled={isRunning}
             />
           </div>

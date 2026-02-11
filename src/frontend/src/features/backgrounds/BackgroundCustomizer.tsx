@@ -4,13 +4,28 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Upload, Link as LinkIcon, X, Loader2 } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
+import { Upload, Link as LinkIcon, X, Loader2, Volume2, Sun } from 'lucide-react';
 import { SiYoutube } from 'react-icons/si';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { inferMediaType } from './mediaSupport';
 
 export function BackgroundCustomizer() {
-  const { backgroundUrl, youtubeVideoId, mediaType, setBackgroundFromFile, setBackgroundFromUrl, setBackgroundFromYouTubeUrl, clearBackground, error, isProbing } = useBackgroundContext();
+  const { 
+    backgroundUrl, 
+    youtubeVideoId, 
+    mediaType, 
+    youtubeVolume,
+    brightness,
+    setBackgroundFromFile, 
+    setBackgroundFromUrl, 
+    setBackgroundFromYouTubeUrl, 
+    setYouTubeVolume,
+    setBrightness,
+    clearBackground, 
+    error, 
+    isProbing 
+  } = useBackgroundContext();
   const [urlInput, setUrlInput] = useState('');
   const [youtubeInput, setYoutubeInput] = useState('');
   const [localError, setLocalError] = useState<string | null>(null);
@@ -69,7 +84,16 @@ export function BackgroundCustomizer() {
     setLocalError(null);
   };
 
+  const handleVolumeChange = (values: number[]) => {
+    setYouTubeVolume(values[0]);
+  };
+
+  const handleBrightnessChange = (values: number[]) => {
+    setBrightness(values[0]);
+  };
+
   const isBackgroundActive = (backgroundUrl || youtubeVideoId) && !error;
+  const isYouTubeActive = mediaType === 'youtube' && youtubeVideoId && !error;
 
   return (
     <div className="space-y-4">
@@ -93,6 +117,54 @@ export function BackgroundCustomizer() {
               Clear
             </Button>
           </div>
+        </div>
+      )}
+
+      {isBackgroundActive && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="background-brightness" className="flex items-center gap-2">
+              <Sun className="h-4 w-4" />
+              Background brightness
+            </Label>
+            <span className="text-sm text-muted-foreground">{brightness ?? 100}%</span>
+          </div>
+          <Slider
+            id="background-brightness"
+            min={0}
+            max={100}
+            step={1}
+            value={[brightness ?? 100]}
+            onValueChange={handleBrightnessChange}
+            className="w-full"
+          />
+          <p className="text-xs text-muted-foreground">
+            Adjust the brightness of the background
+          </p>
+        </div>
+      )}
+
+      {isYouTubeActive && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="youtube-volume" className="flex items-center gap-2">
+              <Volume2 className="h-4 w-4" />
+              YouTube volume
+            </Label>
+            <span className="text-sm text-muted-foreground">{youtubeVolume ?? 50}%</span>
+          </div>
+          <Slider
+            id="youtube-volume"
+            min={0}
+            max={100}
+            step={1}
+            value={[youtubeVolume ?? 50]}
+            onValueChange={handleVolumeChange}
+            className="w-full"
+          />
+          <p className="text-xs text-muted-foreground">
+            Adjust the volume of the YouTube background video
+          </p>
         </div>
       )}
 
