@@ -1,45 +1,31 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-11T16:09:19.464Z",
+  "generatedAt": "2026-02-12T00:51:53.505Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 3,
+    "total": 2,
+    "implemented": 2,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Update the Interval Timer configuration UI to include a minutes input section for Interval A and Interval B (in addition to seconds), so users can set intervals using minutes+seconds while the timer continues to run using total seconds internally.",
+        "summary": "Rename the app to \"TickTaskTime\" across the frontend branding so the header app name and the browser tab title reflect the new name.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/timers/shared/MinutesSecondsInput.tsx",
-          "frontend/src/features/timers/interval/IntervalTimer.tsx"
+          "frontend/src/branding.ts",
+          "frontend/index.html"
         ],
         "matchedFiles": [
-          "frontend/src/features/timers/shared/MinutesSecondsInput.tsx",
-          "frontend/src/features/timers/interval/IntervalTimer.tsx"
+          "frontend/src/branding.ts",
+          "frontend/index.html"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Adjust Interval Timer validation limits to support minute-based entry (e.g., allow intervals longer than the current 600-second cap) and ensure clamping/validation remains consistent for both minutes and seconds fields.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/timers/shared/MinutesSecondsInput.tsx",
-          "frontend/src/features/timers/interval/IntervalTimer.tsx",
-          "frontend/src/features/timers/shared/timeFormat.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/timers/shared/MinutesSecondsInput.tsx",
-          "frontend/src/features/timers/interval/IntervalTimer.tsx"
-        ]
-      },
-      {
-        "id": "REQ-3",
-        "summary": "Improve the in-app publishing guidance so the user can reliably “publish my website” from the existing Publish & Share sheet, including clearer copy for draft/preview vs public URL and a short checklist of the steps to go live.",
+        "summary": "Update the existing \"Publish to the App Market\" section in the Publish & Share sheet to provide clearer, step-by-step English instructions for publishing via Caffeine (without attempting to automate submission).",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/features/publishShare/PublishShareSheet.tsx"
@@ -55,9 +41,9 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/index.html",
+    "frontend/src/branding.ts",
     "frontend/src/features/publishShare/PublishShareSheet.tsx",
-    "frontend/src/features/timers/interval/IntervalTimer.tsx",
-    "frontend/src/features/timers/shared/MinutesSecondsInput.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

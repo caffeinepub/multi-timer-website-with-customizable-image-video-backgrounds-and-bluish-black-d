@@ -2,11 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-interval-timer-configuration-ui-to-include-a-minutes-input-section-for-interval-a-and-interval-b-in-addition-to-seconds-so-users-can-set-intervals-using-minutes-seconds-while-the-timer-continues-to-run-using-total-seconds-internally",
-      "featureTitle": "Update the Interval Timer configuration UI to include a minutes input section for Interval A and Interval B (in addition to seconds), so users can set intervals using minutes+seconds while the timer continues to run using total seconds internally.",
+      "featureId": "feature-rename-the-app-to-ticktasktime-across-the-frontend-branding-so-the-header-app-name-and-the-browser-tab-title-reflect-the-new-name",
+      "featureTitle": "Rename the app to \"TickTaskTime\" across the frontend branding so the header app name and the browser tab title reflect the new name.",
       "files": [
-        "frontend/src/features/timers/interval/IntervalTimer.tsx",
-        "frontend/src/features/timers/shared/MinutesSecondsInput.tsx"
+        "frontend/index.html",
+        "frontend/src/branding.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -21,27 +21,8 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-adjust-interval-timer-validation-limits-to-support-minute-based-entry-e-g-allow-intervals-longer-than-the-current-600-second-cap-and-ensure-clamping-validation-remains-consistent-for-both-minutes-and-seconds-fields",
-      "featureTitle": "Adjust Interval Timer validation limits to support minute-based entry (e.g., allow intervals longer than the current 600-second cap) and ensure clamping/validation remains consistent for both minutes and seconds fields.",
-      "files": [
-        "frontend/src/features/timers/interval/IntervalTimer.tsx",
-        "frontend/src/features/timers/shared/MinutesSecondsInput.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-improve-the-in-app-publishing-guidance-so-the-user-can-reliably-publish-my-website-from-the-existing-publish-share-sheet-including-clearer-copy-for-draft-preview-vs-public-url-and-a-short-checklist-of-the-steps-to-go-live",
-      "featureTitle": "Improve the in-app publishing guidance so the user can reliably “publish my website” from the existing Publish & Share sheet, including clearer copy for draft/preview vs public URL and a short checklist of the steps to go live.",
+      "featureId": "feature-update-the-existing-publish-to-the-app-market-section-in-the-publish-share-sheet-to-provide-clearer-step-by-step-english-instructions-for-publishing-via-caffeine-without-attempting-to-automate-submission",
+      "featureTitle": "Update the existing \"Publish to the App Market\" section in the Publish & Share sheet to provide clearer, step-by-step English instructions for publishing via Caffeine (without attempting to automate submission).",
       "files": [
         "frontend/src/features/publishShare/PublishShareSheet.tsx"
       ],
@@ -53,7 +34,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-3"
+        "REQ-2"
       ],
       "confidence": "high"
     }

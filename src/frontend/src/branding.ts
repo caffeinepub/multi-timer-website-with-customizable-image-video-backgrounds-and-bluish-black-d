@@ -1,2 +1,2 @@
 // Single source of truth for app branding
-export const APP_NAME = 'TickTask';
+export const APP_NAME = 'TickTaskTime';

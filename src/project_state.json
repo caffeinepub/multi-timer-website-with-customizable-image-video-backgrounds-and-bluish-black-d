@@ -1,32 +1,24 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Web app with reminders/timers; user wants interval configuration updates and to publish the site.",
+  "summary": "New project",
   "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-update-the-interval-timer-configuration-ui-to-include-a-minutes-input-section-for-interval-a-and-interval-b-in-addition-to-seconds-so-users-can-set-intervals-using-minutes-seconds-while-the-timer-continues-to-run-using-total-seconds-internally",
-      "title": "Update the Interval Timer configuration UI to include a minutes input section for Interval A and Interval B (in addition to seconds), so users can set intervals using minutes+seconds while the timer continues to run using total seconds internally.",
+      "id": "feature-rename-the-app-to-ticktasktime-across-the-frontend-branding-so-the-header-app-name-and-the-browser-tab-title-reflect-the-new-name",
+      "title": "Rename the app to \"TickTaskTime\" across the frontend branding so the header app name and the browser tab title reflect the new name.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-adjust-interval-timer-validation-limits-to-support-minute-based-entry-e-g-allow-intervals-longer-than-the-current-600-second-cap-and-ensure-clamping-validation-remains-consistent-for-both-minutes-and-seconds-fields",
-      "title": "Adjust Interval Timer validation limits to support minute-based entry (e.g., allow intervals longer than the current 600-second cap) and ensure clamping/validation remains consistent for both minutes and seconds fields.",
+      "id": "feature-update-the-existing-publish-to-the-app-market-section-in-the-publish-share-sheet-to-provide-clearer-step-by-step-english-instructions-for-publishing-via-caffeine-without-attempting-to-automate-submission",
+      "title": "Update the existing \"Publish to the App Market\" section in the Publish & Share sheet to provide clearer, step-by-step English instructions for publishing via Caffeine (without attempting to automate submission).",
       "reqIds": [
         "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-improve-the-in-app-publishing-guidance-so-the-user-can-reliably-publish-my-website-from-the-existing-publish-share-sheet-including-clearer-copy-for-draft-preview-vs-public-url-and-a-short-checklist-of-the-steps-to-go-live",
-      "title": "Improve the in-app publishing guidance so the user can reliably “publish my website” from the existing Publish & Share sheet, including clearer copy for draft/preview vs public URL and a short checklist of the steps to go live.",
-      "reqIds": [
-        "REQ-3"
       ],
       "version": 1
     }
@@ -34,18 +26,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Add a minute section to the interval configuration (support minute-based interval input).",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Publish the website (move deployed draft to a public/production release).",
+      "summary": "Publish the app to the App Market",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Add minutes input for Interval Timer and improve publishing flow",
+  "projectName": "TickTaskTime",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

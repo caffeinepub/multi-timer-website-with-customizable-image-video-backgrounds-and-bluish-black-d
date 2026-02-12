@@ -1,93 +1,60 @@
 {
   "kind": "build_request",
-  "title": "Add minutes input for Interval Timer and improve publishing flow",
+  "title": "Rename app to TickTaskTime and clarify App Market publishing steps",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update the Interval Timer configuration UI to include a minutes input section for Interval A and Interval B (in addition to seconds), so users can set intervals using minutes+seconds while the timer continues to run using total seconds internally.",
+      "text": "Rename the app to \"TickTaskTime\" across the frontend branding so the header app name and the browser tab title reflect the new name.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-10"
+          "msg-4",
+          "msg-6"
         ],
         "quotes": [
-          "add a minute section in the interval"
+          "change the name to TickTaskTime please",
+          "now publish it please"
         ]
       },
       "acceptanceCriteria": [
-        "Interval Timer shows separate numeric inputs for minutes and seconds for Interval A.",
-        "Interval Timer shows separate numeric inputs for minutes and seconds for Interval B.",
-        "Editing minutes/seconds updates the underlying stored interval duration correctly as total seconds.",
-        "Existing stored interval settings (currently stored as seconds) continue to load without errors and display the correct minutes/seconds decomposition.",
-        "While the timer is running, the minutes/seconds inputs remain disabled (consistent with current behavior of interval inputs)."
+        "`frontend/src/branding.ts` exports `APP_NAME` set to exactly `TickTaskTime`.",
+        "The header in `frontend/src/App.tsx` displays `TickTaskTime`.",
+        "`frontend/index.html` `<title>` is updated to use the new name (and no longer shows `TickTask`).",
+        "No remaining user-visible occurrences of `TickTask` appear in the UI chrome (header/tab title) after the change."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Adjust Interval Timer validation limits to support minute-based entry (e.g., allow intervals longer than the current 600-second cap) and ensure clamping/validation remains consistent for both minutes and seconds fields.",
+      "text": "Update the existing \"Publish to the App Market\" section in the Publish & Share sheet to provide clearer, step-by-step English instructions for publishing via Caffeine (without attempting to automate submission).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-10"
+          "msg-6"
         ],
         "quotes": [
-          "add a minute section in the interval"
+          "now publish it please"
         ]
       },
       "acceptanceCriteria": [
-        "Seconds sub-field is clamped to 0–59.",
-        "Minutes sub-field has a reasonable upper bound and prevents negative values.",
-        "Total interval duration cannot be set to 0 seconds (must be at least 1 second overall).",
-        "The displayed countdown (MM:SS or HH:MM:SS) remains correct for longer intervals."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Improve the in-app publishing guidance so the user can reliably “publish my website” from the existing Publish & Share sheet, including clearer copy for draft/preview vs public URL and a short checklist of the steps to go live.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-10"
-        ],
-        "quotes": [
-          "publish my website"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Publish & Share sheet clearly distinguishes between the current preview/draft URL and the public URL that appears after going live.",
-        "If the app is embedded in an iframe preview, the UI prominently warns that the shown URL is for preview and instructs the user to use the Live tab’s Go live button for a public URL.",
-        "All user-facing text is in English and fits within the existing sheet layout without overflowing on mobile widths."
+        "`frontend/src/features/publishShare/PublishShareSheet.tsx` includes App Market publishing steps that explicitly reference using Caffeine’s UI (e.g., where to go in Caffeine after the app is Live) rather than a generic \"visit submission page\" instruction.",
+        "The note clarifying this applies to Caffeine apps (not Wix) remains present and is still clearly worded in English.",
+        "No new integrations, API calls, or external service dependencies are added as part of this change."
       ]
     }
   ],
   "constraints": [
-    "Do not edit any files under frontend/src/components/ui (Shadcn UI sources are read-only).",
-    "Do not edit immutable hook bootstrap files: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx.",
-    "Backend must remain single-actor in backend/main.mo; add backend changes only if strictly required (this request should be frontend-only)."
+    "Do not modify any files under `frontend/src/components/ui` (read-only Shadcn components).",
+    "Do not modify files listed as immutable: `frontend/src/hooks/useInternetIdentity.ts`, `frontend/src/hooks/useInternetIdentity.tsx`, `frontend/src/hooks/useActor.ts`, `frontend/src/main.tsx`.",
+    "Backend must remain a single Motoko actor in `backend/main.mo`; do not introduce additional backend services."
   ],
   "nonGoals": [
-    "Adding server-side persistence or syncing timer settings across devices/users.",
-    "Implementing custom domains, external hosting, or non-Internet Computer deployment steps.",
-    "Adding third-party authentication beyond Internet Identity."
+    "Automatically publishing/submitting the app to the App Market from within the app.",
+    "Adding third-party authentication or any non-Internet-Identity auth.",
+    "Adding a backend database or external storage service."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [
-      "Support minute-based interval configuration in the interval timer.",
-      "Publish the app to a public production URL."
-    ],
-    "goalsToRemove": [],
-    "preferencesToAdd": [
-      "Use English for user-facing text."
-    ],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

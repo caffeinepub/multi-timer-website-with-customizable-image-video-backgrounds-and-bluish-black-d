@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Share2, Copy, ExternalLink, Check, Info, AlertCircle } from 'lucide-react';
+import { Share2, Copy, ExternalLink, Check, Info, AlertCircle, Sparkles } from 'lucide-react';
 import { useIsEmbeddedPreview } from './useIsEmbeddedPreview';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
@@ -31,7 +31,7 @@ export function PublishShareSheet() {
           <Share2 className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-md">
+      <SheetContent className="w-full sm:max-w-md overflow-y-auto">
         <SheetHeader>
           <SheetTitle>Publish & Share</SheetTitle>
           <SheetDescription>
@@ -112,6 +112,34 @@ export function PublishShareSheet() {
                 <p className="text-xs text-muted-foreground pt-2">
                   The public URL will remain accessible even after you close the editor.
                 </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Publish to App Market Section */}
+          <div className="rounded-lg border bg-gradient-to-br from-primary/5 to-primary/10 p-4 space-y-3">
+            <div className="flex items-start gap-2">
+              <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+              <div className="space-y-2 text-sm">
+                <p className="font-medium">Publish to the App Market</p>
+                <p className="text-muted-foreground">
+                  Once your app is live, you can submit it to the Caffeine App Market:
+                </p>
+                <ol className="list-decimal list-inside space-y-1.5 text-muted-foreground ml-1">
+                  <li>Ensure your app is <strong>live</strong> with a public URL (see above)</li>
+                  <li>In Caffeine, navigate to the <strong>App Market</strong> section in the left sidebar</li>
+                  <li>Click <strong>"Submit Your App"</strong> or <strong>"Publish to Market"</strong></li>
+                  <li>Fill in your app details: name, description, category, and screenshots</li>
+                  <li>Provide your live app URL</li>
+                  <li>Submit for review — the Caffeine team will review and approve your submission</li>
+                </ol>
+                <Alert variant="default" className="mt-3 border-muted bg-background/50">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-xs">
+                    <strong>Note:</strong> This publishing flow is for apps built and deployed via Caffeine. 
+                    It does not apply to Wix sites or integrate with the Wix App Market.
+                  </AlertDescription>
+                </Alert>
               </div>
             </div>
           </div>

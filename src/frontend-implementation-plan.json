@@ -1,71 +1,43 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Minutes+seconds Interval Timer inputs and clearer Publish & Share guidance",
+  "title": "TickTaskTime rebrand + clearer App Market publishing instructions",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add minutes+seconds inputs for Interval A and Interval B while continuing to store durations internally as total seconds.",
+      "summary": "Rename the app to TickTaskTime in frontend branding, header name, and browser tab title.",
       "acceptanceCriteria": [
-        "Interval Timer shows separate numeric inputs for minutes and seconds for Interval A.",
-        "Interval Timer shows separate numeric inputs for minutes and seconds for Interval B.",
-        "Editing minutes/seconds updates the underlying stored interval duration correctly as total seconds.",
-        "Existing stored interval settings (currently stored as seconds) continue to load without errors and display the correct minutes/seconds decomposition.",
-        "While the timer is running, the minutes/seconds inputs remain disabled (consistent with current behavior of interval inputs)."
+        "`frontend/src/branding.ts` exports `APP_NAME` set to exactly `TickTaskTime`.",
+        "The header in `frontend/src/App.tsx` displays `TickTaskTime`.",
+        "`frontend/index.html` `<title>` is updated to use the new name (and no longer shows `TickTask`).",
+        "No remaining user-visible occurrences of `TickTask` appear in the UI chrome (header/tab title) after the change."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/timers/shared/MinutesSecondsInput.tsx",
-          "operation": "create",
-          "description": "Create a small composite input that renders two shadcn-ui Input-based numeric fields (via EditableNumberInput) for minutes and seconds, derives values from a total-seconds prop, and emits updated total seconds via callback. Verify the component's usage instructions before implementing."
+          "path": "frontend/src/branding.ts",
+          "operation": "modify",
+          "description": "Update APP_NAME constant to exactly \"TickTaskTime\" so the header branding reflects the new app name."
         },
         {
-          "path": "frontend/src/features/timers/interval/IntervalTimer.tsx",
+          "path": "frontend/index.html",
           "operation": "modify",
-          "description": "Replace the single seconds-only inputs for Interval A and Interval B with the new MinutesSecondsInput (minutes + seconds) while keeping settings.intervalA/settings.intervalB stored as total seconds; ensure the new inputs are disabled when isRunning is true. Verify the component's usage instructions before implementing."
+          "description": "Update the document <title> to use \"TickTaskTime\" and remove the old \"TickTask\" text so the browser tab title reflects the rename."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Update interval duration validation/clamping to support minute-based entry and longer intervals, with consistent limits across minutes/seconds fields and correct long countdown display.",
+      "summary": "Rewrite the “Publish to the App Market” section in the Publish & Share sheet with clear, step-by-step instructions for publishing via Caffeine’s UI (no automation).",
       "acceptanceCriteria": [
-        "Seconds sub-field is clamped to 0–59.",
-        "Minutes sub-field has a reasonable upper bound and prevents negative values.",
-        "Total interval duration cannot be set to 0 seconds (must be at least 1 second overall).",
-        "The displayed countdown (MM:SS or HH:MM:SS) remains correct for longer intervals."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/timers/shared/MinutesSecondsInput.tsx",
-          "operation": "modify",
-          "description": "Implement validation rules: clamp seconds to 0–59, clamp minutes to 0–(reasonable upper bound, e.g. 999), and enforce a minimum total duration of 1 second (auto-correct 0:00 to 0:01). Ensure composed total seconds is also clamped to the derived max. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/features/timers/interval/IntervalTimer.tsx",
-          "operation": "modify",
-          "description": "Remove the current 600-second max constraint for Interval A/B and rely on the minutes+seconds validation bounds; ensure labels and helper text (if any) reflect minute-based entry. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/features/timers/shared/timeFormat.ts",
-          "operation": "modify",
-          "description": "Review and adjust (if needed) formatting to ensure longer intervals still display correctly as MM:SS or HH:MM:SS; keep behavior consistent across timers."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Clarify Publish & Share sheet copy to distinguish preview/draft URL vs public URL and provide a concise go-live checklist, with a prominent embedded-preview warning.",
-      "acceptanceCriteria": [
-        "Publish & Share sheet clearly distinguishes between the current preview/draft URL and the public URL that appears after going live.",
-        "If the app is embedded in an iframe preview, the UI prominently warns that the shown URL is for preview and instructs the user to use the Live tab’s Go live button for a public URL.",
-        "All user-facing text is in English and fits within the existing sheet layout without overflowing on mobile widths."
+        "`frontend/src/features/publishShare/PublishShareSheet.tsx` includes App Market publishing steps that explicitly reference using Caffeine’s UI (e.g., where to go in Caffeine after the app is Live) rather than a generic \"visit submission page\" instruction.",
+        "The note clarifying this applies to Caffeine apps (not Wix) remains present and is still clearly worded in English.",
+        "No new integrations, API calls, or external service dependencies are added as part of this change."
       ],
       "file_operations": [
         {
           "path": "frontend/src/features/publishShare/PublishShareSheet.tsx",
           "operation": "modify",
-          "description": "Update the sheet UI/copy to (1) label the current URL as Preview/Draft (this session), (2) add a clearly labeled Public URL section explaining it will appear after going live (without fabricating a public link), (3) include a short step checklist to go live, and (4) show a prominent embedded-preview warning when useIsEmbeddedPreview() is true. Keep within existing layout and mobile-friendly text sizing; continue using existing shadcn-ui Sheet/Button patterns. Verify the component's usage instructions before implementing."
+          "description": "Revise the \"Publish to the App Market\" copy to be explicit, step-by-step, and centered on navigating Caffeine’s UI after the app is Live (e.g., where to find App Market/publishing within Caffeine and what information to provide). Keep the existing Caffeine-vs-Wix note. Do not add any new integrations or network calls. Use the existing shadcn-ui Sheet/Alert/Button structure already in this file to present the instructions; verify the component's usage instructions before implementing."
         }
       ]
     }
