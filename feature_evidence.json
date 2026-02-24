@@ -1,0 +1,66 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-add-a-visible-play-pause-button-to-the-ui-clicking-the-button-or-pressing-the-spacebar-should-toggle-video-playback-between-playing-and-paused-states",
+      "featureTitle": "Add a visible play/pause button to the UI. Clicking the button or pressing the spacebar should toggle video playback between playing and paused states.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/features/backgrounds/BackgroundPlayButton.tsx",
+        "frontend/src/features/backgrounds/BackgroundStage.tsx",
+        "frontend/src/features/backgrounds/useBackground.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-when-the-video-starts-playing-the-ui-enters-a-fullscreen-mode-that-hides-all-application-chrome-navigation-bars-panels-controls-overlays-and-shows-only-the-video-filling-the-entire-screen",
+      "featureTitle": "When the video starts playing, the UI enters a fullscreen mode that hides all application chrome (navigation bars, panels, controls, overlays) and shows only the video filling the entire screen.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/features/backgrounds/BackgroundPlayButton.tsx",
+        "frontend/src/features/backgrounds/useBackground.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-provide-a-user-accessible-toggle-or-setting-that-lets-the-user-choose-between-two-fullscreen-playback-modes-1-plain-video-with-no-overlays-and-2-the-user-s-currently-selected-timer-displayed-as-an-overlay-on-top-of-the-fullscreen-video-the-chosen-mode-should-persist-across-sessions",
+      "featureTitle": "Provide a user-accessible toggle or setting that lets the user choose between two fullscreen playback modes: (1) plain video with no overlays, and (2) the user's currently selected timer displayed as an overlay on top of the fullscreen video. The chosen mode should persist across sessions.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/features/backgrounds/BackgroundCustomizer.tsx",
+        "frontend/src/features/backgrounds/useBackground.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

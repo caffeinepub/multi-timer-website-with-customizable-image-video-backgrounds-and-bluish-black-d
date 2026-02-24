@@ -1,0 +1,284 @@
+import { useState, useRef } from 'react';
+import { useBackgroundContext } from './BackgroundProvider';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
+import { Upload, Link as LinkIcon, X, Loader2, Volume2, Sun, Layers } from 'lucide-react';
+import { SiYoutube } from 'react-icons/si';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { inferMediaType } from './mediaSupport';
+
+export function BackgroundCustomizer() {
+  const { 
+    backgroundUrl, 
+    youtubeVideoId, 
+    mediaType, 
+    youtubeVolume,
+    brightness,
+    showTimerOverlay,
+    setBackgroundFromFile, 
+    setBackgroundFromUrl, 
+    setBackgroundFromYouTubeUrl, 
+    setYouTubeVolume,
+    setBrightness,
+    toggleTimerOverlay,
+    clearBackground, 
+    error, 
+    isProbing 
+  } = useBackgroundContext();
+  const [urlInput, setUrlInput] = useState('');
+  const [youtubeInput, setYoutubeInput] = useState('');
+  const [localError, setLocalError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setLocalError(null);
+    const mediaTypeInferred = inferMediaType(file.type);
+    
+    if (!mediaTypeInferred) {
+      setLocalError('Unsupported file type. Please select an image or video file.');
+      return;
+    }
+
+    setBackgroundFromFile(file);
+    
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleFileInputClick = () => {
+    setLocalError(null);
+  };
+
+  const handleUrlSubmit = async () => {
+    if (!urlInput.trim()) {
+      setLocalError('Please enter a valid URL');
+      return;
+    }
+
+    setLocalError(null);
+    await setBackgroundFromUrl(urlInput.trim());
+    setUrlInput('');
+  };
+
+  const handleYouTubeSubmit = () => {
+    if (!youtubeInput.trim()) {
+      setLocalError('Please enter a YouTube URL');
+      return;
+    }
+
+    setLocalError(null);
+    setBackgroundFromYouTubeUrl(youtubeInput.trim());
+    setYoutubeInput('');
+  };
+
+  const handleClear = () => {
+    clearBackground();
+    setUrlInput('');
+    setYoutubeInput('');
+    setLocalError(null);
+  };
+
+  const handleVolumeChange = (values: number[]) => {
+    setYouTubeVolume(values[0]);
+  };
+
+  const handleBrightnessChange = (values: number[]) => {
+    setBrightness(values[0]);
+  };
+
+  const isBackgroundActive = (backgroundUrl || youtubeVideoId) && !error;
+  const isYouTubeActive = mediaType === 'youtube' && youtubeVideoId && !error;
+  const isVideoBackground = (mediaType === 'video' || mediaType === 'youtube') && isBackgroundActive;
+
+  return (
+    <div className="space-y-4">
+      {(error || localError) && (
+        <Alert variant="destructive">
+          <AlertDescription>{error || localError}</AlertDescription>
+        </Alert>
+      )}
+
+      {isBackgroundActive && (
+        <div className="rounded-lg border border-border bg-card p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-1">
+              <p className="text-sm font-medium text-foreground">Background active</p>
+              <p className="text-xs text-muted-foreground">
+                {mediaType === 'youtube' ? 'YouTube video' : mediaType === 'video' ? 'Video' : 'Image'}
+              </p>
+            </div>
+            <Button variant="ghost" size="sm" onClick={handleClear}>
+              <X className="mr-2 h-4 w-4" />
+              Clear
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {isBackgroundActive && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="background-brightness" className="flex items-center gap-2">
+              <Sun className="h-4 w-4" />
+              Background brightness
+            </Label>
+            <span className="text-sm text-muted-foreground">{brightness ?? 100}%</span>
+          </div>
+          <Slider
+            id="background-brightness"
+            min={0}
+            max={100}
+            step={1}
+            value={[brightness ?? 100]}
+            onValueChange={handleBrightnessChange}
+            className="w-full"
+          />
+          <p className="text-xs text-muted-foreground">
+            Adjust the brightness of the background
+          </p>
+        </div>
+      )}
+
+      {isYouTubeActive && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="youtube-volume" className="flex items-center gap-2">
+              <Volume2 className="h-4 w-4" />
+              YouTube volume
+            </Label>
+            <span className="text-sm text-muted-foreground">{youtubeVolume ?? 50}%</span>
+          </div>
+          <Slider
+            id="youtube-volume"
+            min={0}
+            max={100}
+            step={1}
+            value={[youtubeVolume ?? 50]}
+            onValueChange={handleVolumeChange}
+            className="w-full"
+          />
+          <p className="text-xs text-muted-foreground">
+            Adjust the volume of the YouTube background video
+          </p>
+        </div>
+      )}
+
+      {/* Timer overlay toggle — only shown for video/youtube backgrounds */}
+      {isVideoBackground && (
+        <div className="rounded-lg border border-border bg-card p-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 flex-1">
+              <Layers className="h-4 w-4 text-muted-foreground shrink-0" />
+              <div className="flex flex-col gap-0.5">
+                <Label htmlFor="timer-overlay-toggle" className="text-sm font-medium cursor-pointer">
+                  Show timer overlay in fullscreen
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  Display your active timer on top of the video when playing
+                </p>
+              </div>
+            </div>
+            <Switch
+              id="timer-overlay-toggle"
+              checked={showTimerOverlay}
+              onCheckedChange={toggleTimerOverlay}
+            />
+          </div>
+        </div>
+      )}
+
+      <Tabs defaultValue="upload" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="upload">
+            <Upload className="mr-2 h-4 w-4" />
+            Upload
+          </TabsTrigger>
+          <TabsTrigger value="url">
+            <LinkIcon className="mr-2 h-4 w-4" />
+            URL
+          </TabsTrigger>
+          <TabsTrigger value="youtube">
+            <SiYoutube className="mr-2 h-4 w-4" />
+            YouTube
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="upload" className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="file-upload">Choose Image or Video</Label>
+            <Input
+              ref={fileInputRef}
+              id="file-upload"
+              type="file"
+              accept="image/*,video/*"
+              onChange={handleFileUpload}
+              onClick={handleFileInputClick}
+              className="cursor-pointer"
+            />
+            <p className="text-xs text-muted-foreground">
+              Supports all browser-compatible image and video formats
+            </p>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="url" className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="url-input">Media URL</Label>
+            <div className="flex gap-2">
+              <Input
+                id="url-input"
+                type="url"
+                placeholder="https://example.com/image.jpg"
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && !isProbing && handleUrlSubmit()}
+                disabled={isProbing}
+              />
+              <Button onClick={handleUrlSubmit} disabled={isProbing}>
+                {isProbing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading
+                  </>
+                ) : (
+                  'Set'
+                )}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Enter a direct link to an image or video file
+            </p>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="youtube" className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="youtube-input">YouTube URL</Label>
+            <div className="flex gap-2">
+              <Input
+                id="youtube-input"
+                type="url"
+                placeholder="https://www.youtube.com/watch?v=..."
+                value={youtubeInput}
+                onChange={(e) => setYoutubeInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleYouTubeSubmit()}
+              />
+              <Button onClick={handleYouTubeSubmit}>Set</Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Paste any YouTube video URL (watch, youtu.be, or embed link)
+            </p>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}

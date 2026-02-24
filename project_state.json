@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Project involves a video player interface with play/pause controls, fullscreen playback, and optional timer overlay.",
+  "architectural_notes": [],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-add-a-visible-play-pause-button-to-the-ui-clicking-the-button-or-pressing-the-spacebar-should-toggle-video-playback-between-playing-and-paused-states",
+      "title": "Add a visible play/pause button to the UI. Clicking the button or pressing the spacebar should toggle video playback between playing and paused states.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-when-the-video-starts-playing-the-ui-enters-a-fullscreen-mode-that-hides-all-application-chrome-navigation-bars-panels-controls-overlays-and-shows-only-the-video-filling-the-entire-screen",
+      "title": "When the video starts playing, the UI enters a fullscreen mode that hides all application chrome (navigation bars, panels, controls, overlays) and shows only the video filling the entire screen.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-provide-a-user-accessible-toggle-or-setting-that-lets-the-user-choose-between-two-fullscreen-playback-modes-1-plain-video-with-no-overlays-and-2-the-user-s-currently-selected-timer-displayed-as-an-overlay-on-top-of-the-fullscreen-video-the-chosen-mode-should-persist-across-sessions",
+      "title": "Provide a user-accessible toggle or setting that lets the user choose between two fullscreen playback modes: (1) plain video with no overlays, and (2) the user's currently selected timer displayed as an overlay on top of the fullscreen video. The chosen mode should persist across sessions.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Add a play button that toggles play/pause on click or spacebar press",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "When video plays, enter fullscreen mode showing only the video (no UI chrome)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "User can choose to display a timer overlay on top of the fullscreen video or keep it plain",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "TickTaskTime",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

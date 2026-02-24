@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0.98 0.012 350;
+    --foreground: 0.15 0.02 0;
+    --card: 0.99 0.008 350;
+    --card-foreground: 0.15 0.02 0;
+    --popover: 0.99 0.008 350;
+    --popover-foreground: 0.15 0.02 0;
+    --primary: 0.42 0.18 10;
+    --primary-foreground: 0.98 0.01 0;
+    --secondary: 0.96 0.018 340;
+    --secondary-foreground: 0.15 0.02 0;
+    --muted: 0.96 0.018 340;
+    --muted-foreground: 0.45 0.02 0;
+    --accent: 0.96 0.018 340;
+    --accent-foreground: 0.15 0.02 0;
+    --destructive: 0.50 0.20 25;
+    --destructive-foreground: 0.98 0.01 0;
+    --border: 0.92 0.018 340;
+    --input: 0.92 0.018 340;
+    --ring: 0.42 0.18 10;
+    --banner: 0.944 0.038 350;
+    --chart-1: 0.60 0.15 10;
+    --chart-2: 0.70 0.12 340;
+    --chart-3: 0.65 0.10 280;
+    --chart-4: 0.55 0.18 30;
+    --chart-5: 0.75 0.08 200;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 0.12 0.02 0;
+    --foreground: 0.95 0.01 0;
+    --card: 0.12 0.02 0;
+    --card-foreground: 0.95 0.01 0;
+    --popover: 0.12 0.02 0;
+    --popover-foreground: 0.95 0.01 0;
+    --primary: 0.48 0.20 10;
+    --primary-foreground: 0.98 0.01 0;
+    --secondary: 0.18 0.02 320;
+    --secondary-foreground: 0.95 0.01 0;
+    --muted: 0.18 0.02 320;
+    --muted-foreground: 0.60 0.02 0;
+    --accent: 0.18 0.02 320;
+    --accent-foreground: 0.95 0.01 0;
+    --destructive: 0.45 0.22 25;
+    --destructive-foreground: 0.98 0.01 0;
+    --border: 0.20 0.02 320;
+    --input: 0.20 0.02 320;
+    --ring: 0.48 0.20 10;
+    --chart-1: 0.55 0.18 10;
+    --chart-2: 0.65 0.15 340;
+    --chart-3: 0.60 0.12 280;
+    --chart-4: 0.50 0.20 30;
+    --chart-5: 0.70 0.10 200;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Legacy drop-target kept for compatibility */
+  .drop-target {
+    position: relative;
+  }
+
+  .drop-target::before {
+    content: '';
+    position: absolute;
+    left: -2px;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: oklch(var(--primary));
+    border-radius: 2px;
+    animation: pulse-subtle 1s ease-in-out infinite;
+  }
+
+  /* Timer tab drag animations */
+  .timer-tab-dragging {
+    cursor: grabbing !important;
+    z-index: 50;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.10);
+    transform-origin: center;
+  }
+
+  .timer-tab-slide {
+    transition: transform 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
