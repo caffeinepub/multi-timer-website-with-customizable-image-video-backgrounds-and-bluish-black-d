@@ -1,32 +1,16 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Project involves a video player interface with play/pause controls, fullscreen playback, and optional timer overlay.",
+  "summary": "Video player project with play/pause controls, spacebar support, timer overlay, and fullscreen mode that fills the screen with the user-chosen background.",
   "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-add-a-visible-play-pause-button-to-the-ui-clicking-the-button-or-pressing-the-spacebar-should-toggle-video-playback-between-playing-and-paused-states",
-      "title": "Add a visible play/pause button to the UI. Clicking the button or pressing the spacebar should toggle video playback between playing and paused states.",
+      "id": "feature-add-a-fullscreen-button-fixed-or-floating-in-the-ui-that-when-clicked-triggers-the-browser-s-fullscreen-api-on-the-background-stage-element-so-the-entire-screen-is-filled-with-the-user-s-currently-active-background-image-video-or-youtube-the-button-should-also-serve-as-an-exit-fullscreen-toggle-when-already-in-fullscreen-mode-updating-its-icon-label-accordingly-the-button-should-only-be-visible-when-a-background-is-active",
+      "title": "Add a fullscreen button (fixed or floating in the UI) that, when clicked, triggers the browser's Fullscreen API on the background stage element so the entire screen is filled with the user's currently active background (image, video, or YouTube). The button should also serve as an exit-fullscreen toggle when already in fullscreen mode, updating its icon/label accordingly. The button should only be visible when a background is active.",
       "reqIds": [
         "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-when-the-video-starts-playing-the-ui-enters-a-fullscreen-mode-that-hides-all-application-chrome-navigation-bars-panels-controls-overlays-and-shows-only-the-video-filling-the-entire-screen",
-      "title": "When the video starts playing, the UI enters a fullscreen mode that hides all application chrome (navigation bars, panels, controls, overlays) and shows only the video filling the entire screen.",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-provide-a-user-accessible-toggle-or-setting-that-lets-the-user-choose-between-two-fullscreen-playback-modes-1-plain-video-with-no-overlays-and-2-the-user-s-currently-selected-timer-displayed-as-an-overlay-on-top-of-the-fullscreen-video-the-chosen-mode-should-persist-across-sessions",
-      "title": "Provide a user-accessible toggle or setting that lets the user choose between two fullscreen playback modes: (1) plain video with no overlays, and (2) the user's currently selected timer displayed as an overlay on top of the fullscreen video. The chosen mode should persist across sessions.",
-      "reqIds": [
-        "REQ-3"
       ],
       "version": 1
     }
@@ -34,19 +18,7 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Add a play button that toggles play/pause on click or spacebar press",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "When video plays, enter fullscreen mode showing only the video (no UI chrome)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "User can choose to display a timer overlay on top of the fullscreen video or keep it plain",
+      "summary": "Add a fullscreen button that fills the entire screen with the user-chosen background color/image",
       "reqIds": [],
       "status": "pending"
     }

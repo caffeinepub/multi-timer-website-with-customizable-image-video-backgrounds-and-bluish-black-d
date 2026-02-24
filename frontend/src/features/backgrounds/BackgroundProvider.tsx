@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, useRef, useEffect } from 'react';
+import { createContext, useContext, ReactNode, useRef, useEffect, RefObject } from 'react';
 import { useBackground } from './useBackground';
 
 interface BackgroundContextValue {
@@ -12,6 +12,7 @@ interface BackgroundContextValue {
   isPlaying: boolean;
   isFullscreen: boolean;
   showTimerOverlay: boolean;
+  stageRef: RefObject<HTMLDivElement | null>;
   setBackgroundFromFile: (file: File) => void;
   setBackgroundFromUrl: (url: string) => Promise<void>;
   setBackgroundFromYouTubeUrl: (url: string) => void;

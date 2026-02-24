@@ -38,6 +38,7 @@ export const BackgroundStage = memo(function BackgroundStage() {
     clearBackground,
     isPlaying,
     togglePlayback,
+    stageRef,
   } = useBackgroundContext();
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -129,53 +130,54 @@ export const BackgroundStage = memo(function BackgroundStage() {
 
   return (
     <>
-      <div className="fixed inset-0 z-0 bg-background" />
-      
-      {backgroundUrl && mediaType === 'image' && !imageError && (
-        <>
-          <div
-            className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
-            style={{ 
-              backgroundImage: `url(${backgroundUrl})`,
-              filter: `brightness(${brightnessValue})`
-            }}
-          />
-          <img
-            src={backgroundUrl}
-            alt=""
-            className="hidden"
-            onError={handleImageError}
-          />
-        </>
-      )}
+      {/* Root stage container — ref is used by BackgroundFullscreenButton for the Fullscreen API */}
+      <div ref={stageRef} className="fixed inset-0 z-0 bg-background">
+        {backgroundUrl && mediaType === 'image' && !imageError && (
+          <>
+            <div
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+              style={{ 
+                backgroundImage: `url(${backgroundUrl})`,
+                filter: `brightness(${brightnessValue})`
+              }}
+            />
+            <img
+              src={backgroundUrl}
+              alt=""
+              className="hidden"
+              onError={handleImageError}
+            />
+          </>
+        )}
 
-      {backgroundUrl && mediaType === 'video' && !videoError && (
-        <video
-          ref={videoRef}
-          className="fixed inset-0 z-0 h-full w-full object-cover"
-          style={{ filter: `brightness(${brightnessValue})` }}
-          loop
-          muted
-          playsInline
-          onError={handleVideoError}
-        >
-          <source src={backgroundUrl} />
-        </video>
-      )}
+        {backgroundUrl && mediaType === 'video' && !videoError && (
+          <video
+            ref={videoRef}
+            className="absolute inset-0 h-full w-full object-cover"
+            style={{ filter: `brightness(${brightnessValue})` }}
+            loop
+            muted
+            playsInline
+            onError={handleVideoError}
+          >
+            <source src={backgroundUrl} />
+          </video>
+        )}
 
-      {mediaType === 'youtube' && youtubeVideoId && !youtubeError && (
-        <div 
-          className="fixed inset-0 z-0"
-          style={{ filter: `brightness(${brightnessValue})` }}
-        >
-          <YouTubeBackgroundPlayerWithControls
-            videoId={youtubeVideoId}
-            volume={youtubeVolume ?? 50}
-            isPlaying={isPlaying}
-            onError={handleYouTubeError}
-          />
-        </div>
-      )}
+        {mediaType === 'youtube' && youtubeVideoId && !youtubeError && (
+          <div 
+            className="absolute inset-0"
+            style={{ filter: `brightness(${brightnessValue})` }}
+          >
+            <YouTubeBackgroundPlayerWithControls
+              videoId={youtubeVideoId}
+              volume={youtubeVolume ?? 50}
+              isPlaying={isPlaying}
+              onError={handleYouTubeError}
+            />
+          </div>
+        )}
+      </div>
 
       {displayError && (
         <div className="fixed inset-0 z-0 flex items-center justify-center bg-background/95 backdrop-blur-sm">

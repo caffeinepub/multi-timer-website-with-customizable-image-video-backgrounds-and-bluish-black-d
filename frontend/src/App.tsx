@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { BackgroundStage } from './features/backgrounds/BackgroundStage';
 import { BackgroundProvider, useBackgroundContext } from './features/backgrounds/BackgroundProvider';
 import { BackgroundPlayButton } from './features/backgrounds/BackgroundPlayButton';
+import { BackgroundFullscreenButton } from './features/backgrounds/BackgroundFullscreenButton';
 import { MusicProvider } from './features/music/MusicProvider';
 import { MusicStage } from './features/music/MusicStage';
 import { PomodoroTimer } from './features/timers/pomodoro/PomodoroTimer';
@@ -202,6 +203,9 @@ function Layout() {
 
       {/* Floating play button — visible when video background is active but not fullscreen */}
       <BackgroundPlayButton />
+
+      {/* Floating fullscreen button — visible when any background is active */}
+      <BackgroundFullscreenButton />
 
       {/* Bottom visibility bar — always visible */}
       <TimerVisibilityBar

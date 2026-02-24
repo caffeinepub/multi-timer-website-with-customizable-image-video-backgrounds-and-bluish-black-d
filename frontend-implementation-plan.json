@@ -1,92 +1,44 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Play button with fullscreen video and optional timer overlay",
+  "title": "Add fullscreen button to fill screen with user-chosen background",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add play/pause button with spacebar toggle for video playback",
+      "summary": "Add a fullscreen button that toggles the browser's Fullscreen API on the background stage element, filling the entire screen with the user's active background (image, video, or YouTube), with appropriate icon/label updates and visibility only when a background is active",
       "acceptanceCriteria": [
-        "A play/pause button is visible in the UI.",
-        "Clicking the button toggles the video between playing and paused.",
-        "Pressing the spacebar toggles the video between playing and paused.",
-        "The button icon reflects the current state (play icon when paused, pause icon when playing)."
+        "A fullscreen button is visible in the UI when a background (image, video, or YouTube) is active.",
+        "Clicking the fullscreen button causes the browser to enter fullscreen mode, displaying only the user's chosen background filling the entire screen.",
+        "While in fullscreen mode, the button changes to indicate 'exit fullscreen' functionality.",
+        "Clicking the button again (or pressing Escape) exits fullscreen and returns to the normal app layout.",
+        "The button is not shown when no background is active.",
+        "Works correctly for all background types: image, video, and YouTube embed."
       ],
       "file_operations": [
         {
+          "path": "frontend/src/features/backgrounds/BackgroundFullscreenButton.tsx",
+          "operation": "create",
+          "description": "Create a new component that renders a fixed/floating fullscreen toggle button. The button should only render when a background is active (using the background context). Use the browser's Fullscreen API (requestFullscreen/exitFullscreen) on the background stage element reference. Track fullscreen state using the 'fullscreenchange' event listener to update the button icon/label between 'Enter Fullscreen' and 'Exit Fullscreen' states. Position the button fixed in the UI (e.g., top-right or bottom-right) and style it consistently with existing UI patterns."
+        },
+        {
           "path": "frontend/src/features/backgrounds/useBackground.ts",
           "operation": "modify",
-          "description": "Add playback state management (isPlaying boolean) to the background hook state, with play/pause/toggle methods and localStorage persistence for the playback state."
+          "description": "Extend the useBackground hook to expose a ref for the background stage element that will be used by the fullscreen button component to call requestFullscreen(). Add this ref to the hook's return value so it can be passed down through the BackgroundProvider context."
+        },
+        {
+          "path": "frontend/src/features/backgrounds/BackgroundProvider.tsx",
+          "operation": "modify",
+          "description": "Update the BackgroundProvider to expose the background stage element ref from useBackground through the context, making it available to child components including the new BackgroundFullscreenButton."
         },
         {
           "path": "frontend/src/features/backgrounds/BackgroundStage.tsx",
           "operation": "modify",
-          "description": "Wire the playback state from useBackground to control video/YouTube player play/pause, and add a global spacebar keydown listener that calls the toggle method when the background is video or YouTube."
-        },
-        {
-          "path": "frontend/src/features/backgrounds/BackgroundPlayButton.tsx",
-          "operation": "create",
-          "description": "Create a floating play/pause button component positioned over the background that reads playback state from BackgroundProvider and calls the toggle method on click, displaying a play icon when paused and pause icon when playing."
+          "description": "Attach the background stage element ref (from useBackground) to the root container div that wraps the background rendering logic, so the fullscreen button can target this element when invoking the Fullscreen API."
         },
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Render the BackgroundPlayButton component in the stable media layer section, positioned to float above the BackgroundStage."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Enter fullscreen mode showing only video when playback starts",
-      "acceptanceCriteria": [
-        "Triggering play causes the video to expand to fullscreen.",
-        "All UI elements (navigation, bottom bar, panels, play button) are hidden during fullscreen playback.",
-        "Pausing the video (via spacebar) exits fullscreen and restores the normal UI.",
-        "The video fills the entire viewport with no visible chrome."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/backgrounds/useBackground.ts",
-          "operation": "modify",
-          "description": "Add isFullscreen boolean state that automatically becomes true when playback starts and false when playback pauses, providing a computed value exposed by the hook."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Read isFullscreen from BackgroundProvider and conditionally hide the entire layout (ReorderableTimerTabs, Outlet, TimerVisibilityBar) when isFullscreen is true, showing only the BackgroundStage."
-        },
-        {
-          "path": "frontend/src/features/backgrounds/BackgroundPlayButton.tsx",
-          "operation": "modify",
-          "description": "Hide the play button component when isFullscreen is true so it does not appear during fullscreen playback."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Provide toggle between plain video and video with timer overlay during fullscreen",
-      "acceptanceCriteria": [
-        "A toggle or setting is available that switches between 'plain video' and 'video with timer overlay' modes.",
-        "In 'plain video' mode, fullscreen playback shows only the video with no overlays.",
-        "In 'video with timer overlay' mode, the user's chosen timer (e.g., countdown, pomodoro, stopwatch) is rendered on top of the fullscreen video.",
-        "The timer overlay is readable and does not obscure the entire video.",
-        "The selected mode is persisted to localStorage and restored on reload."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/backgrounds/useBackground.ts",
-          "operation": "modify",
-          "description": "Add showTimerOverlay boolean state with localStorage persistence and a toggle method, exposing both the value and toggle function from the hook."
-        },
-        {
-          "path": "frontend/src/features/backgrounds/BackgroundCustomizer.tsx",
-          "operation": "modify",
-          "description": "Add a labeled checkbox or switch control in the UI that reads showTimerOverlay from BackgroundProvider and calls the toggle method on change, labeled as 'Show timer overlay in fullscreen'."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "When isFullscreen is true and showTimerOverlay is true, render the active timer component (from the current route outlet) as an overlay positioned above the BackgroundStage with appropriate styling for visibility against video."
+          "description": "Import and render the new BackgroundFullscreenButton component inside the BackgroundProvider scope, positioned appropriately in the layout so it appears fixed/floating in the UI when a background is active. Ensure it is rendered after BackgroundStage so it appears above the background layer."
         }
       ]
     }

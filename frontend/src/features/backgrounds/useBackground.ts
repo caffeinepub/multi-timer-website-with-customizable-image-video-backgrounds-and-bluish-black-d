@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { inferMediaType, inferMediaTypeFromUrl, isValidUrl, probeImage, probeVideo, getUrlErrorMessage } from './mediaSupport';
 import { parseYouTubeUrl } from './youtubeUrl';
 
@@ -80,6 +80,9 @@ export function useBackground() {
   });
 
   const [isInitializing, setIsInitializing] = useState(true);
+
+  // Ref for the background stage element — used by the fullscreen button
+  const stageRef = useRef<HTMLDivElement>(null);
 
   // Boot-time validation of persisted background
   useEffect(() => {
@@ -360,6 +363,7 @@ export function useBackground() {
   return {
     ...state,
     isFullscreen,
+    stageRef,
     setBackgroundFromFile,
     setBackgroundFromUrl,
     setBackgroundFromYouTubeUrl,

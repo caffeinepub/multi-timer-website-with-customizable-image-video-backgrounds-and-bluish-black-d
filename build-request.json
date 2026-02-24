@@ -1,76 +1,40 @@
 {
   "kind": "build_request",
-  "title": "Play button with fullscreen video and optional timer overlay",
+  "title": "Add fullscreen button to fill screen with user-chosen background",
   "projectName": "TickTaskTime",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Add a visible play/pause button to the UI. Clicking the button or pressing the spacebar should toggle video playback between playing and paused states.",
+      "text": "Add a fullscreen button (fixed or floating in the UI) that, when clicked, triggers the browser's Fullscreen API on the background stage element so the entire screen is filled with the user's currently active background (image, video, or YouTube). The button should also serve as an exit-fullscreen toggle when already in fullscreen mode, updating its icon/label accordingly. The button should only be visible when a background is active.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-4"
         ],
         "quotes": [
-          "let there be a playbutton,and whenever I press space,or click on it, it should pause or play the video"
+          "let there be a fullscreen button, and when you click it, the whole screen should be filled with the background the user chose."
         ]
       },
       "acceptanceCriteria": [
-        "A play/pause button is visible in the UI.",
-        "Clicking the button toggles the video between playing and paused.",
-        "Pressing the spacebar toggles the video between playing and paused.",
-        "The button icon reflects the current state (play icon when paused, pause icon when playing)."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "When the video starts playing, the UI enters a fullscreen mode that hides all application chrome (navigation bars, panels, controls, overlays) and shows only the video filling the entire screen.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "when the video plays, it should be in fullscreen,not showing anything, only the video"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Triggering play causes the video to expand to fullscreen.",
-        "All UI elements (navigation, bottom bar, panels, play button) are hidden during fullscreen playback.",
-        "Pausing the video (via spacebar) exits fullscreen and restores the normal UI.",
-        "The video fills the entire viewport with no visible chrome."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Provide a user-accessible toggle or setting that lets the user choose between two fullscreen playback modes: (1) plain video with no overlays, and (2) the user's currently selected timer displayed as an overlay on top of the fullscreen video. The chosen mode should persist across sessions.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "the user should have a choice: let the video be plain, or add the timer they choose layered on top of the video"
-        ]
-      },
-      "acceptanceCriteria": [
-        "A toggle or setting is available that switches between 'plain video' and 'video with timer overlay' modes.",
-        "In 'plain video' mode, fullscreen playback shows only the video with no overlays.",
-        "In 'video with timer overlay' mode, the user's chosen timer (e.g., countdown, pomodoro, stopwatch) is rendered on top of the fullscreen video.",
-        "The timer overlay is readable and does not obscure the entire video.",
-        "The selected mode is persisted to localStorage and restored on reload."
+        "A fullscreen button is visible in the UI when a background (image, video, or YouTube) is active.",
+        "Clicking the fullscreen button causes the browser to enter fullscreen mode, displaying only the user's chosen background filling the entire screen.",
+        "While in fullscreen mode, the button changes to indicate 'exit fullscreen' functionality.",
+        "Clicking the button again (or pressing Escape) exits fullscreen and returns to the normal app layout.",
+        "The button is not shown when no background is active.",
+        "Works correctly for all background types: image, video, and YouTube embed."
       ]
     }
   ],
   "constraints": [
-    "Do not modify files listed in frontend.immutablePaths.",
-    "The fullscreen video must use the existing background video/YouTube player infrastructure (BackgroundStage, YouTubeBackgroundPlayer) rather than introducing a new media pipeline."
+    "Do not modify any files under frontend/src/hooks/ (useInternetIdentity.ts, useActor.ts) or frontend/src/main.tsx.",
+    "Do not modify files under frontend/src/components/ui.",
+    "Use the browser's native Fullscreen API (requestFullscreen / exitFullscreen) rather than CSS-only tricks."
   ],
   "nonGoals": [
-    "Adding new background sources or changing how backgrounds are set.",
-    "Modifying the timer logic or countdown behavior.",
-    "Changing the bottom bar layout beyond hiding it during fullscreen playback."
+    "Changing the background selection or customization UI.",
+    "Adding fullscreen support for the timer overlay or any non-background UI elements.",
+    "Persisting fullscreen state across page reloads."
   ],
   "imageRequirements": {
     "required": [],

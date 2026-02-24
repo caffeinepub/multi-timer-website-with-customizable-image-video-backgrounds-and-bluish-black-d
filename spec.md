@@ -1,13 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Add a play/pause button with fullscreen video playback and an optional timer overlay mode to the TickTaskTime app.
+**Goal:** Add a fullscreen toggle button that fills the entire screen with the user's currently active background.
 
 **Planned changes:**
-- Add a visible play/pause button to the UI that toggles video playback on click or spacebar press, with the icon reflecting the current state.
-- When video plays, enter fullscreen mode that hides all UI chrome (navigation, bottom bar, panels, controls) and shows only the video filling the entire viewport.
-- Pausing the video (via button click or spacebar) exits fullscreen and restores the normal UI.
-- Add a toggle/setting allowing the user to choose between two fullscreen playback modes: plain video only, or video with the currently selected timer displayed as an overlay on top.
-- Persist the chosen playback mode to localStorage and restore it on reload.
+- Add a fullscreen button (fixed/floating in the UI) that is only visible when a background (image, video, or YouTube) is active.
+- Clicking the button triggers the browser's native Fullscreen API on the background stage element.
+- The button toggles its icon/label to indicate "exit fullscreen" when already in fullscreen mode.
+- Pressing Escape or clicking the button again exits fullscreen and returns to the normal app layout.
 
-**User-visible outcome:** Users can play/pause background video with a button or spacebar, watch it fullscreen with no distractions, and optionally keep their chosen timer visible as an overlay during fullscreen playback.
+**User-visible outcome:** Users with an active background can click a fullscreen button to have their chosen background fill the entire screen, and click again (or press Escape) to exit fullscreen.
