@@ -2,14 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-fullscreen-button-fixed-or-floating-in-the-ui-that-when-clicked-triggers-the-browser-s-fullscreen-api-on-the-background-stage-element-so-the-entire-screen-is-filled-with-the-user-s-currently-active-background-image-video-or-youtube-the-button-should-also-serve-as-an-exit-fullscreen-toggle-when-already-in-fullscreen-mode-updating-its-icon-label-accordingly-the-button-should-only-be-visible-when-a-background-is-active",
-      "featureTitle": "Add a fullscreen button (fixed or floating in the UI) that, when clicked, triggers the browser's Fullscreen API on the background stage element so the entire screen is filled with the user's currently active background (image, video, or YouTube). The button should also serve as an exit-fullscreen toggle when already in fullscreen mode, updating its icon/label accordingly. The button should only be visible when a background is active.",
+      "featureId": "feature-fix-the-hide-timer-toggle-in-the-timervisibilitybar-so-that-toggling-timer-visibility-does-not-reset-or-restart-any-running-timer-countdown-stopwatch-pomodoro-interval-or-repeating-the-toggle-should-only-affect-the-visual-display-of-the-timer-panel-leaving-all-timer-state-elapsed-time-running-status-remaining-time-completely-unchanged",
+      "featureTitle": "Fix the 'hide timer' toggle in the TimerVisibilityBar so that toggling timer visibility does not reset or restart any running timer (countdown, stopwatch, pomodoro, interval, or repeating). The toggle should only affect the visual display of the timer panel, leaving all timer state (elapsed time, running status, remaining time) completely unchanged.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/features/backgrounds/BackgroundFullscreenButton.tsx",
-        "frontend/src/features/backgrounds/BackgroundProvider.tsx",
-        "frontend/src/features/backgrounds/BackgroundStage.tsx",
-        "frontend/src/features/backgrounds/useBackground.ts"
+        "frontend/src/App.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",

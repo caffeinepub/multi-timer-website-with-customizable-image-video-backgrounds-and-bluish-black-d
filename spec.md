@@ -1,12 +1,10 @@
 # Specification
 
 ## Summary
-**Goal:** Add a fullscreen toggle button that fills the entire screen with the user's currently active background.
+**Goal:** Fix the "hide timer" toggle so that toggling timer visibility does not reset or restart any running timer.
 
 **Planned changes:**
-- Add a fullscreen button (fixed/floating in the UI) that is only visible when a background (image, video, or YouTube) is active.
-- Clicking the button triggers the browser's native Fullscreen API on the background stage element.
-- The button toggles its icon/label to indicate "exit fullscreen" when already in fullscreen mode.
-- Pressing Escape or clicking the button again exits fullscreen and returns to the normal app layout.
+- Ensure the `TimerVisibilityBar` hide/show toggle only controls the visual display of the timer panel, with no effect on timer state (elapsed time, running status, remaining time)
+- Fix the bug where toggling timer visibility causes running timers (countdown, stopwatch, pomodoro, interval, repeating) to restart or reset
 
-**User-visible outcome:** Users with an active background can click a fullscreen button to have their chosen background fill the entire screen, and click again (or press Escape) to exit fullscreen.
+**User-visible outcome:** Users can hide and re-show the timer panel while a timer is running, and the timer continues uninterrupted — displaying the correct current time when the panel is revealed again.

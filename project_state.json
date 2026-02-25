@@ -1,30 +1,24 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Video player project with play/pause controls, spacebar support, timer overlay, and fullscreen mode that fills the screen with the user-chosen background.",
+  "summary": "New project",
   "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Clicking 'hide timer' toggle causes the timer to restart instead of just hiding it"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-add-a-fullscreen-button-fixed-or-floating-in-the-ui-that-when-clicked-triggers-the-browser-s-fullscreen-api-on-the-background-stage-element-so-the-entire-screen-is-filled-with-the-user-s-currently-active-background-image-video-or-youtube-the-button-should-also-serve-as-an-exit-fullscreen-toggle-when-already-in-fullscreen-mode-updating-its-icon-label-accordingly-the-button-should-only-be-visible-when-a-background-is-active",
-      "title": "Add a fullscreen button (fixed or floating in the UI) that, when clicked, triggers the browser's Fullscreen API on the background stage element so the entire screen is filled with the user's currently active background (image, video, or YouTube). The button should also serve as an exit-fullscreen toggle when already in fullscreen mode, updating its icon/label accordingly. The button should only be visible when a background is active.",
+      "id": "feature-fix-the-hide-timer-toggle-in-the-timervisibilitybar-so-that-toggling-timer-visibility-does-not-reset-or-restart-any-running-timer-countdown-stopwatch-pomodoro-interval-or-repeating-the-toggle-should-only-affect-the-visual-display-of-the-timer-panel-leaving-all-timer-state-elapsed-time-running-status-remaining-time-completely-unchanged",
+      "title": "Fix the 'hide timer' toggle in the TimerVisibilityBar so that toggling timer visibility does not reset or restart any running timer (countdown, stopwatch, pomodoro, interval, or repeating). The toggle should only affect the visual display of the timer panel, leaving all timer state (elapsed time, running status, remaining time) completely unchanged.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     }
   ],
-  "new_feature_requests": [
-    {
-      "id": "AR-1",
-      "summary": "Add a fullscreen button that fills the entire screen with the user-chosen background color/image",
-      "reqIds": [],
-      "status": "pending"
-    }
-  ],
-  "gameProjectType": "none",
-  "projectName": "TickTaskTime",
+  "new_feature_requests": [],
+  "projectName": "Fix timer restart on hide timer toggle",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

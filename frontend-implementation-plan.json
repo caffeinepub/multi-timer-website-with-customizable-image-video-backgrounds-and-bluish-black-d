@@ -1,44 +1,57 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add fullscreen button to fill screen with user-chosen background",
+  "title": "Fix timer restart on hide timer toggle",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add a fullscreen button that toggles the browser's Fullscreen API on the background stage element, filling the entire screen with the user's active background (image, video, or YouTube), with appropriate icon/label updates and visibility only when a background is active",
+      "summary": "Fix the 'hide timer' toggle so that toggling timer visibility does not reset or restart any running timer, only affecting the visual display while leaving all timer state unchanged",
       "acceptanceCriteria": [
-        "A fullscreen button is visible in the UI when a background (image, video, or YouTube) is active.",
-        "Clicking the fullscreen button causes the browser to enter fullscreen mode, displaying only the user's chosen background filling the entire screen.",
-        "While in fullscreen mode, the button changes to indicate 'exit fullscreen' functionality.",
-        "Clicking the button again (or pressing Escape) exits fullscreen and returns to the normal app layout.",
-        "The button is not shown when no background is active.",
-        "Works correctly for all background types: image, video, and YouTube embed."
+        "Starting a countdown timer and then toggling 'hide timer' does not reset the countdown or pause it unexpectedly.",
+        "Re-showing the timer panel after hiding displays the correct current time (as if it had been running in the background).",
+        "The same behavior holds for stopwatch, pomodoro, interval, and repeating timers.",
+        "The 'hide timer' toggle exclusively controls panel visibility and has no side effect on any timer state."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/backgrounds/BackgroundFullscreenButton.tsx",
-          "operation": "create",
-          "description": "Create a new component that renders a fixed/floating fullscreen toggle button. The button should only render when a background is active (using the background context). Use the browser's Fullscreen API (requestFullscreen/exitFullscreen) on the background stage element reference. Track fullscreen state using the 'fullscreenchange' event listener to update the button icon/label between 'Enter Fullscreen' and 'Exit Fullscreen' states. Position the button fixed in the UI (e.g., top-right or bottom-right) and style it consistently with existing UI patterns."
+          "path": "frontend/src/features/timers/visibility/useTimerVisibility.ts",
+          "operation": "modify",
+          "description": "Review and fix the useTimerVisibility hook to ensure toggling visibility does not trigger any timer state changes or re-renders that would reset timers. Remove or fix any side effects in the visibility toggle that might cause dependent timer components to remount or reinitialize their state."
         },
         {
-          "path": "frontend/src/features/backgrounds/useBackground.ts",
+          "path": "frontend/src/features/timers/visibility/TimerVisibilityBar.tsx",
           "operation": "modify",
-          "description": "Extend the useBackground hook to expose a ref for the background stage element that will be used by the fullscreen button component to call requestFullscreen(). Add this ref to the hook's return value so it can be passed down through the BackgroundProvider context."
-        },
-        {
-          "path": "frontend/src/features/backgrounds/BackgroundProvider.tsx",
-          "operation": "modify",
-          "description": "Update the BackgroundProvider to expose the background stage element ref from useBackground through the context, making it available to child components including the new BackgroundFullscreenButton."
-        },
-        {
-          "path": "frontend/src/features/backgrounds/BackgroundStage.tsx",
-          "operation": "modify",
-          "description": "Attach the background stage element ref (from useBackground) to the root container div that wraps the background rendering logic, so the fullscreen button can target this element when invoking the Fullscreen API."
+          "description": "Review the TimerVisibilityBar component to ensure the visibility toggle button only updates the visibility state without triggering any unintended side effects. Verify that the toggle action does not cause parent component re-renders that would unmount/remount timer components."
         },
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Import and render the new BackgroundFullscreenButton component inside the BackgroundProvider scope, positioned appropriately in the layout so it appears fixed/floating in the UI when a background is active. Ensure it is rendered after BackgroundStage so it appears above the background layer."
+          "description": "Review how timer visibility state is consumed in the root App component. Ensure that conditional rendering based on timer visibility does not unmount timer components (which would reset their state), but instead only hides them via CSS (display:none or visibility:hidden) so timers continue running in the background."
+        },
+        {
+          "path": "frontend/src/features/timers/countdown/useCountdown.ts",
+          "operation": "modify",
+          "description": "Review the useCountdown hook to ensure it does not have any dependencies on visibility state that would cause it to reinitialize when visibility toggles. Verify that localStorage persistence logic does not interfere with running timers during visibility changes."
+        },
+        {
+          "path": "frontend/src/features/timers/stopwatch/useStopwatch.ts",
+          "operation": "modify",
+          "description": "Review the useStopwatch hook to ensure it does not have any dependencies on visibility state that would cause it to reinitialize when visibility toggles. Verify that state persistence does not interfere with running timers during visibility changes."
+        },
+        {
+          "path": "frontend/src/features/timers/pomodoro/usePomodoro.ts",
+          "operation": "modify",
+          "description": "Review the usePomodoro hook to ensure it does not have any dependencies on visibility state that would cause it to reinitialize when visibility toggles. Verify that state persistence does not interfere with running timers during visibility changes."
+        },
+        {
+          "path": "frontend/src/features/timers/interval/useIntervalTimer.ts",
+          "operation": "modify",
+          "description": "Review the useIntervalTimer hook to ensure it does not have any dependencies on visibility state that would cause it to reinitialize when visibility toggles. Verify that state persistence does not interfere with running timers during visibility changes."
+        },
+        {
+          "path": "frontend/src/features/timers/repeating/useRepeatingTimer.ts",
+          "operation": "modify",
+          "description": "Review the useRepeatingTimer hook to ensure it does not have any dependencies on visibility state that would cause it to reinitialize when visibility toggles. Verify that state persistence does not interfere with running timers during visibility changes."
         }
       ]
     }

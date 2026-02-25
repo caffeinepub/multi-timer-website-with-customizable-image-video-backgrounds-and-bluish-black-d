@@ -1,40 +1,36 @@
 {
   "kind": "build_request",
-  "title": "Add fullscreen button to fill screen with user-chosen background",
-  "projectName": "TickTaskTime",
+  "title": "Fix timer restart on hide timer toggle",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Add a fullscreen button (fixed or floating in the UI) that, when clicked, triggers the browser's Fullscreen API on the background stage element so the entire screen is filled with the user's currently active background (image, video, or YouTube). The button should also serve as an exit-fullscreen toggle when already in fullscreen mode, updating its icon/label accordingly. The button should only be visible when a background is active.",
+      "text": "Fix the 'hide timer' toggle in the TimerVisibilityBar so that toggling timer visibility does not reset or restart any running timer (countdown, stopwatch, pomodoro, interval, or repeating). The toggle should only affect the visual display of the timer panel, leaving all timer state (elapsed time, running status, remaining time) completely unchanged.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-6"
         ],
         "quotes": [
-          "let there be a fullscreen button, and when you click it, the whole screen should be filled with the background the user chose."
+          "whenever I startt a timer, and click on the \"hide timer\" toggle, the timer restarts"
         ]
       },
       "acceptanceCriteria": [
-        "A fullscreen button is visible in the UI when a background (image, video, or YouTube) is active.",
-        "Clicking the fullscreen button causes the browser to enter fullscreen mode, displaying only the user's chosen background filling the entire screen.",
-        "While in fullscreen mode, the button changes to indicate 'exit fullscreen' functionality.",
-        "Clicking the button again (or pressing Escape) exits fullscreen and returns to the normal app layout.",
-        "The button is not shown when no background is active.",
-        "Works correctly for all background types: image, video, and YouTube embed."
+        "Starting a countdown timer and then toggling 'hide timer' does not reset the countdown or pause it unexpectedly.",
+        "Re-showing the timer panel after hiding displays the correct current time (as if it had been running in the background).",
+        "The same behavior holds for stopwatch, pomodoro, interval, and repeating timers.",
+        "The 'hide timer' toggle exclusively controls panel visibility and has no side effect on any timer state."
       ]
     }
   ],
   "constraints": [
-    "Do not modify any files under frontend/src/hooks/ (useInternetIdentity.ts, useActor.ts) or frontend/src/main.tsx.",
-    "Do not modify files under frontend/src/components/ui.",
-    "Use the browser's native Fullscreen API (requestFullscreen / exitFullscreen) rather than CSS-only tricks."
+    "Do not modify any files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui.",
+    "Do not change the backend."
   ],
   "nonGoals": [
-    "Changing the background selection or customization UI.",
-    "Adding fullscreen support for the timer overlay or any non-background UI elements.",
-    "Persisting fullscreen state across page reloads."
+    "Redesigning the timer visibility UI or bar layout.",
+    "Adding new timer features or controls.",
+    "Changing how timers persist to localStorage beyond what is necessary to fix the bug."
   ],
   "imageRequirements": {
     "required": [],

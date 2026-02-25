@@ -160,24 +160,27 @@ function Layout() {
         )}
 
         <main className="container mx-auto px-4 py-8">
-          {isVisible && (
-            <div className="mb-8">
-              <ReorderableTimerTabs
-                order={timerOrder}
-                activeMode={activeMode}
-                onReorder={setTimerOrder}
-                onModeChange={setActiveMode}
-              />
-              <div>
-                {activeMode === 'pomodoro' && <PomodoroTimer />}
-                {activeMode === 'stopwatch' && <StopwatchTimer />}
-                {activeMode === 'countdown' && <CountdownTimer />}
-                {activeMode === 'interval' && <IntervalTimer />}
-                {activeMode === 'repeating' && <RepeatingTimer />}
-                {activeMode === 'reminders' && <RemindersView />}
-              </div>
+          {/*
+            Timer panel is always mounted to preserve running timer state.
+            Visibility is controlled via CSS only (hidden class) so timers
+            keep ticking even when the panel is "hidden".
+          */}
+          <div className={isVisible ? 'mb-8' : 'hidden'}>
+            <ReorderableTimerTabs
+              order={timerOrder}
+              activeMode={activeMode}
+              onReorder={setTimerOrder}
+              onModeChange={setActiveMode}
+            />
+            <div>
+              {activeMode === 'pomodoro' && <PomodoroTimer />}
+              {activeMode === 'stopwatch' && <StopwatchTimer />}
+              {activeMode === 'countdown' && <CountdownTimer />}
+              {activeMode === 'interval' && <IntervalTimer />}
+              {activeMode === 'repeating' && <RepeatingTimer />}
+              {activeMode === 'reminders' && <RemindersView />}
             </div>
-          )}
+          </div>
         </main>
 
         {isVisible && !hasActiveBackground && (

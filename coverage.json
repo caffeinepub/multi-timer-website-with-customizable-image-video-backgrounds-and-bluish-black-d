@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-24T19:45:18.786Z",
+  "generatedAt": "2026-02-25T01:50:53.693Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -12,20 +12,19 @@
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Add a fullscreen button (fixed or floating in the UI) that, when clicked, triggers the browser's Fullscreen API on the background stage element so the entire screen is filled with the user's currently active background (image, video, or YouTube). The button should also serve as an exit-fullscreen toggle when already in fullscreen mode, updating its icon/label accordingly. The button should only be visible when a background is active.",
+        "summary": "Fix the 'hide timer' toggle in the TimerVisibilityBar so that toggling timer visibility does not reset or restart any running timer (countdown, stopwatch, pomodoro, interval, or repeating). The toggle should only affect the visual display of the timer panel, leaving all timer state (elapsed time, running status, remaining time) completely unchanged.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/backgrounds/BackgroundFullscreenButton.tsx",
-          "frontend/src/features/backgrounds/useBackground.ts",
-          "frontend/src/features/backgrounds/BackgroundProvider.tsx",
-          "frontend/src/features/backgrounds/BackgroundStage.tsx",
-          "frontend/src/App.tsx"
+          "frontend/src/features/timers/visibility/useTimerVisibility.ts",
+          "frontend/src/features/timers/visibility/TimerVisibilityBar.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/features/timers/countdown/useCountdown.ts",
+          "frontend/src/features/timers/stopwatch/useStopwatch.ts",
+          "frontend/src/features/timers/pomodoro/usePomodoro.ts",
+          "frontend/src/features/timers/interval/useIntervalTimer.ts",
+          "frontend/src/features/timers/repeating/useRepeatingTimer.ts"
         ],
         "matchedFiles": [
-          "frontend/src/features/backgrounds/BackgroundFullscreenButton.tsx",
-          "frontend/src/features/backgrounds/useBackground.ts",
-          "frontend/src/features/backgrounds/BackgroundProvider.tsx",
-          "frontend/src/features/backgrounds/BackgroundStage.tsx",
           "frontend/src/App.tsx"
         ]
       }
@@ -37,10 +36,6 @@
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
     "frontend/src/App.tsx",
-    "frontend/src/features/backgrounds/BackgroundFullscreenButton.tsx",
-    "frontend/src/features/backgrounds/BackgroundProvider.tsx",
-    "frontend/src/features/backgrounds/BackgroundStage.tsx",
-    "frontend/src/features/backgrounds/useBackground.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",
