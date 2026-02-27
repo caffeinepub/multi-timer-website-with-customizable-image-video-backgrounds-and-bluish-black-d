@@ -1,7 +1,7 @@
 // Alert sound options and safe playback utilities
 import { playYouTubeSound, isYouTubeUrl } from '../sounds/youtubeSoundPlayer';
 
-export type AlertSoundOption = 'off' | 'beep' | 'chime' | 'bell' | string; // string for custom sound IDs
+export type AlertSoundOption = 'off' | 'beep' | 'chime' | 'bell' | 'ping' | string; // string for custom sound IDs
 
 export interface AlertSound {
   id: AlertSoundOption;
@@ -14,6 +14,7 @@ export const ALERT_SOUNDS: AlertSound[] = [
   { id: 'beep', label: 'Beep', description: 'Simple beep tone' },
   { id: 'chime', label: 'Chime', description: 'Pleasant chime' },
   { id: 'bell', label: 'Bell', description: 'Bell ring' },
+  { id: 'ping', label: 'Ping', description: 'Short ping tone' },
 ];
 
 /**
@@ -44,6 +45,9 @@ export async function playAlertSound(soundId: AlertSoundOption, customSoundUrl?:
         break;
       case 'bell':
         await playBell(audioContext);
+        break;
+      case 'ping':
+        await playPing(audioContext);
         break;
       default:
         return false;
@@ -148,4 +152,27 @@ async function playBell(audioContext: AudioContext): Promise<void> {
   
   // Wait for sound to finish
   await new Promise(resolve => setTimeout(resolve, 1200));
+}
+
+async function playPing(audioContext: AudioContext): Promise<void> {
+  // Short, crisp ping tone — high frequency with fast attack and quick decay
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  oscillator.frequency.value = 1046.5; // C6 — bright, clear ping
+  oscillator.type = 'sine';
+
+  const now = audioContext.currentTime;
+  // Very fast attack, then quick exponential decay
+  gainNode.gain.setValueAtTime(0, now);
+  gainNode.gain.linearRampToValueAtTime(0.4, now + 0.005); // 5ms attack
+  gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.35); // 350ms decay
+
+  oscillator.start(now);
+  oscillator.stop(now + 0.35);
+
+  await new Promise(resolve => setTimeout(resolve, 380));
 }

@@ -10,9 +10,15 @@ import {
   type CustomSound,
 } from './customSoundsStorage';
 import { playYouTubeSound, stopYouTubeSound, isYouTubeUrl } from './youtubeSoundPlayer';
+import { safeGetItem, safeSetItem } from '@/lib/safeStorage';
+
+const VOLUME_STORAGE_KEY = 'custom-sounds-volume';
+const DEFAULT_VOLUME = 0.8;
 
 interface CustomSoundsContextType {
   sounds: CustomSound[];
+  volume: number;
+  setVolume: (volume: number) => void;
   addSound: (name: string, url: string) => boolean;
   addSoundFromFile: (name: string, file: File) => Promise<boolean>;
   updateSound: (id: string, name: string, url: string) => boolean;
@@ -26,6 +32,16 @@ const CustomSoundsContext = createContext<CustomSoundsContextType | undefined>(u
 
 export function CustomSoundsProvider({ children }: { children: React.ReactNode }) {
   const [sounds, setSounds] = useState<CustomSound[]>(() => loadCustomSounds());
+  const [volume, setVolumeState] = useState<number>(() => {
+    const stored = safeGetItem(VOLUME_STORAGE_KEY);
+    if (stored !== null) {
+      const parsed = parseFloat(stored);
+      if (!isNaN(parsed) && parsed >= 0 && parsed <= 1) {
+        return parsed;
+      }
+    }
+    return DEFAULT_VOLUME;
+  });
 
   // Persist to localStorage whenever sounds change
   useEffect(() => {
@@ -34,6 +50,12 @@ export function CustomSoundsProvider({ children }: { children: React.ReactNode }
       toast.error(result.error);
     }
   }, [sounds]);
+
+  const setVolume = useCallback((newVolume: number) => {
+    const clamped = Math.max(0, Math.min(1, newVolume));
+    setVolumeState(clamped);
+    safeSetItem(VOLUME_STORAGE_KEY, String(clamped));
+  }, []);
 
   const addSound = useCallback((name: string, url: string): boolean => {
     if (!canAddMoreSounds(sounds.length)) {
@@ -155,7 +177,8 @@ export function CustomSoundsProvider({ children }: { children: React.ReactNode }
 
       // Check if it's a YouTube URL
       if (isYouTubeUrl(url)) {
-        const success = await playYouTubeSound(url, 50, 2000);
+        const ytVolume = Math.round(volume * 100);
+        const success = await playYouTubeSound(url, ytVolume, 2000);
         if (!success) {
           toast.error('Failed to play YouTube sound. The URL may be invalid or the video may be unavailable.');
         }
@@ -164,7 +187,7 @@ export function CustomSoundsProvider({ children }: { children: React.ReactNode }
 
       // Otherwise, play as direct audio
       const audio = new Audio(url);
-      audio.volume = 0.5;
+      audio.volume = volume;
       await audio.play();
       
       // Auto-stop after 2 seconds
@@ -176,7 +199,7 @@ export function CustomSoundsProvider({ children }: { children: React.ReactNode }
       console.error('Failed to preview sound:', error);
       toast.error('Failed to play sound. The URL may be invalid or unreachable.');
     }
-  }, []);
+  }, [volume]);
 
   const canAddMore = canAddMoreSounds(sounds.length);
 
@@ -184,6 +207,8 @@ export function CustomSoundsProvider({ children }: { children: React.ReactNode }
     <CustomSoundsContext.Provider
       value={{
         sounds,
+        volume,
+        setVolume,
         addSound,
         addSoundFromFile,
         updateSound,

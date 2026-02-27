@@ -1,57 +1,49 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix timer restart on hide timer toggle",
+  "title": "Add ping alarm sound and volume control to sound panel",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Fix the 'hide timer' toggle so that toggling timer visibility does not reset or restart any running timer, only affecting the visual display while leaving all timer state unchanged",
+      "summary": "Add a 'ping' sound option for timer alarm completion synthesized via Web Audio API",
       "acceptanceCriteria": [
-        "Starting a countdown timer and then toggling 'hide timer' does not reset the countdown or pause it unexpectedly.",
-        "Re-showing the timer panel after hiding displays the correct current time (as if it had been running in the background).",
-        "The same behavior holds for stopwatch, pomodoro, interval, and repeating timers.",
-        "The 'hide timer' toggle exclusively controls panel visibility and has no side effect on any timer state."
+        "A 'Ping' option appears in the alert sound selector in TimerAlertSettings.",
+        "When 'Ping' is selected and a timer completes, a short ping tone plays via the Web Audio API.",
+        "The ping sound can be previewed from the alert settings UI.",
+        "No external audio files are required; the ping tone is synthesized in-browser."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/timers/visibility/useTimerVisibility.ts",
+          "path": "frontend/src/features/alerts/alertSounds.ts",
           "operation": "modify",
-          "description": "Review and fix the useTimerVisibility hook to ensure toggling visibility does not trigger any timer state changes or re-renders that would reset timers. Remove or fix any side effects in the visibility toggle that might cause dependent timer components to remount or reinitialize their state."
+          "description": "Add 'ping' to the ALERT_SOUNDS array as a new option. Implement ping tone synthesis in the playAlertSound function using the Web Audio API (OscillatorNode with a frequency around 800-1000 Hz, short envelope with quick attack and decay). Ensure the ping case is handled in the switch statement alongside existing beep, chime, and bell options."
         },
         {
-          "path": "frontend/src/features/timers/visibility/TimerVisibilityBar.tsx",
+          "path": "frontend/src/features/alerts/TimerAlertSettings.tsx",
           "operation": "modify",
-          "description": "Review the TimerVisibilityBar component to ensure the visibility toggle button only updates the visibility state without triggering any unintended side effects. Verify that the toggle action does not cause parent component re-renders that would unmount/remount timer components."
+          "description": "Update the alert sound selector UI to include the new 'Ping' option in the dropdown/select element. Ensure the ping sound can be previewed when selected using the existing preview mechanism."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Add a volume control slider to the sound customization panel with localStorage persistence",
+      "acceptanceCriteria": [
+        "A volume slider is visible in SoundCustomizationPanel.",
+        "Adjusting the slider changes the playback volume for sound previews in real time.",
+        "The volume value persists across page reloads via localStorage.",
+        "The slider range is 0–100 (or 0.0–1.0 internally) with a sensible default (e.g., 80%)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/sounds/CustomSoundsProvider.tsx",
+          "operation": "modify",
+          "description": "Add volume state to the CustomSoundsContext (default 0.8 or 80%). Add a setVolume function to update volume state. Load volume from localStorage on mount and persist it when changed. Apply the volume value when playing sounds in the previewSound function (for Audio elements, set element.volume; for YouTube, pass volume to the player API)."
         },
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/features/sounds/SoundCustomizationPanel.tsx",
           "operation": "modify",
-          "description": "Review how timer visibility state is consumed in the root App component. Ensure that conditional rendering based on timer visibility does not unmount timer components (which would reset their state), but instead only hides them via CSS (display:none or visibility:hidden) so timers continue running in the background."
-        },
-        {
-          "path": "frontend/src/features/timers/countdown/useCountdown.ts",
-          "operation": "modify",
-          "description": "Review the useCountdown hook to ensure it does not have any dependencies on visibility state that would cause it to reinitialize when visibility toggles. Verify that localStorage persistence logic does not interfere with running timers during visibility changes."
-        },
-        {
-          "path": "frontend/src/features/timers/stopwatch/useStopwatch.ts",
-          "operation": "modify",
-          "description": "Review the useStopwatch hook to ensure it does not have any dependencies on visibility state that would cause it to reinitialize when visibility toggles. Verify that state persistence does not interfere with running timers during visibility changes."
-        },
-        {
-          "path": "frontend/src/features/timers/pomodoro/usePomodoro.ts",
-          "operation": "modify",
-          "description": "Review the usePomodoro hook to ensure it does not have any dependencies on visibility state that would cause it to reinitialize when visibility toggles. Verify that state persistence does not interfere with running timers during visibility changes."
-        },
-        {
-          "path": "frontend/src/features/timers/interval/useIntervalTimer.ts",
-          "operation": "modify",
-          "description": "Review the useIntervalTimer hook to ensure it does not have any dependencies on visibility state that would cause it to reinitialize when visibility toggles. Verify that state persistence does not interfere with running timers during visibility changes."
-        },
-        {
-          "path": "frontend/src/features/timers/repeating/useRepeatingTimer.ts",
-          "operation": "modify",
-          "description": "Review the useRepeatingTimer hook to ensure it does not have any dependencies on visibility state that would cause it to reinitialize when visibility toggles. Verify that state persistence does not interfere with running timers during visibility changes."
+          "description": "Add a volume slider control (using a Slider component from the UI library) to the SoundCustomizationPanel UI. Wire the slider to the volume state from CustomSoundsContext. Display the current volume percentage (e.g., '80%'). Ensure volume changes are applied immediately to previewed sounds."
         }
       ]
     }

@@ -1,36 +1,56 @@
 {
   "kind": "build_request",
-  "title": "Fix timer restart on hide timer toggle",
+  "title": "Add ping alarm sound and volume control to sound panel",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Fix the 'hide timer' toggle in the TimerVisibilityBar so that toggling timer visibility does not reset or restart any running timer (countdown, stopwatch, pomodoro, interval, or repeating). The toggle should only affect the visual display of the timer panel, leaving all timer state (elapsed time, running status, remaining time) completely unchanged.",
+      "text": "Add a 'ping' sound option for timer alarm completion. When any timer completes and the alert sound is set to trigger, play a short, crisp ping tone synthesized via the Web Audio API. Register this as a named option (e.g., 'ping') within the existing alert sound options in `frontend/src/features/alerts/alertSounds.ts` and implement the tone generation in the `playAlertSound` utility.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-3"
         ],
         "quotes": [
-          "whenever I startt a timer, and click on the \"hide timer\" toggle, the timer restarts"
+          "can you make there be a ping sound when the alarm goes off"
         ]
       },
       "acceptanceCriteria": [
-        "Starting a countdown timer and then toggling 'hide timer' does not reset the countdown or pause it unexpectedly.",
-        "Re-showing the timer panel after hiding displays the correct current time (as if it had been running in the background).",
-        "The same behavior holds for stopwatch, pomodoro, interval, and repeating timers.",
-        "The 'hide timer' toggle exclusively controls panel visibility and has no side effect on any timer state."
+        "A 'Ping' option appears in the alert sound selector in TimerAlertSettings.",
+        "When 'Ping' is selected and a timer completes, a short ping tone plays via the Web Audio API.",
+        "The ping sound can be previewed from the alert settings UI.",
+        "No external audio files are required; the ping tone is synthesized in-browser."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Add a volume control slider to the sound panel (SoundCustomizationPanel). The slider should control the playback volume of custom sounds when they are previewed. Persist the volume setting to localStorage and apply it whenever a sound is played via `CustomSoundsProvider`.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "in the sound panel, can you make there be a volume control"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A volume slider is visible in SoundCustomizationPanel.",
+        "Adjusting the slider changes the playback volume for sound previews in real time.",
+        "The volume value persists across page reloads via localStorage.",
+        "The slider range is 0–100 (or 0.0–1.0 internally) with a sensible default (e.g., 80%)."
       ]
     }
   ],
   "constraints": [
-    "Do not modify any files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui.",
-    "Do not change the backend."
+    "Do not modify any files under frontend/src/hooks/ or frontend/src/components/ui.",
+    "Ping tone must be synthesized using the Web Audio API — no external audio file assets required.",
+    "Maintain backward compatibility with existing alert sound options (off, beep, chime, bell, custom)."
   ],
   "nonGoals": [
-    "Redesigning the timer visibility UI or bar layout.",
-    "Adding new timer features or controls.",
-    "Changing how timers persist to localStorage beyond what is necessary to fix the bug."
+    "Changing the overall visual design or layout of the app.",
+    "Adding volume control to the alert/timer sound panel (only the custom sounds panel needs it).",
+    "Implementing any backend changes."
   ],
   "imageRequirements": {
     "required": [],

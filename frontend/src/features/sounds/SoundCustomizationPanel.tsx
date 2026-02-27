@@ -4,16 +4,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Slider } from '@/components/ui/slider';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCustomSounds } from './CustomSoundsProvider';
 import { useSoundPanelVisibility } from './useSoundPanelVisibility';
-import { Plus, Play, Pencil, Trash2, Music, GripVertical, Upload, Link as LinkIcon, ChevronUp, ChevronDown } from 'lucide-react';
+import { Plus, Play, Pencil, Trash2, Music, GripVertical, Upload, Link as LinkIcon, ChevronUp, ChevronDown, Volume2 } from 'lucide-react';
 import { getMaxCustomSounds } from './customSoundsStorage';
 import type { CustomSound } from './customSoundsStorage';
 
 export function SoundCustomizationPanel() {
-  const { sounds, addSound, addSoundFromFile, updateSound, removeSound, reorderSounds, previewSound, canAddMore } = useCustomSounds();
+  const { sounds, volume, setVolume, addSound, addSoundFromFile, updateSound, removeSound, reorderSounds, previewSound, canAddMore } = useCustomSounds();
   const { isVisible, toggle } = useSoundPanelVisibility();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -200,91 +201,109 @@ export function SoundCustomizationPanel() {
                       ({sounds.length}/{getMaxCustomSounds()})
                     </span>
                   </div>
-                  <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button size="sm" disabled={!canAddMore} className="gap-1 h-6 text-xs px-2">
-                        <Plus className="h-3 w-3" />
-                        Add
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Add Custom Sound</DialogTitle>
-                        <DialogDescription>
-                          Add a custom sound by URL (including YouTube links) or upload an audio file.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <Tabs value={addMode} onValueChange={(v) => setAddMode(v as 'url' | 'upload')}>
-                        <TabsList className="grid w-full grid-cols-2">
-                          <TabsTrigger value="url">
-                            <LinkIcon className="mr-2 h-4 w-4" />
-                            URL
-                          </TabsTrigger>
-                          <TabsTrigger value="upload">
-                            <Upload className="mr-2 h-4 w-4" />
-                            Upload
-                          </TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="url" className="space-y-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="sound-name">Name</Label>
-                            <Input
-                              id="sound-name"
-                              placeholder="My Custom Sound"
-                              value={formName}
-                              onChange={(e) => setFormName(e.target.value)}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="sound-url">URL</Label>
-                            <Input
-                              id="sound-url"
-                              placeholder="https://example.com/sound.mp3 or YouTube URL"
-                              value={formUrl}
-                              onChange={(e) => setFormUrl(e.target.value)}
-                            />
-                          </div>
-                        </TabsContent>
-                        <TabsContent value="upload" className="space-y-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="sound-name-upload">Name</Label>
-                            <Input
-                              id="sound-name-upload"
-                              placeholder="My Custom Sound"
-                              value={formName}
-                              onChange={(e) => setFormName(e.target.value)}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="sound-file">Audio File</Label>
-                            <Input
-                              id="sound-file"
-                              type="file"
-                              accept="audio/*"
-                              ref={fileInputRef}
-                              onChange={handleFileChange}
-                            />
-                            {selectedFile && (
-                              <p className="text-sm text-muted-foreground">
-                                Selected: {selectedFile.name}
-                              </p>
-                            )}
-                          </div>
-                        </TabsContent>
-                      </Tabs>
-                      <DialogFooter>
-                        {addMode === 'url' ? (
-                          <Button onClick={handleAddUrl} disabled={!formName.trim() || !formUrl.trim()}>
-                            Add Sound
-                          </Button>
-                        ) : (
-                          <Button onClick={handleAddFile} disabled={!selectedFile}>
-                            Upload Sound
-                          </Button>
-                        )}
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                  <div className="flex items-center gap-2">
+                    {/* Volume control */}
+                    <div className="flex items-center gap-1.5">
+                      <Volume2 className="h-3 w-3 text-muted-foreground shrink-0" />
+                      <Slider
+                        min={0}
+                        max={100}
+                        step={1}
+                        value={[Math.round(volume * 100)]}
+                        onValueChange={([val]) => setVolume(val / 100)}
+                        className="w-20"
+                        aria-label="Preview volume"
+                      />
+                      <span className="text-[10px] text-muted-foreground w-7 text-right">
+                        {Math.round(volume * 100)}%
+                      </span>
+                    </div>
+                    <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button size="sm" disabled={!canAddMore} className="gap-1 h-6 text-xs px-2">
+                          <Plus className="h-3 w-3" />
+                          Add
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Add Custom Sound</DialogTitle>
+                          <DialogDescription>
+                            Add a custom sound by URL (including YouTube links) or upload an audio file.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <Tabs value={addMode} onValueChange={(v) => setAddMode(v as 'url' | 'upload')}>
+                          <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="url">
+                              <LinkIcon className="mr-2 h-4 w-4" />
+                              URL
+                            </TabsTrigger>
+                            <TabsTrigger value="upload">
+                              <Upload className="mr-2 h-4 w-4" />
+                              Upload
+                            </TabsTrigger>
+                          </TabsList>
+                          <TabsContent value="url" className="space-y-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="sound-name">Name</Label>
+                              <Input
+                                id="sound-name"
+                                placeholder="My Custom Sound"
+                                value={formName}
+                                onChange={(e) => setFormName(e.target.value)}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="sound-url">URL</Label>
+                              <Input
+                                id="sound-url"
+                                placeholder="https://example.com/sound.mp3 or YouTube URL"
+                                value={formUrl}
+                                onChange={(e) => setFormUrl(e.target.value)}
+                              />
+                            </div>
+                          </TabsContent>
+                          <TabsContent value="upload" className="space-y-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="sound-name-upload">Name</Label>
+                              <Input
+                                id="sound-name-upload"
+                                placeholder="My Custom Sound"
+                                value={formName}
+                                onChange={(e) => setFormName(e.target.value)}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="sound-file">Audio File</Label>
+                              <Input
+                                id="sound-file"
+                                type="file"
+                                accept="audio/*"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                              />
+                              {selectedFile && (
+                                <p className="text-sm text-muted-foreground">
+                                  Selected: {selectedFile.name}
+                                </p>
+                              )}
+                            </div>
+                          </TabsContent>
+                        </Tabs>
+                        <DialogFooter>
+                          {addMode === 'url' ? (
+                            <Button onClick={handleAddUrl} disabled={!formName.trim() || !formUrl.trim()}>
+                              Add Sound
+                            </Button>
+                          ) : (
+                            <Button onClick={handleAddFile} disabled={!selectedFile}>
+                              Upload Sound
+                            </Button>
+                          )}
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="px-0 py-0.5">

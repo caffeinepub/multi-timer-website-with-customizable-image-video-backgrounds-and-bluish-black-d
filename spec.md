@@ -1,10 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Fix the "hide timer" toggle so that toggling timer visibility does not reset or restart any running timer.
+**Goal:** Add a "ping" alarm sound option and a volume control slider to the sound customization panel.
 
 **Planned changes:**
-- Ensure the `TimerVisibilityBar` hide/show toggle only controls the visual display of the timer panel, with no effect on timer state (elapsed time, running status, remaining time)
-- Fix the bug where toggling timer visibility causes running timers (countdown, stopwatch, pomodoro, interval, repeating) to restart or reset
+- Add a "Ping" sound option to the alert sound selector, synthesized via the Web Audio API (no external audio files), and ensure it can be previewed from the alert settings UI
+- Register the ping tone in `alertSounds.ts` and implement tone generation in the `playAlertSound` utility
+- Add a volume slider to `SoundCustomizationPanel` that controls playback volume for custom sound previews in real time
+- Persist the volume setting to localStorage and apply it whenever a sound is played via `CustomSoundsProvider`
 
-**User-visible outcome:** Users can hide and re-show the timer panel while a timer is running, and the timer continues uninterrupted — displaying the correct current time when the panel is revealed again.
+**User-visible outcome:** Users can select a "Ping" tone as their timer alarm sound, and a volume slider in the sound panel lets them adjust and persist the playback volume for custom sounds.
