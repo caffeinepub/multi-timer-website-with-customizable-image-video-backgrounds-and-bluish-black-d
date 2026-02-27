@@ -1,49 +1,21 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add ping alarm sound and volume control to sound panel",
+  "title": "Rename app to TickTockTask",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add a 'ping' sound option for timer alarm completion synthesized via Web Audio API",
+      "summary": "Update the APP_NAME constant in branding.ts to 'TickTockTask'",
       "acceptanceCriteria": [
-        "A 'Ping' option appears in the alert sound selector in TimerAlertSettings.",
-        "When 'Ping' is selected and a timer completes, a short ping tone plays via the Web Audio API.",
-        "The ping sound can be previewed from the alert settings UI.",
-        "No external audio files are required; the ping tone is synthesized in-browser."
+        "The APP_NAME constant in frontend/src/branding.ts is set to 'TickTockTask'.",
+        "All UI locations that reference APP_NAME display 'TickTockTask'.",
+        "The browser tab title (index.html or derived from APP_NAME) reflects 'TickTockTask'."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/alerts/alertSounds.ts",
+          "path": "frontend/src/branding.ts",
           "operation": "modify",
-          "description": "Add 'ping' to the ALERT_SOUNDS array as a new option. Implement ping tone synthesis in the playAlertSound function using the Web Audio API (OscillatorNode with a frequency around 800-1000 Hz, short envelope with quick attack and decay). Ensure the ping case is handled in the switch statement alongside existing beep, chime, and bell options."
-        },
-        {
-          "path": "frontend/src/features/alerts/TimerAlertSettings.tsx",
-          "operation": "modify",
-          "description": "Update the alert sound selector UI to include the new 'Ping' option in the dropdown/select element. Ensure the ping sound can be previewed when selected using the existing preview mechanism."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Add a volume control slider to the sound customization panel with localStorage persistence",
-      "acceptanceCriteria": [
-        "A volume slider is visible in SoundCustomizationPanel.",
-        "Adjusting the slider changes the playback volume for sound previews in real time.",
-        "The volume value persists across page reloads via localStorage.",
-        "The slider range is 0–100 (or 0.0–1.0 internally) with a sensible default (e.g., 80%)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/sounds/CustomSoundsProvider.tsx",
-          "operation": "modify",
-          "description": "Add volume state to the CustomSoundsContext (default 0.8 or 80%). Add a setVolume function to update volume state. Load volume from localStorage on mount and persist it when changed. Apply the volume value when playing sounds in the previewSound function (for Audio elements, set element.volume; for YouTube, pass volume to the player API)."
-        },
-        {
-          "path": "frontend/src/features/sounds/SoundCustomizationPanel.tsx",
-          "operation": "modify",
-          "description": "Add a volume slider control (using a Slider component from the UI library) to the SoundCustomizationPanel UI. Wire the slider to the volume state from CustomSoundsContext. Display the current volume percentage (e.g., '80%'). Ensure volume changes are applied immediately to previewed sounds."
+          "description": "Change the APP_NAME constant from its current value ('TickTaskTime') to 'TickTockTask'. This single change will propagate the new name throughout the application wherever APP_NAME is referenced."
         }
       ]
     }

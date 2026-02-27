@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-ping-sound-option-for-timer-alarm-completion-when-any-timer-completes-and-the-alert-sound-is-set-to-trigger-play-a-short-crisp-ping-tone-synthesized-via-the-web-audio-api-register-this-as-a-named-option-e-g-ping-within-the-existing-alert-sound-options-in-frontend-src-features-alerts-alertsounds-ts-and-implement-the-tone-generation-in-the-playalertsound-utility",
-      "featureTitle": "Add a 'ping' sound option for timer alarm completion. When any timer completes and the alert sound is set to trigger, play a short, crisp ping tone synthesized via the Web Audio API. Register this as a named option (e.g., 'ping') within the existing alert sound options in `frontend/src/features/alerts/alertSounds.ts` and implement the tone generation in the `playAlertSound` utility.",
+      "featureId": "feature-update-the-app-name-constant-in-frontend-src-branding-ts-from-its-current-value-to-ticktocktask",
+      "featureTitle": "Update the APP_NAME constant in `frontend/src/branding.ts` from its current value to 'TickTockTask'.",
       "files": [
-        "frontend/src/features/alerts/alertSounds.ts"
+        "frontend/src/branding.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -16,25 +16,6 @@
       ],
       "testIds": [
         "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-volume-control-slider-to-the-sound-panel-soundcustomizationpanel-the-slider-should-control-the-playback-volume-of-custom-sounds-when-they-are-previewed-persist-the-volume-setting-to-localstorage-and-apply-it-whenever-a-sound-is-played-via-customsoundsprovider",
-      "featureTitle": "Add a volume control slider to the sound panel (SoundCustomizationPanel). The slider should control the playback volume of custom sounds when they are previewed. Persist the volume setting to localStorage and apply it whenever a sound is played via `CustomSoundsProvider`.",
-      "files": [
-        "frontend/src/features/sounds/CustomSoundsProvider.tsx",
-        "frontend/src/features/sounds/SoundCustomizationPanel.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
       ],
       "confidence": "high"
     }

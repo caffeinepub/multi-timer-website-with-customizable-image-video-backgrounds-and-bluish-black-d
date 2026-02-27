@@ -1,56 +1,31 @@
 {
   "kind": "build_request",
-  "title": "Add ping alarm sound and volume control to sound panel",
+  "title": "Rename app to TickTockTask",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Add a 'ping' sound option for timer alarm completion. When any timer completes and the alert sound is set to trigger, play a short, crisp ping tone synthesized via the Web Audio API. Register this as a named option (e.g., 'ping') within the existing alert sound options in `frontend/src/features/alerts/alertSounds.ts` and implement the tone generation in the `playAlertSound` utility.",
+      "text": "Update the APP_NAME constant in `frontend/src/branding.ts` from its current value to 'TickTockTask'.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-3"
+          "msg-8"
         ],
         "quotes": [
-          "can you make there be a ping sound when the alarm goes off"
+          "ticktocktask"
         ]
       },
       "acceptanceCriteria": [
-        "A 'Ping' option appears in the alert sound selector in TimerAlertSettings.",
-        "When 'Ping' is selected and a timer completes, a short ping tone plays via the Web Audio API.",
-        "The ping sound can be previewed from the alert settings UI.",
-        "No external audio files are required; the ping tone is synthesized in-browser."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Add a volume control slider to the sound panel (SoundCustomizationPanel). The slider should control the playback volume of custom sounds when they are previewed. Persist the volume setting to localStorage and apply it whenever a sound is played via `CustomSoundsProvider`.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-3"
-        ],
-        "quotes": [
-          "in the sound panel, can you make there be a volume control"
-        ]
-      },
-      "acceptanceCriteria": [
-        "A volume slider is visible in SoundCustomizationPanel.",
-        "Adjusting the slider changes the playback volume for sound previews in real time.",
-        "The volume value persists across page reloads via localStorage.",
-        "The slider range is 0–100 (or 0.0–1.0 internally) with a sensible default (e.g., 80%)."
+        "The APP_NAME constant in frontend/src/branding.ts is set to 'TickTockTask'.",
+        "All UI locations that reference APP_NAME display 'TickTockTask'.",
+        "The browser tab title (index.html or derived from APP_NAME) reflects 'TickTockTask'."
       ]
     }
   ],
-  "constraints": [
-    "Do not modify any files under frontend/src/hooks/ or frontend/src/components/ui.",
-    "Ping tone must be synthesized using the Web Audio API — no external audio file assets required.",
-    "Maintain backward compatibility with existing alert sound options (off, beep, chime, bell, custom)."
-  ],
+  "constraints": [],
   "nonGoals": [
-    "Changing the overall visual design or layout of the app.",
-    "Adding volume control to the alert/timer sound panel (only the custom sounds panel needs it).",
-    "Implementing any backend changes."
+    "Changing any backend logic or data models.",
+    "Altering visual design, colors, or layout."
   ],
   "imageRequirements": {
     "required": [],

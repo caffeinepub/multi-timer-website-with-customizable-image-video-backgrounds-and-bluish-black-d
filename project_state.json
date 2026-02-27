@@ -1,44 +1,22 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Project with an alarm feature that plays a ping sound and has a sound panel with volume control.",
+  "summary": "New project",
   "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-add-a-ping-sound-option-for-timer-alarm-completion-when-any-timer-completes-and-the-alert-sound-is-set-to-trigger-play-a-short-crisp-ping-tone-synthesized-via-the-web-audio-api-register-this-as-a-named-option-e-g-ping-within-the-existing-alert-sound-options-in-frontend-src-features-alerts-alertsounds-ts-and-implement-the-tone-generation-in-the-playalertsound-utility",
-      "title": "Add a 'ping' sound option for timer alarm completion. When any timer completes and the alert sound is set to trigger, play a short, crisp ping tone synthesized via the Web Audio API. Register this as a named option (e.g., 'ping') within the existing alert sound options in `frontend/src/features/alerts/alertSounds.ts` and implement the tone generation in the `playAlertSound` utility.",
+      "id": "feature-update-the-app-name-constant-in-frontend-src-branding-ts-from-its-current-value-to-ticktocktask",
+      "title": "Update the APP_NAME constant in `frontend/src/branding.ts` from its current value to 'TickTockTask'.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
-    },
-    {
-      "id": "feature-add-a-volume-control-slider-to-the-sound-panel-soundcustomizationpanel-the-slider-should-control-the-playback-volume-of-custom-sounds-when-they-are-previewed-persist-the-volume-setting-to-localstorage-and-apply-it-whenever-a-sound-is-played-via-customsoundsprovider",
-      "title": "Add a volume control slider to the sound panel (SoundCustomizationPanel). The slider should control the playback volume of custom sounds when they are previewed. Persist the volume setting to localStorage and apply it whenever a sound is played via `CustomSoundsProvider`.",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
     }
   ],
-  "new_feature_requests": [
-    {
-      "id": "AR-1",
-      "summary": "Play a ping sound when the alarm goes off",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Add a volume control in the sound panel",
-      "reqIds": [],
-      "status": "pending"
-    }
-  ],
-  "gameProjectType": "none",
-  "projectName": "Add ping alarm sound and volume control to sound panel",
+  "new_feature_requests": [],
+  "projectName": "ticktocktask",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

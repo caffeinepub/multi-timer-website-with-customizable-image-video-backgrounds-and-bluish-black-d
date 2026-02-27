@@ -1,52 +1,35 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-27T03:28:16.006Z",
+  "generatedAt": "2026-02-27T03:59:50.796Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 2,
+    "total": 1,
+    "implemented": 1,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Add a 'ping' sound option for timer alarm completion. When any timer completes and the alert sound is set to trigger, play a short, crisp ping tone synthesized via the Web Audio API. Register this as a named option (e.g., 'ping') within the existing alert sound options in `frontend/src/features/alerts/alertSounds.ts` and implement the tone generation in the `playAlertSound` utility.",
+        "summary": "Update the APP_NAME constant in `frontend/src/branding.ts` from its current value to 'TickTockTask'.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/alerts/alertSounds.ts",
-          "frontend/src/features/alerts/TimerAlertSettings.tsx"
+          "frontend/src/branding.ts"
         ],
         "matchedFiles": [
-          "frontend/src/features/alerts/alertSounds.ts"
-        ]
-      },
-      {
-        "id": "REQ-2",
-        "summary": "Add a volume control slider to the sound panel (SoundCustomizationPanel). The slider should control the playback volume of custom sounds when they are previewed. Persist the volume setting to localStorage and apply it whenever a sound is played via `CustomSoundsProvider`.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/sounds/CustomSoundsProvider.tsx",
-          "frontend/src/features/sounds/SoundCustomizationPanel.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/sounds/CustomSoundsProvider.tsx",
-          "frontend/src/features/sounds/SoundCustomizationPanel.tsx"
+          "frontend/src/branding.ts"
         ]
       }
     ]
   },
   "changedFiles": [
     "build-request.json",
-    "build-template/README.md",
-    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/features/alerts/alertSounds.ts",
-    "frontend/src/features/sounds/CustomSoundsProvider.tsx",
-    "frontend/src/features/sounds/SoundCustomizationPanel.tsx",
+    "frontend/index.html",
+    "frontend/src/branding.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",
