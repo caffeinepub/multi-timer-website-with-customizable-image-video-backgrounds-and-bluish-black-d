@@ -1,22 +1,44 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
+  "summary": "A productivity/focus app with tasks, timer, alerts, music integration, and settings. User is refining UI styling and music link support.",
   "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-update-the-app-name-constant-in-frontend-src-branding-ts-from-its-current-value-to-ticktocktask",
-      "title": "Update the APP_NAME constant in `frontend/src/branding.ts` from its current value to 'TickTockTask'.",
+      "id": "feature-apply-the-settings-panel-s-pink-background-color-light-pink-fdf2f4-and-deep-red-crimson-text-and-accent-color-9b1c3a-or-equivalent-from-the-settings-card-consistently-to-all-toggle-switches-and-action-buttons-throughout-the-app-this-includes-but-is-not-limited-to-the-tasks-toggle-button-show-timer-toggle-button-alerts-toggle-button-and-all-other-toggle-controls-and-buttons-in-the-timervisibilitybar-frontend-src-features-timers-visibility-timervisibilitybar-tsx-and-anywhere-else-in-the-ui-the-toggle-thumb-and-track-active-state-should-use-the-same-crimson-red-accent-buttons-should-have-the-pink-background-with-red-text-or-red-background-with-white-text-consistent-with-the-settings-style-shown-in-the-screenshot",
+      "title": "Apply the Settings panel's pink background color (light pink, ~#fdf2f4) and deep red/crimson text and accent color (~#9b1c3a or equivalent from the Settings card) consistently to all toggle switches and action buttons throughout the app. This includes but is not limited to: the 'Tasks' toggle/button, 'Show Timer' toggle/button, 'Alerts' toggle/button, and all other toggle controls and buttons in the TimerVisibilityBar (frontend/src/features/timers/visibility/TimerVisibilityBar.tsx) and anywhere else in the UI. The toggle thumb and track active state should use the same crimson/red accent. Buttons should have the pink background with red text or red background with white text consistent with the Settings style shown in the screenshot.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-update-the-music-feature-to-accept-and-embed-spotify-links-e-g-https-open-spotify-com-in-frontend-src-features-music-musicsupport-ts-add-spotify-url-detection-and-conversion-to-embeddable-spotify-iframe-urls-https-open-spotify-com-embed-in-frontend-src-features-music-musicstage-tsx-render-a-spotify-embed-iframe-when-the-music-type-is-spotify-in-frontend-src-features-music-musicsettings-tsx-update-the-placeholder-help-text-to-include-spotify-as-a-supported-url-type",
+      "title": "Update the music feature to accept and embed Spotify links (e.g., https://open.spotify.com/). In frontend/src/features/music/musicSupport.ts, add Spotify URL detection and conversion to embeddable Spotify iframe URLs (https://open.spotify.com/embed/...). In frontend/src/features/music/MusicStage.tsx, render a Spotify embed iframe when the music type is Spotify. In frontend/src/features/music/MusicSettings.tsx, update the placeholder/help text to include Spotify as a supported URL type.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
     }
   ],
-  "new_feature_requests": [],
-  "projectName": "ticktocktask",
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Apply pink background and red text color theme from Settings to all toggles and buttons (Tasks, Show Timer, Alerts, etc.)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Allow Spotify links (https://open.spotify.com/) to be used in the music feature",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "TickTockTask",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

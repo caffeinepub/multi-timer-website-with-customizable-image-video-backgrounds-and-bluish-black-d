@@ -3,7 +3,7 @@ import { Maximize2, Minimize2 } from 'lucide-react';
 import { useBackgroundContext } from './BackgroundProvider';
 
 export function BackgroundFullscreenButton() {
-  const { backgroundUrl, mediaType, youtubeVideoId, stageRef } = useBackgroundContext();
+  const { backgroundUrl, mediaType, youtubeVideoId } = useBackgroundContext();
   const [isBrowserFullscreen, setIsBrowserFullscreen] = useState(false);
 
   const hasActiveBackground = !!(backgroundUrl || youtubeVideoId || mediaType);
@@ -26,8 +26,9 @@ export function BackgroundFullscreenButton() {
 
   const toggleFullscreen = useCallback(async () => {
     if (!isBrowserFullscreen) {
-      const el = stageRef.current;
-      if (!el) return;
+      // Always request fullscreen on the root document element so the entire
+      // page fills the screen symmetrically without any left/right offset.
+      const el = document.documentElement;
       try {
         if (el.requestFullscreen) {
           await el.requestFullscreen();
@@ -55,7 +56,7 @@ export function BackgroundFullscreenButton() {
         // Ignore exit errors
       }
     }
-  }, [isBrowserFullscreen, stageRef]);
+  }, [isBrowserFullscreen]);
 
   // Don't render if no background is active
   if (!hasActiveBackground) return null;

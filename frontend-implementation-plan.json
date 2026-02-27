@@ -1,21 +1,84 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Rename app to TickTockTask",
+  "title": "Apply pink/red theme to all toggles & buttons, allow Spotify links in music",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Update the APP_NAME constant in branding.ts to 'TickTockTask'",
+      "summary": "Apply Settings panel pink background (~#fdf2f4) and deep red/crimson accent (~#9b1c3a) to all toggle switches and action buttons throughout the app",
       "acceptanceCriteria": [
-        "The APP_NAME constant in frontend/src/branding.ts is set to 'TickTockTask'.",
-        "All UI locations that reference APP_NAME display 'TickTockTask'.",
-        "The browser tab title (index.html or derived from APP_NAME) reflects 'TickTockTask'."
+        "All toggle switches across the app use the same pink/red color scheme visible in the Settings panel (pink track background when off, red/crimson when on)",
+        "All action buttons (Tasks, Show Timer, Alerts, etc.) in TimerVisibilityBar share the same pink background and red/crimson text or icon color as seen in the Settings UI",
+        "The Settings panel itself retains its existing pink/red appearance unchanged",
+        "Sliders and other controls that already use the red accent color remain consistent"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/branding.ts",
+          "path": "frontend/tailwind.config.js",
           "operation": "modify",
-          "description": "Change the APP_NAME constant from its current value ('TickTaskTime') to 'TickTockTask'. This single change will propagate the new name throughout the application wherever APP_NAME is referenced."
+          "description": "Add custom pink background color (#fdf2f4) and crimson accent color (#9b1c3a) to the Tailwind theme.extend.colors object, naming them as 'settings-pink' and 'settings-crimson' for consistent reference throughout the app."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add CSS custom properties for --settings-pink and --settings-crimson in both light and dark mode sections using the OKLCH color space equivalents of #fdf2f4 and #9b1c3a. Ensure these colors are accessible in both themes."
+        },
+        {
+          "path": "frontend/src/features/timers/visibility/TimerVisibilityBar.tsx",
+          "operation": "modify",
+          "description": "Update all Button components (Tasks, Show Timer, Alerts, Background, Music, Settings, Fullscreen, Tab Order) to use the new pink background and crimson text/icon styling. Apply bg-settings-pink and text-settings-crimson classes. Update toggle switches (if any) to use the crimson accent for active states and pink background for inactive states. Maintain the existing button behavior and icon rendering while ensuring consistent theming."
+        },
+        {
+          "path": "frontend/src/features/backgrounds/BackgroundCustomizer.tsx",
+          "operation": "modify",
+          "description": "Apply the pink/red theme to any toggle switches or buttons in the background settings UI. Use bg-settings-pink for button backgrounds and text-settings-crimson for text/icons. Ensure sliders retain consistent red accent coloring."
+        },
+        {
+          "path": "frontend/src/features/music/MusicSettings.tsx",
+          "operation": "modify",
+          "description": "Apply the pink/red theme to any buttons or toggle controls in the music settings UI. Use the new Tailwind classes (bg-settings-pink, text-settings-crimson) for consistent styling with the Settings panel."
+        },
+        {
+          "path": "frontend/src/features/alerts/TimerAlertSettings.tsx",
+          "operation": "modify",
+          "description": "Apply the pink/red theme to toggle switches and buttons in the alert settings UI. Update the enabled toggle to use crimson for the active state and pink background for inactive. Apply consistent button styling using bg-settings-pink and text-settings-crimson."
+        },
+        {
+          "path": "frontend/src/features/tasks/TasksPanel.tsx",
+          "operation": "modify",
+          "description": "Apply the pink/red theme to any buttons in the tasks panel UI (add task, clear all, mode toggles). Use bg-settings-pink for backgrounds and text-settings-crimson for text/icons to match the Settings aesthetic."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Update music feature to accept and embed Spotify links (https://open.spotify.com/)",
+      "acceptanceCriteria": [
+        "Pasting a Spotify track, album, or playlist URL (https://open.spotify.com/track/..., /album/..., /playlist/...) into the music input is accepted without error",
+        "The Spotify URL is converted to the embeddable format (https://open.spotify.com/embed/...) and rendered as an iframe in MusicStage",
+        "The music settings UI labels/placeholder text mentions Spotify as a supported source",
+        "Direct audio URLs and Apple Music URLs continue to work as before"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/music/musicSupport.ts",
+          "operation": "modify",
+          "description": "Add Spotify URL detection logic to the parseMusicUrl function. Detect URLs matching the pattern https://open.spotify.com/track/, /album/, /playlist/, or /show/. Convert Spotify share URLs to embeddable format by replacing '/track/' with '/embed/track/', '/album/' with '/embed/album/', and '/playlist/' with '/embed/playlist/'. Return a MusicType of 'spotify' for these URLs. Ensure existing Apple Music and direct audio URL handling remains unchanged."
+        },
+        {
+          "path": "frontend/src/features/music/useMusic.ts",
+          "operation": "modify",
+          "description": "Update the MusicType type to include 'spotify' as a valid option alongside 'audio', 'apple-music', and 'unknown'. Ensure the state management and localStorage persistence handle the new Spotify type correctly."
+        },
+        {
+          "path": "frontend/src/features/music/MusicStage.tsx",
+          "operation": "modify",
+          "description": "Add rendering logic for Spotify embeds. When musicType is 'spotify', render an iframe element with src set to embedUrl, similar to the Apple Music embed. Set appropriate iframe attributes (allow='encrypted-media', width, height, frameBorder='0') and position it off-screen or hidden unless actively playing. Ensure existing audio element and Apple Music iframe rendering remain unchanged."
+        },
+        {
+          "path": "frontend/src/features/music/MusicSettings.tsx",
+          "operation": "modify",
+          "description": "Update the placeholder text or help text of the music URL input field to explicitly mention Spotify as a supported source. Change the placeholder to something like 'Enter Spotify, Apple Music, or audio URL' to inform users that Spotify links are now accepted. Ensure the input validation and onChange handler work with the updated musicSupport.ts logic."
         }
       ]
     }

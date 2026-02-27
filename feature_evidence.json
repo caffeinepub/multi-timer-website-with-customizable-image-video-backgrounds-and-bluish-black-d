@@ -2,10 +2,14 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-app-name-constant-in-frontend-src-branding-ts-from-its-current-value-to-ticktocktask",
-      "featureTitle": "Update the APP_NAME constant in `frontend/src/branding.ts` from its current value to 'TickTockTask'.",
+      "featureId": "feature-apply-the-settings-panel-s-pink-background-color-light-pink-fdf2f4-and-deep-red-crimson-text-and-accent-color-9b1c3a-or-equivalent-from-the-settings-card-consistently-to-all-toggle-switches-and-action-buttons-throughout-the-app-this-includes-but-is-not-limited-to-the-tasks-toggle-button-show-timer-toggle-button-alerts-toggle-button-and-all-other-toggle-controls-and-buttons-in-the-timervisibilitybar-frontend-src-features-timers-visibility-timervisibilitybar-tsx-and-anywhere-else-in-the-ui-the-toggle-thumb-and-track-active-state-should-use-the-same-crimson-red-accent-buttons-should-have-the-pink-background-with-red-text-or-red-background-with-white-text-consistent-with-the-settings-style-shown-in-the-screenshot",
+      "featureTitle": "Apply the Settings panel's pink background color (light pink, ~#fdf2f4) and deep red/crimson text and accent color (~#9b1c3a or equivalent from the Settings card) consistently to all toggle switches and action buttons throughout the app. This includes but is not limited to: the 'Tasks' toggle/button, 'Show Timer' toggle/button, 'Alerts' toggle/button, and all other toggle controls and buttons in the TimerVisibilityBar (frontend/src/features/timers/visibility/TimerVisibilityBar.tsx) and anywhere else in the UI. The toggle thumb and track active state should use the same crimson/red accent. Buttons should have the pink background with red text or red background with white text consistent with the Settings style shown in the screenshot.",
       "files": [
-        "frontend/src/branding.ts"
+        "frontend/src/features/music/MusicSettings.tsx",
+        "frontend/src/features/tasks/TasksPanel.tsx",
+        "frontend/src/features/timers/visibility/TimerVisibilityBar.tsx",
+        "frontend/src/index.css",
+        "frontend/tailwind.config.js"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -16,6 +20,24 @@
       ],
       "testIds": [
         "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-music-feature-to-accept-and-embed-spotify-links-e-g-https-open-spotify-com-in-frontend-src-features-music-musicsupport-ts-add-spotify-url-detection-and-conversion-to-embeddable-spotify-iframe-urls-https-open-spotify-com-embed-in-frontend-src-features-music-musicstage-tsx-render-a-spotify-embed-iframe-when-the-music-type-is-spotify-in-frontend-src-features-music-musicsettings-tsx-update-the-placeholder-help-text-to-include-spotify-as-a-supported-url-type",
+      "featureTitle": "Update the music feature to accept and embed Spotify links (e.g., https://open.spotify.com/). In frontend/src/features/music/musicSupport.ts, add Spotify URL detection and conversion to embeddable Spotify iframe URLs (https://open.spotify.com/embed/...). In frontend/src/features/music/MusicStage.tsx, render a Spotify embed iframe when the music type is Spotify. In frontend/src/features/music/MusicSettings.tsx, update the placeholder/help text to include Spotify as a supported URL type.",
+      "files": [
+        "frontend/src/features/music/MusicSettings.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
       ],
       "confidence": "high"
     }

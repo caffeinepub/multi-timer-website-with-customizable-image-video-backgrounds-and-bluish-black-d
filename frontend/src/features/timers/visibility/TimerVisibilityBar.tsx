@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
-import { Eye, EyeOff, Settings, Share2, Music, Bell } from 'lucide-react';
+import { Eye, EyeOff, Settings, Share2, Music, Bell, CheckSquare, Maximize2, Minimize2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -9,7 +9,6 @@ import { BackgroundCustomizer } from '@/features/backgrounds/BackgroundCustomize
 import { MusicSettings } from '@/features/music/MusicSettings';
 import { TimerAlertSettings } from '@/features/alerts/TimerAlertSettings';
 import { TimerTabOrderSettings } from '@/features/timers/navigation/TimerTabOrderSettings';
-import { PublishShareSheet } from '@/features/publishShare/PublishShareSheet';
 
 function formatWallClock(date: Date): string {
   let hours = date.getHours() % 12;
@@ -27,6 +26,8 @@ interface TimerVisibilityBarProps {
   toggleB: boolean;
   onToggleB: () => void;
   onResetTimerOrder: () => void;
+  tasksVisible: boolean;
+  onToggleTasks: () => void;
 }
 
 export function TimerVisibilityBar({
@@ -37,23 +38,80 @@ export function TimerVisibilityBar({
   toggleB,
   onToggleB,
   onResetTimerOrder,
+  tasksVisible,
+  onToggleTasks,
 }: TimerVisibilityBarProps) {
   const [now, setNow] = useState(() => new Date());
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
 
+  // Track fullscreen state
+  useEffect(() => {
+    const handleChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleChange);
+    document.addEventListener('webkitfullscreenchange', handleChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleChange);
+      document.removeEventListener('webkitfullscreenchange', handleChange);
+    };
+  }, []);
+
+  const toggleFullscreen = useCallback(async () => {
+    if (!isFullscreen) {
+      try {
+        const el = document.documentElement;
+        if (el.requestFullscreen) {
+          await el.requestFullscreen();
+        } else {
+          const safariEl = el as HTMLElement & { webkitRequestFullscreen?: () => Promise<void> };
+          if (safariEl.webkitRequestFullscreen) {
+            await safariEl.webkitRequestFullscreen();
+          }
+        }
+      } catch {
+        // Fullscreen may be denied in iframes
+      }
+    } else {
+      try {
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else {
+          const doc = document as Document & { webkitExitFullscreen?: () => Promise<void> };
+          if (doc.webkitExitFullscreen) {
+            await doc.webkitExitFullscreen();
+          }
+        }
+      } catch {
+        // Ignore
+      }
+    }
+  }, [isFullscreen]);
+
+  // Pink/crimson theme classes matching the Settings panel aesthetic
+  // Toggle: pink bg, crimson text; when active (pressed): deeper pink bg, crimson text
+  const toggleClass =
+    'h-7 px-2.5 text-xs font-medium gap-1.5 bg-settings-pink text-settings-crimson border border-settings-pink ' +
+    'hover:bg-settings-pink-active hover:text-settings-crimson ' +
+    'data-[state=on]:bg-settings-pink-active data-[state=on]:text-settings-crimson data-[state=on]:border-settings-crimson/30';
+
+  const btnClass =
+    'h-7 px-2.5 text-xs font-medium gap-1.5 bg-settings-pink text-settings-crimson border border-settings-pink ' +
+    'hover:bg-settings-pink-active hover:text-settings-crimson';
+
   return (
     <div
       className="fixed bottom-0 left-0 right-0 z-30"
       style={{
         height: '38px',
-        background: 'rgba(0,0,0,0.72)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        borderTop: '1px solid rgba(255,255,255,0.10)',
+        background: '#ffffff',
+        borderTop: '1px solid #e5e7eb',
+        boxShadow: '0 -2px 8px rgba(0,0,0,0.06)',
       }}
     >
       <div className="flex items-center h-full px-4">
@@ -61,7 +119,7 @@ export function TimerVisibilityBar({
         <div className="flex items-center shrink-0" style={{ minWidth: '90px' }}>
           <span
             className="text-sm font-semibold tabular-nums tracking-wide select-none"
-            style={{ color: 'rgba(255,255,255,0.90)' }}
+            style={{ color: '#374151' }}
           >
             {formatWallClock(now)}
           </span>
@@ -77,7 +135,7 @@ export function TimerVisibilityBar({
             pressed={isVisible}
             onPressedChange={onToggle}
             size="sm"
-            className="h-7 px-2.5 text-xs font-medium gap-1.5 data-[state=on]:bg-white/20 data-[state=on]:text-white text-white/70 hover:text-white hover:bg-white/10"
+            className={toggleClass}
             aria-label="Toggle timer visibility"
           >
             {isVisible ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
@@ -89,7 +147,7 @@ export function TimerVisibilityBar({
             pressed={toggleA}
             onPressedChange={onToggleA}
             size="sm"
-            className="h-7 px-2.5 text-xs font-medium gap-1.5 data-[state=on]:bg-white/20 data-[state=on]:text-white text-white/70 hover:text-white hover:bg-white/10"
+            className={toggleClass}
             aria-label="Toggle music"
           >
             <Music className="h-3.5 w-3.5" />
@@ -101,12 +159,41 @@ export function TimerVisibilityBar({
             pressed={toggleB}
             onPressedChange={onToggleB}
             size="sm"
-            className="h-7 px-2.5 text-xs font-medium gap-1.5 data-[state=on]:bg-white/20 data-[state=on]:text-white text-white/70 hover:text-white hover:bg-white/10"
+            className={toggleClass}
             aria-label="Toggle alerts"
           >
             <Bell className="h-3.5 w-3.5" />
             Alerts
           </Toggle>
+
+          {/* Tasks toggle */}
+          <Toggle
+            pressed={tasksVisible}
+            onPressedChange={onToggleTasks}
+            size="sm"
+            className={toggleClass}
+            aria-label="Toggle tasks panel"
+          >
+            <CheckSquare className="h-3.5 w-3.5" />
+            Tasks
+          </Toggle>
+
+          {/* Fullscreen toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleFullscreen}
+            className={btnClass}
+            aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+            title={isFullscreen ? 'Exit fullscreen (Esc)' : 'Enter fullscreen'}
+          >
+            {isFullscreen ? (
+              <Minimize2 className="h-3.5 w-3.5" />
+            ) : (
+              <Maximize2 className="h-3.5 w-3.5" />
+            )}
+            {isFullscreen ? 'Exit Full' : 'Fullscreen'}
+          </Button>
 
           {/* Settings dialog */}
           <Dialog>
@@ -114,7 +201,7 @@ export function TimerVisibilityBar({
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 px-2.5 text-xs font-medium gap-1.5 text-white/70 hover:text-white hover:bg-white/10"
+                className={btnClass}
               >
                 <Settings className="h-3.5 w-3.5" />
                 Settings
@@ -154,7 +241,7 @@ export function TimerVisibilityBar({
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 px-2.5 text-xs font-medium gap-1.5 text-white/70 hover:text-white hover:bg-white/10"
+                className={btnClass}
               >
                 <Share2 className="h-3.5 w-3.5" />
                 Share
@@ -179,7 +266,7 @@ export function TimerVisibilityBar({
   );
 }
 
-// Inline share content (reuses logic from PublishShareSheet without the outer Sheet wrapper)
+// Inline share content
 function PublishShareSheetContent() {
   const [copied, setCopied] = useState(false);
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';

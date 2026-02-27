@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Music, X, Volume2 } from 'lucide-react';
+import { SiSpotify, SiApplemusic } from 'react-icons/si';
 
 export function MusicSettings() {
   const { sourceUrl, sourceType, error, volume, setMusicSource, clearMusic, setVolume } = useMusicContext();
@@ -49,7 +50,9 @@ export function MusicSettings() {
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-1">
               <p className="text-sm font-medium text-foreground">Music active</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                {sourceType === 'spotify' && <SiSpotify className="h-3.5 w-3.5 text-green-600" />}
+                {sourceType === 'apple' && <SiApplemusic className="h-3.5 w-3.5 text-pink-600" />}
                 {sourceType === 'spotify' ? 'Spotify' : sourceType === 'apple' ? 'Apple Music' : 'Direct audio'}
               </p>
             </div>
@@ -78,9 +81,25 @@ export function MusicSettings() {
               Set
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground">
-            Paste a Spotify or Apple Music link, or a direct audio file URL (.mp3, .wav, .ogg, .m4a)
-          </p>
+          <div className="flex flex-col gap-1">
+            <p className="text-xs text-muted-foreground">
+              Supported sources:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted rounded px-2 py-0.5">
+                <SiSpotify className="h-3 w-3 text-green-600" />
+                Spotify (open.spotify.com)
+              </span>
+              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted rounded px-2 py-0.5">
+                <SiApplemusic className="h-3 w-3 text-pink-600" />
+                Apple Music
+              </span>
+              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted rounded px-2 py-0.5">
+                <Music className="h-3 w-3" />
+                Direct audio (.mp3, .wav, .ogg, .m4a)
+              </span>
+            </div>
+          </div>
         </div>
 
         <div className="space-y-2">

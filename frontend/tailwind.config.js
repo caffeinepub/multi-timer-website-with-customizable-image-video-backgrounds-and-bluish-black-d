@@ -49,6 +49,11 @@ export default {
           4: 'oklch(var(--chart-4))',
           5: 'oklch(var(--chart-5))',
         },
+        // Settings panel pink/crimson theme colors
+        'settings-pink': 'oklch(var(--settings-pink))',
+        'settings-crimson': 'oklch(var(--settings-crimson))',
+        'settings-crimson-hover': 'oklch(var(--settings-crimson-hover))',
+        'settings-pink-active': 'oklch(var(--settings-pink-active))',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -56,7 +61,7 @@ export default {
         sm: 'calc(var(--radius) - 4px)',
       },
       boxShadow: {
-        glow: '0 0 20px rgba(255, 182, 193, 0.3), 0 0 40px rgba(255, 182, 193, 0.15)',
+        glow: '0 0 20px rgba(120, 120, 220, 0.2), 0 0 40px rgba(120, 120, 220, 0.1)',
       },
       keyframes: {
         'accordion-down': {

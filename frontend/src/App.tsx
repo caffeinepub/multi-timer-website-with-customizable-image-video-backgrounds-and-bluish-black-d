@@ -22,6 +22,8 @@ import { useTimerTabOrder } from './features/timers/navigation/useTimerTabOrder'
 import { TimerAlertsProvider } from './features/alerts/TimerAlertsProvider';
 import { CustomSoundsProvider } from './features/sounds/CustomSoundsProvider';
 import { SoundCustomizationPanel } from './features/sounds/SoundCustomizationPanel';
+import { TasksPanel } from './features/tasks/TasksPanel';
+import { useTasksPanelVisibility } from './features/tasks/useTasksPanelVisibility';
 import { Button } from '@/components/ui/button';
 import { APP_NAME } from './branding';
 
@@ -129,6 +131,7 @@ function Layout() {
   } = useTimerVisibility(hasActiveBackground);
   const { order: timerOrder, setOrder: setTimerOrder, resetOrder: resetTimerOrder } = useTimerTabOrder();
   const [activeMode, setActiveMode] = useState<TimerMode>(timerOrder[0]);
+  const { isVisible: tasksVisible, toggle: toggleTasks } = useTasksPanelVisibility();
 
   const bannerClasses = 'border-b bg-banner dark:bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-banner/80 dark:supports-[backdrop-filter]:bg-card/80';
 
@@ -210,6 +213,9 @@ function Layout() {
       {/* Floating fullscreen button — visible when any background is active */}
       <BackgroundFullscreenButton />
 
+      {/* Tasks panel — shown when tasks toggle is active */}
+      {tasksVisible && <TasksPanel onClose={toggleTasks} />}
+
       {/* Bottom visibility bar — always visible */}
       <TimerVisibilityBar
         isVisible={isVisible}
@@ -219,6 +225,8 @@ function Layout() {
         toggleB={toggleB}
         onToggleB={toggleB_fn}
         onResetTimerOrder={resetTimerOrder}
+        tasksVisible={tasksVisible}
+        onToggleTasks={toggleTasks}
       />
 
       {isVisible && <SoundCustomizationPanel />}
