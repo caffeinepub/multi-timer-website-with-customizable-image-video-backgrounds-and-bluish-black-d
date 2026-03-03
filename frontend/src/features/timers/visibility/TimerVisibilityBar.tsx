@@ -1,14 +1,15 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
-import { Eye, EyeOff, Settings, Share2, Music, Bell, CheckSquare, Maximize2, Minimize2 } from 'lucide-react';
+import { Eye, EyeOff, Settings, Share2, Music, Bell, CheckSquare, Maximize2, Minimize2, Copy, ExternalLink, Check, Info, AlertCircle, Sparkles } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BackgroundCustomizer } from '@/features/backgrounds/BackgroundCustomizer';
 import { MusicSettings } from '@/features/music/MusicSettings';
 import { TimerAlertSettings } from '@/features/alerts/TimerAlertSettings';
 import { TimerTabOrderSettings } from '@/features/timers/navigation/TimerTabOrderSettings';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useIsEmbeddedPreview } from '@/features/publishShare/useIsEmbeddedPreview';
 
 function formatWallClock(date: Date): string {
   let hours = date.getHours() % 12;
@@ -17,6 +18,14 @@ function formatWallClock(date: Date): string {
   const ampm = date.getHours() >= 12 ? 'PM' : 'AM';
   return `${hours}:${minutes} ${ampm}`;
 }
+
+const TAB_TITLES: Record<string, { title: string; description: string }> = {
+  background: { title: 'Settings', description: 'Customize your timer experience' },
+  music: { title: 'Settings', description: 'Customize your timer experience' },
+  alerts: { title: 'Settings', description: 'Customize your timer experience' },
+  'timer-tabs': { title: 'Settings', description: 'Customize your timer experience' },
+  share: { title: 'Share', description: 'Share your timer setup' },
+};
 
 interface TimerVisibilityBarProps {
   isVisible: boolean;
@@ -43,6 +52,8 @@ export function TimerVisibilityBar({
 }: TimerVisibilityBarProps) {
   const [now, setNow] = useState(() => new Date());
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('background');
 
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000);
@@ -93,8 +104,12 @@ export function TimerVisibilityBar({
     }
   }, [isFullscreen]);
 
+  const openShareTab = () => {
+    setActiveTab('share');
+    setSettingsOpen(true);
+  };
+
   // Pink/crimson theme classes matching the Settings panel aesthetic
-  // Toggle: pink bg, crimson text; when active (pressed): deeper pink bg, crimson text
   const toggleClass =
     'h-7 px-2.5 text-xs font-medium gap-1.5 bg-settings-pink text-settings-crimson border border-settings-pink ' +
     'hover:bg-settings-pink-active hover:text-settings-crimson ' +
@@ -103,6 +118,8 @@ export function TimerVisibilityBar({
   const btnClass =
     'h-7 px-2.5 text-xs font-medium gap-1.5 bg-settings-pink text-settings-crimson border border-settings-pink ' +
     'hover:bg-settings-pink-active hover:text-settings-crimson';
+
+  const currentTabMeta = TAB_TITLES[activeTab] ?? TAB_TITLES['background'];
 
   return (
     <div
@@ -195,68 +212,84 @@ export function TimerVisibilityBar({
             {isFullscreen ? 'Exit Full' : 'Fullscreen'}
           </Button>
 
-          {/* Settings dialog */}
-          <Dialog>
+          {/* Settings dialog (includes Share tab) */}
+          <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
             <DialogTrigger asChild>
               <Button
                 variant="ghost"
                 size="sm"
                 className={btnClass}
+                onClick={() => {
+                  setActiveTab('background');
+                  setSettingsOpen(true);
+                }}
               >
                 <Settings className="h-3.5 w-3.5" />
                 Settings
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Settings</DialogTitle>
-                <DialogDescription>Customize your timer experience</DialogDescription>
-              </DialogHeader>
-              <Tabs defaultValue="background" className="w-full">
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="background">Background</TabsTrigger>
-                  <TabsTrigger value="music">Music</TabsTrigger>
-                  <TabsTrigger value="alerts">Alerts</TabsTrigger>
-                  <TabsTrigger value="timer-tabs">Timer Tabs</TabsTrigger>
-                </TabsList>
-                <TabsContent value="background" className="space-y-4">
-                  <BackgroundCustomizer />
-                </TabsContent>
-                <TabsContent value="music" className="space-y-4">
-                  <MusicSettings />
-                </TabsContent>
-                <TabsContent value="alerts" className="space-y-4">
-                  <TimerAlertSettings />
-                </TabsContent>
-                <TabsContent value="timer-tabs" className="space-y-4">
-                  <TimerTabOrderSettings onReset={onResetTimerOrder} />
-                </TabsContent>
+            <DialogContent
+              className="max-w-2xl w-full p-0 gap-0 overflow-hidden"
+              style={{ maxHeight: 'min(85vh, 720px)', display: 'flex', flexDirection: 'column' }}
+            >
+              {/* Fixed header — title updates based on active tab */}
+              <div className="shrink-0 px-6 pt-6 pb-3 border-b bg-settings-pink">
+                <DialogHeader>
+                  <DialogTitle className="text-settings-crimson">{currentTabMeta.title}</DialogTitle>
+                  <DialogDescription>{currentTabMeta.description}</DialogDescription>
+                </DialogHeader>
+              </div>
+
+              {/* Tabs */}
+              <Tabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="flex flex-col min-h-0 flex-1"
+              >
+                {/* Sticky tab list */}
+                <div className="shrink-0 px-6 pt-3 pb-0 bg-settings-pink">
+                  <TabsList className="grid w-full grid-cols-5">
+                    <TabsTrigger value="background">Background</TabsTrigger>
+                    <TabsTrigger value="music">Music</TabsTrigger>
+                    <TabsTrigger value="alerts">Alerts</TabsTrigger>
+                    <TabsTrigger value="timer-tabs">Timer Tabs</TabsTrigger>
+                    <TabsTrigger value="share">Share</TabsTrigger>
+                  </TabsList>
+                </div>
+
+                {/* Scrollable content area — fills remaining height, pink background */}
+                <div className="flex-1 overflow-y-auto px-6 pb-6 pt-4 bg-settings-pink" style={{ minHeight: 0 }}>
+                  <TabsContent value="background" className="mt-0 space-y-4" tabIndex={-1}>
+                    <BackgroundCustomizer />
+                  </TabsContent>
+                  <TabsContent value="music" className="mt-0 space-y-4" tabIndex={-1}>
+                    <MusicSettings />
+                  </TabsContent>
+                  <TabsContent value="alerts" className="mt-0 space-y-4" tabIndex={-1}>
+                    <TimerAlertSettings />
+                  </TabsContent>
+                  <TabsContent value="timer-tabs" className="mt-0 space-y-4" tabIndex={-1}>
+                    <TimerTabOrderSettings onReset={onResetTimerOrder} />
+                  </TabsContent>
+                  <TabsContent value="share" className="mt-0" tabIndex={-1}>
+                    <ShareTabContent />
+                  </TabsContent>
+                </div>
               </Tabs>
             </DialogContent>
           </Dialog>
 
-          {/* Share sheet */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className={btnClass}
-              >
-                <Share2 className="h-3.5 w-3.5" />
-                Share
-              </Button>
-            </SheetTrigger>
-            <SheetContent className="w-full sm:max-w-md overflow-y-auto">
-              <SheetHeader>
-                <SheetTitle>Publish & Share</SheetTitle>
-                <SheetDescription>Share your timer app with others</SheetDescription>
-              </SheetHeader>
-              <div className="mt-6">
-                <PublishShareSheetContent />
-              </div>
-            </SheetContent>
-          </Sheet>
+          {/* Share shortcut button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className={btnClass}
+            onClick={openShareTab}
+            aria-label="Share"
+          >
+            <Share2 className="h-3.5 w-3.5" />
+            Share
+          </Button>
         </div>
 
         {/* RIGHT SPACER to balance layout */}
@@ -266,45 +299,142 @@ export function TimerVisibilityBar({
   );
 }
 
-// Inline share content
-function PublishShareSheetContent() {
+// Share tab content rendered inside the Settings dialog
+function ShareTabContent() {
   const [copied, setCopied] = useState(false);
+  const isEmbedded = useIsEmbeddedPreview();
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
-  const handleCopy = async () => {
+  const handleCopyLink = async () => {
     try {
-      if (navigator.clipboard?.writeText) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(currentUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
       } else {
-        const ta = document.createElement('textarea');
-        ta.value = currentUrl;
-        ta.style.position = 'fixed';
-        ta.style.left = '-999999px';
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        document.execCommand('copy');
-        ta.remove();
+        const textArea = document.createElement('textarea');
+        textArea.value = currentUrl;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        } catch {
+          // ignore
+        } finally {
+          textArea.remove();
+        }
       }
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleOpenInNewTab = () => {
+    try {
+      window.open(currentUrl, '_blank', 'noopener,noreferrer');
     } catch {
       // ignore
     }
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
+      {/* Embedded Preview Warning */}
+      {isEmbedded && (
+        <Alert variant="default" className="border-settings-crimson/30 bg-settings-pink-active">
+          <AlertCircle className="h-4 w-4 text-settings-crimson" />
+          <AlertDescription className="text-sm text-settings-crimson">
+            <strong>Preview Mode:</strong> You're viewing the editor preview.
+            The URL below is temporary. To get a public URL, use the <strong>Live</strong> tab
+            and click <strong>Go live</strong>.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Current URL Display */}
       <div className="space-y-2">
-        <label className="text-sm font-medium">Current URL</label>
-        <div className="rounded-md border bg-muted/50 px-3 py-2 text-sm break-all">{currentUrl}</div>
+        <label className="text-sm font-medium text-settings-crimson">
+          {isEmbedded ? 'Preview URL (This Session)' : 'Current URL'}
+        </label>
+        <div className="rounded-md border border-settings-crimson/20 bg-settings-pink-active px-3 py-2 text-sm break-all text-settings-crimson">
+          {currentUrl}
+        </div>
       </div>
-      <Button onClick={handleCopy} className="w-full" variant="default">
-        {copied ? 'Copied!' : 'Copy Link'}
-      </Button>
-      <Button onClick={() => window.open(currentUrl, '_blank', 'noopener,noreferrer')} className="w-full" variant="outline">
-        Open in New Tab
-      </Button>
+
+      {/* Action Buttons */}
+      <div className="flex gap-2">
+        <Button
+          onClick={handleCopyLink}
+          className="flex-1 bg-settings-crimson text-white hover:bg-settings-crimson-hover border-0"
+        >
+          {copied ? (
+            <>
+              <Check className="mr-2 h-4 w-4" />
+              Copied!
+            </>
+          ) : (
+            <>
+              <Copy className="mr-2 h-4 w-4" />
+              Copy Link
+            </>
+          )}
+        </Button>
+        <Button
+          onClick={handleOpenInNewTab}
+          className="flex-1 bg-settings-pink-active text-settings-crimson border border-settings-crimson/30 hover:bg-settings-pink"
+          variant="outline"
+        >
+          <ExternalLink className="mr-2 h-4 w-4" />
+          Open in New Tab
+        </Button>
+      </div>
+
+      {/* Get Public URL info */}
+      <div className="rounded-lg border border-settings-crimson/20 bg-settings-pink-active p-4 space-y-3">
+        <div className="flex items-start gap-2">
+          <Info className="h-5 w-5 text-settings-crimson mt-0.5 shrink-0" />
+          <div className="space-y-2 text-sm">
+            <p className="font-medium text-settings-crimson">Get Your Public URL</p>
+            <p className="text-settings-crimson/70">
+              To publish your app and get a permanent public URL:
+            </p>
+            <ol className="list-decimal list-inside space-y-1.5 text-settings-crimson/70 ml-1">
+              <li>Click the <strong>Live</strong> tab (top right of Caffeine)</li>
+              <li>Click the <strong>Go live</strong> button</li>
+              <li>Wait a few seconds for deployment</li>
+              <li>Your public URL will appear at the top</li>
+            </ol>
+            <p className="text-xs text-settings-crimson/60 pt-1">
+              The public URL will remain accessible even after you close the editor.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Publish to App Market */}
+      <div className="rounded-lg border border-settings-crimson/20 bg-settings-pink-active p-4 space-y-3">
+        <div className="flex items-start gap-2">
+          <Sparkles className="h-5 w-5 text-settings-crimson mt-0.5 shrink-0" />
+          <div className="space-y-2 text-sm">
+            <p className="font-medium text-settings-crimson">Publish to the App Market</p>
+            <p className="text-settings-crimson/70">
+              Once your app is live, you can submit it to the Caffeine App Market:
+            </p>
+            <ol className="list-decimal list-inside space-y-1.5 text-settings-crimson/70 ml-1">
+              <li>Ensure your app is <strong>live</strong> with a public URL</li>
+              <li>Navigate to the <strong>App Market</strong> in the Caffeine sidebar</li>
+              <li>Click <strong>"Submit Your App"</strong></li>
+              <li>Fill in your app details and submit for review</li>
+            </ol>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

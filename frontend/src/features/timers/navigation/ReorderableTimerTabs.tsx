@@ -143,7 +143,7 @@ export function ReorderableTimerTabs({
   return (
     <div
       ref={containerRef}
-      className="relative flex w-full rounded-lg bg-white border border-black p-1 gap-0.5 mb-4 select-none"
+      className="relative flex w-full rounded-lg bg-settings-pink border border-settings-crimson/40 p-1 gap-0.5 mb-4 select-none"
       style={{ userSelect: 'none' }}
       aria-label="Timer tabs"
     >
@@ -177,22 +177,21 @@ export function ReorderableTimerTabs({
               position: 'relative',
               cursor: isDragged ? 'grabbing' : 'grab',
               boxShadow: isDragged
-                ? '0 8px 24px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.12)'
+                ? '0 8px 24px rgba(155,28,58,0.18), 0 2px 8px rgba(155,28,58,0.12)'
                 : undefined,
               scale: isDragged ? '1.06' : undefined,
             }}
             className={[
               'flex-1 min-w-0 px-2 py-2 rounded-md text-xs sm:text-sm font-semibold',
               'transition-colors duration-150',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black',
-              'text-black',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-settings-crimson',
               isDragged
-                ? 'bg-black text-white opacity-95 rounded-md'
+                ? 'bg-settings-crimson text-white opacity-95 rounded-md'
                 : isActive
-                ? 'bg-black text-white shadow-sm'
-                : 'bg-white text-black hover:bg-black/10 border border-transparent',
+                ? 'bg-settings-crimson text-white shadow-sm'
+                : 'bg-transparent text-settings-crimson hover:bg-settings-pink-active border border-transparent',
               !isDragged && draggedIndex !== null && overIndex === index
-                ? 'ring-2 ring-black ring-inset'
+                ? 'ring-2 ring-settings-crimson ring-inset'
                 : '',
             ]
               .filter(Boolean)

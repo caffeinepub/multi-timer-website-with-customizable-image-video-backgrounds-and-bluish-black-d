@@ -9,14 +9,14 @@ export function StopwatchTimer() {
   const { elapsed, isRunning, laps, start, pause, reset, recordLap } = useStopwatch();
 
   return (
-    <Card className="w-full bg-white border-2 border-black shadow-none rounded-xl">
+    <Card className="w-full bg-settings-pink border border-settings-crimson/40 shadow-none rounded-xl">
       <CardHeader className="pb-2 pt-4 px-4">
-        <CardTitle className="text-base font-bold text-black">Stopwatch</CardTitle>
+        <CardTitle className="text-base font-bold text-settings-crimson">Stopwatch</CardTitle>
       </CardHeader>
       <CardContent className="px-4 pb-4 flex flex-col items-center gap-4">
         {/* Time display */}
         <div className="flex flex-col items-center">
-          <span className="text-5xl font-bold tabular-nums text-black tracking-wider">
+          <span className="text-5xl font-bold tabular-nums text-settings-crimson tracking-wider">
             {formatMilliseconds(elapsed)}
           </span>
         </div>
@@ -27,14 +27,14 @@ export function StopwatchTimer() {
             variant="outline"
             size="icon"
             onClick={reset}
-            className="border-2 border-black text-black hover:bg-black hover:text-white"
+            className="border-2 border-settings-crimson text-settings-crimson bg-transparent hover:bg-settings-crimson hover:text-white"
           >
             <RotateCcw className="w-4 h-4" />
           </Button>
           <Button
             size="icon"
             onClick={isRunning ? pause : start}
-            className="w-12 h-12 bg-black text-white hover:bg-black/80 border-2 border-black"
+            className="w-12 h-12 bg-settings-crimson text-white hover:bg-settings-crimson-hover border-2 border-settings-crimson"
           >
             {isRunning ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
           </Button>
@@ -43,7 +43,7 @@ export function StopwatchTimer() {
               variant="outline"
               size="icon"
               onClick={recordLap}
-              className="border-2 border-black text-black hover:bg-black hover:text-white"
+              className="border-2 border-settings-crimson text-settings-crimson bg-transparent hover:bg-settings-crimson hover:text-white"
             >
               <Flag className="w-4 h-4" />
             </Button>
@@ -52,19 +52,17 @@ export function StopwatchTimer() {
 
         {/* Laps */}
         {laps.length > 0 && (
-          <div className="w-full border-t-2 border-black pt-3">
-            <p className="text-xs font-bold text-black mb-2 uppercase tracking-wide">Laps</p>
-            <ScrollArea className="h-36 w-full rounded border-2 border-black">
+          <div className="w-full border-t border-settings-crimson/30 pt-3">
+            <p className="text-xs font-bold text-settings-crimson mb-2 uppercase tracking-wide">Laps</p>
+            <ScrollArea className="h-32 w-full rounded border border-settings-crimson/30">
               <div className="p-2 space-y-1">
-                {laps.map((lapTime, index) => (
+                {laps.map((lap, i) => (
                   <div
-                    key={index}
-                    className="flex justify-between items-center text-sm px-2 py-1 border-b border-black/20 last:border-0"
+                    key={i}
+                    className="flex items-center justify-between px-2 py-1 rounded bg-settings-pink-active"
                   >
-                    <span className="text-black font-semibold">Lap {laps.length - index}</span>
-                    <span className="text-black tabular-nums font-bold">
-                      {formatMilliseconds(lapTime)}
-                    </span>
+                    <span className="text-xs font-semibold text-settings-crimson">Lap {i + 1}</span>
+                    <span className="text-xs tabular-nums text-settings-crimson">{formatMilliseconds(lap)}</span>
                   </div>
                 ))}
               </div>

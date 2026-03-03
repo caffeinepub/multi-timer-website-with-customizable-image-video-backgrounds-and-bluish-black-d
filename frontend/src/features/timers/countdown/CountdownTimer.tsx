@@ -30,14 +30,14 @@ export function CountdownTimer() {
   };
 
   return (
-    <Card className="w-full bg-white border-2 border-black shadow-none rounded-xl">
+    <Card className="w-full bg-settings-pink border border-settings-crimson/40 shadow-none rounded-xl">
       <CardHeader className="pb-2 pt-4 px-4">
-        <CardTitle className="text-base font-bold text-black">Countdown</CardTitle>
+        <CardTitle className="text-base font-bold text-settings-crimson">Countdown</CardTitle>
       </CardHeader>
       <CardContent className="px-4 pb-4 flex flex-col items-center gap-4">
         {/* Time display */}
         <div className="flex flex-col items-center">
-          <span className="text-5xl font-bold tabular-nums text-black tracking-wider">
+          <span className="text-5xl font-bold tabular-nums text-settings-crimson tracking-wider">
             {formatTime(timeLeft)}
           </span>
         </div>
@@ -48,25 +48,25 @@ export function CountdownTimer() {
             variant="outline"
             size="icon"
             onClick={reset}
-            className="border-2 border-black text-black hover:bg-black hover:text-white"
+            className="border-2 border-settings-crimson text-settings-crimson bg-transparent hover:bg-settings-crimson hover:text-white"
           >
             <RotateCcw className="w-4 h-4" />
           </Button>
           <Button
             size="icon"
             onClick={isRunning ? pause : start}
-            className="w-12 h-12 bg-black text-white hover:bg-black/80 border-2 border-black"
+            className="w-12 h-12 bg-settings-crimson text-white hover:bg-settings-crimson-hover border-2 border-settings-crimson"
           >
             {isRunning ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
           </Button>
         </div>
 
         {/* Duration settings */}
-        <div className="w-full border-t-2 border-black pt-3">
-          <p className="text-xs font-bold text-black mb-3 uppercase tracking-wide">Duration</p>
+        <div className="w-full border-t border-settings-crimson/30 pt-3">
+          <p className="text-xs font-bold text-settings-crimson mb-3 uppercase tracking-wide">Duration</p>
           <div className="grid grid-cols-3 gap-3">
             <div className="space-y-1">
-              <Label className="text-xs font-semibold text-black">Hours</Label>
+              <Label className="text-xs font-semibold text-settings-crimson">Hours</Label>
               <EditableNumberInput
                 value={hours}
                 min={0}
@@ -76,7 +76,7 @@ export function CountdownTimer() {
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs font-semibold text-black">Minutes</Label>
+              <Label className="text-xs font-semibold text-settings-crimson">Minutes</Label>
               <EditableNumberInput
                 value={minutes}
                 min={0}
@@ -86,7 +86,7 @@ export function CountdownTimer() {
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs font-semibold text-black">Seconds</Label>
+              <Label className="text-xs font-semibold text-settings-crimson">Seconds</Label>
               <EditableNumberInput
                 value={seconds}
                 min={0}

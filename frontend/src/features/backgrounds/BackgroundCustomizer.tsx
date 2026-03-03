@@ -98,8 +98,15 @@ export function BackgroundCustomizer() {
   const isYouTubeActive = mediaType === 'youtube' && youtubeVideoId && !error;
   const isVideoBackground = (mediaType === 'video' || mediaType === 'youtube') && isBackgroundActive;
 
+  // Crimson slider style override
+  const crimsonSliderStyle = {
+    '--slider-track-color': 'oklch(var(--settings-crimson))',
+    '--slider-range-color': 'oklch(var(--settings-crimson))',
+    '--slider-thumb-color': 'oklch(var(--settings-crimson))',
+  } as React.CSSProperties;
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 text-settings-crimson">
       {(error || localError) && (
         <Alert variant="destructive">
           <AlertDescription>{error || localError}</AlertDescription>
@@ -107,15 +114,20 @@ export function BackgroundCustomizer() {
       )}
 
       {isBackgroundActive && (
-        <div className="rounded-lg border border-border bg-card p-4">
+        <div className="rounded-lg border border-settings-crimson/30 bg-settings-pink-active p-4">
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-1">
-              <p className="text-sm font-medium text-foreground">Background active</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm font-medium text-settings-crimson">Background active</p>
+              <p className="text-xs text-settings-crimson/70">
                 {mediaType === 'youtube' ? 'YouTube video' : mediaType === 'video' ? 'Video' : 'Image'}
               </p>
             </div>
-            <Button variant="ghost" size="sm" onClick={handleClear}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleClear}
+              className="text-settings-crimson hover:text-settings-crimson hover:bg-settings-pink"
+            >
               <X className="mr-2 h-4 w-4" />
               Clear
             </Button>
@@ -126,22 +138,24 @@ export function BackgroundCustomizer() {
       {isBackgroundActive && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="background-brightness" className="flex items-center gap-2">
+            <Label htmlFor="background-brightness" className="flex items-center gap-2 text-settings-crimson">
               <Sun className="h-4 w-4" />
               Background brightness
             </Label>
-            <span className="text-sm text-muted-foreground">{brightness ?? 100}%</span>
+            <span className="text-sm text-settings-crimson/70">{brightness ?? 100}%</span>
           </div>
-          <Slider
-            id="background-brightness"
-            min={0}
-            max={100}
-            step={1}
-            value={[brightness ?? 100]}
-            onValueChange={handleBrightnessChange}
-            className="w-full"
-          />
-          <p className="text-xs text-muted-foreground">
+          <div style={crimsonSliderStyle}>
+            <Slider
+              id="background-brightness"
+              min={0}
+              max={100}
+              step={1}
+              value={[brightness ?? 100]}
+              onValueChange={handleBrightnessChange}
+              className="w-full [&_[data-slot=slider-track]]:bg-settings-crimson/20 [&_[data-slot=slider-range]]:bg-settings-crimson [&_[data-slot=slider-thumb]]:bg-settings-crimson [&_[data-slot=slider-thumb]]:border-settings-crimson"
+            />
+          </div>
+          <p className="text-xs text-settings-crimson/60">
             Adjust the brightness of the background
           </p>
         </div>
@@ -150,22 +164,24 @@ export function BackgroundCustomizer() {
       {isYouTubeActive && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="youtube-volume" className="flex items-center gap-2">
+            <Label htmlFor="youtube-volume" className="flex items-center gap-2 text-settings-crimson">
               <Volume2 className="h-4 w-4" />
               YouTube volume
             </Label>
-            <span className="text-sm text-muted-foreground">{youtubeVolume ?? 50}%</span>
+            <span className="text-sm text-settings-crimson/70">{youtubeVolume ?? 50}%</span>
           </div>
-          <Slider
-            id="youtube-volume"
-            min={0}
-            max={100}
-            step={1}
-            value={[youtubeVolume ?? 50]}
-            onValueChange={handleVolumeChange}
-            className="w-full"
-          />
-          <p className="text-xs text-muted-foreground">
+          <div style={crimsonSliderStyle}>
+            <Slider
+              id="youtube-volume"
+              min={0}
+              max={100}
+              step={1}
+              value={[youtubeVolume ?? 50]}
+              onValueChange={handleVolumeChange}
+              className="w-full [&_[data-slot=slider-track]]:bg-settings-crimson/20 [&_[data-slot=slider-range]]:bg-settings-crimson [&_[data-slot=slider-thumb]]:bg-settings-crimson [&_[data-slot=slider-thumb]]:border-settings-crimson"
+            />
+          </div>
+          <p className="text-xs text-settings-crimson/60">
             Adjust the volume of the YouTube background video
           </p>
         </div>
@@ -173,15 +189,15 @@ export function BackgroundCustomizer() {
 
       {/* Timer overlay toggle — only shown for video/youtube backgrounds */}
       {isVideoBackground && (
-        <div className="rounded-lg border border-border bg-card p-4">
+        <div className="rounded-lg border border-settings-crimson/30 bg-settings-pink-active p-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2 flex-1">
-              <Layers className="h-4 w-4 text-muted-foreground shrink-0" />
+              <Layers className="h-4 w-4 text-settings-crimson/70 shrink-0" />
               <div className="flex flex-col gap-0.5">
-                <Label htmlFor="timer-overlay-toggle" className="text-sm font-medium cursor-pointer">
+                <Label htmlFor="timer-overlay-toggle" className="text-sm font-medium cursor-pointer text-settings-crimson">
                   Show timer overlay in fullscreen
                 </Label>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-settings-crimson/60">
                   Display your active timer on top of the video when playing
                 </p>
               </div>
@@ -213,7 +229,7 @@ export function BackgroundCustomizer() {
 
         <TabsContent value="upload" className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="file-upload">Choose Image or Video</Label>
+            <Label htmlFor="file-upload" className="text-settings-crimson">Choose Image or Video</Label>
             <Input
               ref={fileInputRef}
               id="file-upload"
@@ -221,9 +237,9 @@ export function BackgroundCustomizer() {
               accept="image/*,video/*"
               onChange={handleFileUpload}
               onClick={handleFileInputClick}
-              className="cursor-pointer"
+              className="cursor-pointer border-settings-crimson/30 text-settings-crimson"
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-settings-crimson/60">
               Supports all browser-compatible image and video formats
             </p>
           </div>
@@ -231,7 +247,7 @@ export function BackgroundCustomizer() {
 
         <TabsContent value="url" className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="url-input">Media URL</Label>
+            <Label htmlFor="url-input" className="text-settings-crimson">Media URL</Label>
             <div className="flex gap-2">
               <Input
                 id="url-input"
@@ -241,8 +257,13 @@ export function BackgroundCustomizer() {
                 onChange={(e) => setUrlInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && !isProbing && handleUrlSubmit()}
                 disabled={isProbing}
+                className="border-settings-crimson/30 text-settings-crimson placeholder:text-settings-crimson/40"
               />
-              <Button onClick={handleUrlSubmit} disabled={isProbing}>
+              <Button
+                onClick={handleUrlSubmit}
+                disabled={isProbing}
+                className="bg-settings-crimson text-white hover:bg-settings-crimson-hover border-0"
+              >
                 {isProbing ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -253,7 +274,7 @@ export function BackgroundCustomizer() {
                 )}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-settings-crimson/60">
               Enter a direct link to an image or video file
             </p>
           </div>
@@ -261,7 +282,7 @@ export function BackgroundCustomizer() {
 
         <TabsContent value="youtube" className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="youtube-input">YouTube URL</Label>
+            <Label htmlFor="youtube-input" className="text-settings-crimson">YouTube URL</Label>
             <div className="flex gap-2">
               <Input
                 id="youtube-input"
@@ -270,10 +291,16 @@ export function BackgroundCustomizer() {
                 value={youtubeInput}
                 onChange={(e) => setYoutubeInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleYouTubeSubmit()}
+                className="border-settings-crimson/30 text-settings-crimson placeholder:text-settings-crimson/40"
               />
-              <Button onClick={handleYouTubeSubmit}>Set</Button>
+              <Button
+                onClick={handleYouTubeSubmit}
+                className="bg-settings-crimson text-white hover:bg-settings-crimson-hover border-0"
+              >
+                Set
+              </Button>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-settings-crimson/60">
               Paste any YouTube video URL (watch, youtu.be, or embed link)
             </p>
           </div>

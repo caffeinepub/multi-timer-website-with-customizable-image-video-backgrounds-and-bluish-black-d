@@ -1,56 +1,31 @@
 {
   "kind": "build_request",
-  "title": "Apply pink/red theme to all toggles & buttons, allow Spotify links in music",
-  "projectName": "TickTockTask",
+  "title": "Fix share dialog title showing 'Settings' instead of 'Share'",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Apply the Settings panel's pink background color (light pink, ~#fdf2f4) and deep red/crimson text and accent color (~#9b1c3a or equivalent from the Settings card) consistently to all toggle switches and action buttons throughout the app. This includes but is not limited to: the 'Tasks' toggle/button, 'Show Timer' toggle/button, 'Alerts' toggle/button, and all other toggle controls and buttons in the TimerVisibilityBar (frontend/src/features/timers/visibility/TimerVisibilityBar.tsx) and anywhere else in the UI. The toggle thumb and track active state should use the same crimson/red accent. Buttons should have the pink background with red text or red background with white text consistent with the Settings style shown in the screenshot.",
+      "text": "In the TimerVisibilityBar settings dialog, when the user navigates to the 'Share' tab, the dialog title must display 'Share' instead of 'Settings'. The dialog title and subtitle should update to reflect the currently active tab — specifically, the Share tab should show a title of 'Share' (and an appropriate subtitle) rather than the generic 'Settings' heading.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-latest"
         ],
         "quotes": [
-          "do you see how settings has this nice pink color as the background and this red text? apply the colors to all toggles and buttons, like the \"Tasks\",\"Show timer\" \"alerts\""
+          "whenever I click on 'share', it shows me this. Can you make it say 'share' instead of 'settings'?"
         ]
       },
       "acceptanceCriteria": [
-        "All toggle switches across the app use the same pink/red color scheme visible in the Settings panel (pink track background when off, red/crimson when on)",
-        "All action buttons (Tasks, Show Timer, Alerts, etc.) in TimerVisibilityBar share the same pink background and red/crimson text or icon color as seen in the Settings UI",
-        "The Settings panel itself retains its existing pink/red appearance unchanged",
-        "Sliders and other controls that already use the red accent color remain consistent"
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Update the music feature to accept and embed Spotify links (e.g., https://open.spotify.com/). In frontend/src/features/music/musicSupport.ts, add Spotify URL detection and conversion to embeddable Spotify iframe URLs (https://open.spotify.com/embed/...). In frontend/src/features/music/MusicStage.tsx, render a Spotify embed iframe when the music type is Spotify. In frontend/src/features/music/MusicSettings.tsx, update the placeholder/help text to include Spotify as a supported URL type.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-4"
-        ],
-        "quotes": [
-          "allow these type of links:https://open.spotify.com/ to be allowed for the music"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Pasting a Spotify track, album, or playlist URL (https://open.spotify.com/track/..., /album/..., /playlist/...) into the music input is accepted without error",
-        "The Spotify URL is converted to the embeddable format (https://open.spotify.com/embed/...) and rendered as an iframe in MusicStage",
-        "The music settings UI labels/placeholder text mentions Spotify as a supported source",
-        "Direct audio URLs and Apple Music URLs continue to work as before"
+        "Clicking the 'Share' tab in the settings dialog shows 'Share' as the dialog title, not 'Settings'.",
+        "The dialog title updates dynamically based on the selected tab.",
+        "Other tabs (Background, Music, Alerts, Timer Tabs) continue to display 'Settings' or their own appropriate titles without regression."
       ]
     }
   ],
-  "constraints": [
-    "Do not modify files under frontend/src/hooks/ or frontend/src/components/ui (immutable paths)",
-    "Do not change the backend"
-  ],
+  "constraints": [],
   "nonGoals": [
-    "Changing the overall app layout or adding new features",
-    "Supporting other streaming services beyond Spotify",
-    "Modifying the Settings panel's own appearance (it should remain as the reference)"
+    "Changing the visual styling of the dialog or its tabs.",
+    "Modifying the Share tab's content or functionality."
   ],
   "imageRequirements": {
     "required": [],
