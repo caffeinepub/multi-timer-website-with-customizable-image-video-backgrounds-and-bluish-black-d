@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useAccurateInterval } from '../shared/useAccurateInterval';
+import { useCallback, useEffect, useState } from "react";
+import { useAccurateInterval } from "../shared/useAccurateInterval";
 
-type Segment = 'work' | 'shortBreak' | 'longBreak';
+type Segment = "work" | "shortBreak" | "longBreak";
 
 interface PomodoroSettings {
   workDuration: number;
@@ -17,7 +17,7 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
   longBreakInterval: 4,
 };
 
-const STORAGE_KEY = 'pomodoro-state';
+const STORAGE_KEY = "pomodoro-state";
 
 interface UsePomodoroOptions {
   onSegmentComplete?: (segment: Segment) => void;
@@ -39,7 +39,7 @@ export function usePomodoro(options?: UsePomodoroOptions) {
 
   const [timeLeft, setTimeLeft] = useState(settings.workDuration * 60);
   const [isRunning, setIsRunning] = useState(false);
-  const [currentSegment, setCurrentSegment] = useState<Segment>('work');
+  const [currentSegment, setCurrentSegment] = useState<Segment>("work");
   const [completedPomodoros, setCompletedPomodoros] = useState(0);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [pausedTime, setPausedTime] = useState<number | null>(null);
@@ -47,31 +47,36 @@ export function usePomodoro(options?: UsePomodoroOptions) {
   useEffect(() => {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ settings, completedPomodoros })
+      JSON.stringify({ settings, completedPomodoros }),
     );
   }, [settings, completedPomodoros]);
 
-  const updateSettings = useCallback((newSettings: Partial<PomodoroSettings>) => {
-    setSettings((prev) => ({ ...prev, ...newSettings }));
-  }, []);
+  const updateSettings = useCallback(
+    (newSettings: Partial<PomodoroSettings>) => {
+      setSettings((prev) => ({ ...prev, ...newSettings }));
+    },
+    [],
+  );
 
   const getSegmentDuration = useCallback(
     (segment: Segment) => {
       switch (segment) {
-        case 'work':
+        case "work":
           return settings.workDuration * 60;
-        case 'shortBreak':
+        case "shortBreak":
           return settings.shortBreakDuration * 60;
-        case 'longBreak':
+        case "longBreak":
           return settings.longBreakDuration * 60;
       }
     },
-    [settings]
+    [settings],
   );
 
   const start = useCallback(() => {
     if (pausedTime !== null) {
-      setStartTime(Date.now() - (getSegmentDuration(currentSegment) - pausedTime) * 1000);
+      setStartTime(
+        Date.now() - (getSegmentDuration(currentSegment) - pausedTime) * 1000,
+      );
       setPausedTime(null);
     } else {
       setStartTime(Date.now());
@@ -87,7 +92,7 @@ export function usePomodoro(options?: UsePomodoroOptions) {
 
   const reset = useCallback(() => {
     setIsRunning(false);
-    setCurrentSegment('work');
+    setCurrentSegment("work");
     setTimeLeft(settings.workDuration * 60);
     setStartTime(null);
     setPausedTime(null);
@@ -97,17 +102,17 @@ export function usePomodoro(options?: UsePomodoroOptions) {
     let nextSegment: Segment;
     let newCompletedPomodoros = completedPomodoros;
 
-    if (currentSegment === 'work') {
+    if (currentSegment === "work") {
       newCompletedPomodoros += 1;
       setCompletedPomodoros(newCompletedPomodoros);
-      
+
       if (newCompletedPomodoros % settings.longBreakInterval === 0) {
-        nextSegment = 'longBreak';
+        nextSegment = "longBreak";
       } else {
-        nextSegment = 'shortBreak';
+        nextSegment = "shortBreak";
       }
     } else {
-      nextSegment = 'work';
+      nextSegment = "work";
     }
 
     if (options?.onSegmentComplete) {
@@ -119,7 +124,14 @@ export function usePomodoro(options?: UsePomodoroOptions) {
     setTimeLeft(duration);
     setStartTime(isRunning ? Date.now() : null);
     setPausedTime(null);
-  }, [currentSegment, completedPomodoros, settings.longBreakInterval, getSegmentDuration, isRunning, options]);
+  }, [
+    currentSegment,
+    completedPomodoros,
+    settings.longBreakInterval,
+    getSegmentDuration,
+    isRunning,
+    options,
+  ]);
 
   useAccurateInterval(
     () => {
@@ -135,7 +147,7 @@ export function usePomodoro(options?: UsePomodoroOptions) {
       }
     },
     100,
-    isRunning
+    isRunning,
   );
 
   return {

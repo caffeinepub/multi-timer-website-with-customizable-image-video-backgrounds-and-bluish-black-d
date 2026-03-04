@@ -10,7 +10,24 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface _SERVICE {}
+export type Character = string;
+export interface Features {
+  'pointsPlayer1' : Points,
+  'pointsPlayer2' : Points,
+  'gameField' : GameField,
+  'gameId' : GameId,
+  'charactersPlayer1' : Character,
+  'charactersPlayer2' : Character,
+  'pointsDiffPlayer1' : PointsDiff,
+  'pointsDiffPlayer2' : PointsDiff,
+}
+export type GameField = Array<Character>;
+export type GameId = bigint;
+export type Points = bigint;
+export type PointsDiff = bigint;
+export interface _SERVICE {
+  'updateGameState' : ActorMethod<[GameField, boolean], Features>,
+}
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];
 export declare const idlFactory: IDL.InterfaceFactory;

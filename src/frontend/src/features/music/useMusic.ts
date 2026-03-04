@@ -1,25 +1,25 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { parseMusicUrl, type MusicUrlResult } from './musicSupport';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { type MusicUrlResult, parseMusicUrl } from "./musicSupport";
 
 interface MusicState {
   sourceUrl: string | null;
-  sourceType: 'spotify' | 'apple' | 'direct-audio' | null;
+  sourceType: "spotify" | "apple" | "direct-audio" | null;
   embedUrl: string | null;
   error: string | null;
   volume: number;
 }
 
-const MUSIC_STORAGE_KEY = 'multitimer-music';
-const VOLUME_STORAGE_KEY = 'multitimer-music-volume';
+const MUSIC_STORAGE_KEY = "multitimer-music";
+const VOLUME_STORAGE_KEY = "multitimer-music-volume";
 const DEFAULT_VOLUME = 0.5;
 
 export function useMusic() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  
+
   const [state, setState] = useState<MusicState>(() => {
     const stored = localStorage.getItem(MUSIC_STORAGE_KEY);
     const storedVolume = localStorage.getItem(VOLUME_STORAGE_KEY);
-    
+
     let initialState: MusicState = {
       sourceUrl: null,
       sourceType: null,
@@ -27,18 +27,18 @@ export function useMusic() {
       error: null,
       volume: DEFAULT_VOLUME,
     };
-    
+
     if (storedVolume) {
       try {
-        const vol = parseFloat(storedVolume);
-        if (!isNaN(vol) && vol >= 0 && vol <= 1) {
+        const vol = Number.parseFloat(storedVolume);
+        if (!Number.isNaN(vol) && vol >= 0 && vol <= 1) {
           initialState.volume = vol;
         }
       } catch {
         // Use default
       }
     }
-    
+
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
@@ -47,7 +47,7 @@ export function useMusic() {
         return initialState;
       }
     }
-    
+
     return initialState;
   });
 
@@ -80,9 +80,9 @@ export function useMusic() {
 
   const setMusicSource = useCallback((url: string) => {
     const result = parseMusicUrl(url);
-    
-    if (result.type === 'unknown') {
-      setState(prev => ({
+
+    if (result.type === "unknown") {
+      setState((prev) => ({
         ...prev,
         sourceUrl: null,
         sourceType: null,
@@ -91,34 +91,34 @@ export function useMusic() {
       }));
       return;
     }
-    
-    if (result.type === 'direct-audio') {
-      setState(prev => ({
+
+    if (result.type === "direct-audio") {
+      setState((prev) => ({
         ...prev,
         sourceUrl: result.url,
-        sourceType: 'direct-audio',
+        sourceType: "direct-audio",
         embedUrl: null,
         error: null,
       }));
       return;
     }
-    
-    if (result.type === 'spotify') {
-      setState(prev => ({
+
+    if (result.type === "spotify") {
+      setState((prev) => ({
         ...prev,
         sourceUrl: url,
-        sourceType: 'spotify',
+        sourceType: "spotify",
         embedUrl: result.embedUrl,
         error: null,
       }));
       return;
     }
-    
-    if (result.type === 'apple') {
-      setState(prev => ({
+
+    if (result.type === "apple") {
+      setState((prev) => ({
         ...prev,
         sourceUrl: url,
-        sourceType: 'apple',
+        sourceType: "apple",
         embedUrl: result.embedUrl,
         error: null,
       }));
@@ -129,10 +129,10 @@ export function useMusic() {
   const clearMusic = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause();
-      audioRef.current.src = '';
+      audioRef.current.src = "";
     }
-    
-    setState(prev => ({
+
+    setState((prev) => ({
       ...prev,
       sourceUrl: null,
       sourceType: null,
@@ -143,14 +143,14 @@ export function useMusic() {
 
   const setVolume = useCallback((volume: number) => {
     const clampedVolume = Math.max(0, Math.min(1, volume));
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       volume: clampedVolume,
     }));
   }, []);
 
   const setPlaybackError = useCallback((error: string) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       error,
     }));

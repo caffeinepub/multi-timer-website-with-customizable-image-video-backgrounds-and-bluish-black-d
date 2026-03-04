@@ -1,18 +1,18 @@
-export function inferMediaType(mimeType: string): 'image' | 'video' | null {
-  if (mimeType.startsWith('image/')) {
-    return 'image';
+export function inferMediaType(mimeType: string): "image" | "video" | null {
+  if (mimeType.startsWith("image/")) {
+    return "image";
   }
-  if (mimeType.startsWith('video/')) {
-    return 'video';
+  if (mimeType.startsWith("video/")) {
+    return "video";
   }
   return null;
 }
 
 export function getMediaErrorMessage(error: Event | string): string {
-  if (typeof error === 'string') {
+  if (typeof error === "string") {
     return error;
   }
-  return 'Media failed to load. This format may not be supported by your current browser.';
+  return "Media failed to load. This format may not be supported by your current browser.";
 }
 
 /**
@@ -22,9 +22,9 @@ export function extractExtensionFromUrl(urlString: string): string | null {
   try {
     const url = new URL(urlString);
     const pathname = url.pathname;
-    const lastDot = pathname.lastIndexOf('.');
-    const lastSlash = pathname.lastIndexOf('/');
-    
+    const lastDot = pathname.lastIndexOf(".");
+    const lastSlash = pathname.lastIndexOf("/");
+
     if (lastDot > lastSlash && lastDot !== -1) {
       return pathname.substring(lastDot + 1).toLowerCase();
     }
@@ -39,18 +39,30 @@ export function extractExtensionFromUrl(urlString: string): string | null {
 /**
  * Infer media type from URL extension
  */
-export function inferMediaTypeFromUrl(urlString: string): 'image' | 'video' | null {
+export function inferMediaTypeFromUrl(
+  urlString: string,
+): "image" | "video" | null {
   const extension = extractExtensionFromUrl(urlString);
   if (!extension) return null;
 
-  const videoExts = ['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv', 'm4v'];
-  const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'avif', 'ico'];
+  const videoExts = ["mp4", "webm", "ogg", "mov", "avi", "mkv", "m4v"];
+  const imageExts = [
+    "jpg",
+    "jpeg",
+    "png",
+    "gif",
+    "webp",
+    "svg",
+    "bmp",
+    "avif",
+    "ico",
+  ];
 
   if (videoExts.includes(extension)) {
-    return 'video';
+    return "video";
   }
   if (imageExts.includes(extension)) {
-    return 'image';
+    return "image";
   }
   return null;
 }
@@ -61,7 +73,7 @@ export function inferMediaTypeFromUrl(urlString: string): 'image' | 'video' | nu
 export function isValidUrl(urlString: string): boolean {
   try {
     const url = new URL(urlString);
-    return url.protocol === 'http:' || url.protocol === 'https:';
+    return url.protocol === "http:" || url.protocol === "https:";
   } catch {
     return false;
   }
@@ -76,7 +88,7 @@ export function probeImage(url: string): Promise<boolean> {
     img.onload = () => resolve(true);
     img.onerror = () => resolve(false);
     img.src = url;
-    
+
     // Timeout after 10 seconds
     setTimeout(() => resolve(false), 10000);
   });
@@ -87,12 +99,12 @@ export function probeImage(url: string): Promise<boolean> {
  */
 export function probeVideo(url: string): Promise<boolean> {
   return new Promise((resolve) => {
-    const video = document.createElement('video');
+    const video = document.createElement("video");
     video.onloadedmetadata = () => resolve(true);
     video.onerror = () => resolve(false);
     video.src = url;
     video.load();
-    
+
     // Timeout after 10 seconds
     setTimeout(() => resolve(false), 10000);
   });
@@ -101,15 +113,17 @@ export function probeVideo(url: string): Promise<boolean> {
 /**
  * Generate user-friendly error messages
  */
-export function getUrlErrorMessage(type: 'invalid' | 'load-failed' | 'unsupported'): string {
+export function getUrlErrorMessage(
+  type: "invalid" | "load-failed" | "unsupported",
+): string {
   switch (type) {
-    case 'invalid':
-      return 'Invalid URL format. Please enter a valid http:// or https:// URL.';
-    case 'load-failed':
-      return 'Media failed to load. The URL may be unreachable, blocked by CORS, or the format may not be supported by your browser.';
-    case 'unsupported':
-      return 'Unable to determine media type. Please use a direct link to an image or video file.';
+    case "invalid":
+      return "Invalid URL format. Please enter a valid http:// or https:// URL.";
+    case "load-failed":
+      return "Media failed to load. The URL may be unreachable, blocked by CORS, or the format may not be supported by your browser.";
+    case "unsupported":
+      return "Unable to determine media type. Please use a direct link to an image or video file.";
     default:
-      return 'An error occurred while loading the media.';
+      return "An error occurred while loading the media.";
   }
 }

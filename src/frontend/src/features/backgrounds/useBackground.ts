@@ -1,78 +1,97 @@
-import { useState, useEffect, useCallback } from 'react';
-import { inferMediaType, inferMediaTypeFromUrl, isValidUrl, probeImage, probeVideo, getUrlErrorMessage } from './mediaSupport';
-import { parseYouTubeUrl } from './youtubeUrl';
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  getUrlErrorMessage,
+  inferMediaType,
+  inferMediaTypeFromUrl,
+  isValidUrl,
+  probeImage,
+  probeVideo,
+} from "./mediaSupport";
+import { parseYouTubeUrl } from "./youtubeUrl";
 
 interface BackgroundState {
   backgroundUrl: string | null;
-  mediaType: 'image' | 'video' | 'youtube' | null;
+  mediaType: "image" | "video" | "youtube" | null;
   youtubeVideoId?: string | null;
   youtubeVolume?: number;
   brightness?: number;
   error: string | null;
   isProbing?: boolean;
+  isPlaying: boolean;
+  showTimerOverlay: boolean;
 }
 
 interface PersistedBackgroundConfig {
   backgroundUrl?: string | null;
-  mediaType?: 'image' | 'video' | 'youtube' | null;
+  mediaType?: "image" | "video" | "youtube" | null;
   youtubeVideoId?: string | null;
   youtubeVolume?: number;
   brightness?: number;
+  showTimerOverlay?: boolean;
 }
 
-const STORAGE_KEY = 'multitimer-background';
+const STORAGE_KEY = "multitimer-background";
 const DEFAULT_YOUTUBE_VOLUME = 50;
 const DEFAULT_BRIGHTNESS = 100;
 
-async function validatePersistedBackground(config: PersistedBackgroundConfig): Promise<PersistedBackgroundConfig> {
+async function validatePersistedBackground(
+  config: PersistedBackgroundConfig,
+): Promise<PersistedBackgroundConfig> {
   // Treat blob URLs as invalid (they don't persist across sessions)
-  if (config.backgroundUrl?.startsWith('blob:')) {
+  if (config.backgroundUrl?.startsWith("blob:")) {
     return {
       youtubeVolume: config.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
       brightness: config.brightness ?? DEFAULT_BRIGHTNESS,
+      showTimerOverlay: config.showTimerOverlay ?? false,
     };
   }
 
   // Validate image backgrounds
-  if (config.mediaType === 'image' && config.backgroundUrl) {
+  if (config.mediaType === "image" && config.backgroundUrl) {
     const imageLoads = await probeImage(config.backgroundUrl);
     if (!imageLoads) {
       return {
         youtubeVolume: config.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
         brightness: config.brightness ?? DEFAULT_BRIGHTNESS,
+        showTimerOverlay: config.showTimerOverlay ?? false,
       };
     }
   }
 
   // Validate video backgrounds
-  if (config.mediaType === 'video' && config.backgroundUrl) {
+  if (config.mediaType === "video" && config.backgroundUrl) {
     const videoLoads = await probeVideo(config.backgroundUrl);
     if (!videoLoads) {
       return {
         youtubeVolume: config.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
         brightness: config.brightness ?? DEFAULT_BRIGHTNESS,
+        showTimerOverlay: config.showTimerOverlay ?? false,
       };
     }
   }
 
   // YouTube backgrounds will be validated at runtime by the player
-  // Keep the config as-is for YouTube
   return config;
 }
 
 export function useBackground() {
   const [state, setState] = useState<BackgroundState>(() => {
-    return { 
-      backgroundUrl: null, 
-      mediaType: null, 
-      youtubeVideoId: null, 
-      youtubeVolume: DEFAULT_YOUTUBE_VOLUME, 
+    return {
+      backgroundUrl: null,
+      mediaType: null,
+      youtubeVideoId: null,
+      youtubeVolume: DEFAULT_YOUTUBE_VOLUME,
       brightness: DEFAULT_BRIGHTNESS,
-      error: null 
+      error: null,
+      isPlaying: false,
+      showTimerOverlay: false,
     };
   });
 
   const [isInitializing, setIsInitializing] = useState(true);
+
+  // Ref for the background stage element — used by the fullscreen button
+  const stageRef = useRef<HTMLDivElement>(null);
 
   // Boot-time validation of persisted background
   useEffect(() => {
@@ -85,29 +104,30 @@ export function useBackground() {
 
       try {
         const parsed = JSON.parse(stored);
-        
-        // Ensure backward compatibility: add defaults if missing
+
         const config: PersistedBackgroundConfig = {
           backgroundUrl: parsed.backgroundUrl,
           mediaType: parsed.mediaType,
           youtubeVideoId: parsed.youtubeVideoId,
           youtubeVolume: parsed.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
           brightness: parsed.brightness ?? DEFAULT_BRIGHTNESS,
+          showTimerOverlay: parsed.showTimerOverlay ?? false,
         };
 
-        // Validate the persisted background
         const validatedConfig = await validatePersistedBackground(config);
 
         setState({
           backgroundUrl: validatedConfig.backgroundUrl ?? null,
           mediaType: validatedConfig.mediaType ?? null,
           youtubeVideoId: validatedConfig.youtubeVideoId ?? null,
-          youtubeVolume: validatedConfig.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
+          youtubeVolume:
+            validatedConfig.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
           brightness: validatedConfig.brightness ?? DEFAULT_BRIGHTNESS,
           error: null,
+          isPlaying: false,
+          showTimerOverlay: validatedConfig.showTimerOverlay ?? false,
         });
       } catch {
-        // Invalid stored data, start fresh
         setState({
           backgroundUrl: null,
           mediaType: null,
@@ -115,6 +135,8 @@ export function useBackground() {
           youtubeVolume: DEFAULT_YOUTUBE_VOLUME,
           brightness: DEFAULT_BRIGHTNESS,
           error: null,
+          isPlaying: false,
+          showTimerOverlay: false,
         });
       }
 
@@ -124,7 +146,7 @@ export function useBackground() {
     initializeBackground();
   }, []);
 
-  // Persist only durable configuration (exclude transient runtime fields like error/isProbing)
+  // Persist only durable configuration (exclude transient runtime fields)
   useEffect(() => {
     if (isInitializing) return;
 
@@ -134,6 +156,7 @@ export function useBackground() {
       youtubeVideoId: state.youtubeVideoId,
       youtubeVolume: state.youtubeVolume,
       brightness: state.brightness,
+      showTimerOverlay: state.showTimerOverlay,
     };
 
     if (state.backgroundUrl || state.youtubeVideoId) {
@@ -141,106 +164,110 @@ export function useBackground() {
     } else {
       localStorage.removeItem(STORAGE_KEY);
     }
-  }, [state.backgroundUrl, state.mediaType, state.youtubeVideoId, state.youtubeVolume, state.brightness, isInitializing]);
+  }, [
+    state.backgroundUrl,
+    state.mediaType,
+    state.youtubeVideoId,
+    state.youtubeVolume,
+    state.brightness,
+    state.showTimerOverlay,
+    isInitializing,
+  ]);
 
   const setBackgroundFromFile = useCallback((file: File) => {
     const mediaType = inferMediaType(file.type);
     if (!mediaType) {
       setState((prev) => ({
+        ...prev,
         backgroundUrl: null,
         mediaType: null,
         youtubeVideoId: null,
-        youtubeVolume: prev.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
-        brightness: prev.brightness ?? DEFAULT_BRIGHTNESS,
-        error: 'Unsupported file format. Your browser cannot display this media type.',
+        error:
+          "Unsupported file format. Your browser cannot display this media type.",
+        isPlaying: false,
       }));
       return;
     }
 
     const url = URL.createObjectURL(file);
     setState((prev) => ({
+      ...prev,
       backgroundUrl: url,
       mediaType,
       youtubeVideoId: null,
-      youtubeVolume: prev.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
-      brightness: prev.brightness ?? DEFAULT_BRIGHTNESS,
       error: null,
+      isPlaying: false,
     }));
   }, []);
 
   const setBackgroundFromUrl = useCallback(async (url: string) => {
-    // Clear previous state
-    setState((prev) => ({ 
+    setState((prev) => ({
+      ...prev,
       backgroundUrl: null,
       mediaType: null,
       youtubeVideoId: null,
-      youtubeVolume: prev.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
-      brightness: prev.brightness ?? DEFAULT_BRIGHTNESS,
-      error: null, 
-      isProbing: true 
+      error: null,
+      isProbing: true,
+      isPlaying: false,
     }));
 
-    // Validate URL format
     if (!isValidUrl(url)) {
       setState((prev) => ({
+        ...prev,
         backgroundUrl: null,
         mediaType: null,
         youtubeVideoId: null,
-        youtubeVolume: prev.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
-        brightness: prev.brightness ?? DEFAULT_BRIGHTNESS,
-        error: getUrlErrorMessage('invalid'),
+        error: getUrlErrorMessage("invalid"),
         isProbing: false,
+        isPlaying: false,
       }));
       return;
     }
 
-    // Try to infer type from extension first
     const inferredType = inferMediaTypeFromUrl(url);
 
     if (inferredType) {
-      // We have a hint from the extension, verify it loads
-      if (inferredType === 'image') {
+      if (inferredType === "image") {
         const imageLoads = await probeImage(url);
         if (imageLoads) {
           setState((prev) => ({
+            ...prev,
             backgroundUrl: url,
-            mediaType: 'image',
+            mediaType: "image",
             youtubeVideoId: null,
-            youtubeVolume: prev.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
-            brightness: prev.brightness ?? DEFAULT_BRIGHTNESS,
             error: null,
             isProbing: false,
+            isPlaying: false,
           }));
           return;
         }
-      } else if (inferredType === 'video') {
+      } else if (inferredType === "video") {
         const videoLoads = await probeVideo(url);
         if (videoLoads) {
           setState((prev) => ({
+            ...prev,
             backgroundUrl: url,
-            mediaType: 'video',
+            mediaType: "video",
             youtubeVideoId: null,
-            youtubeVolume: prev.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
-            brightness: prev.brightness ?? DEFAULT_BRIGHTNESS,
             error: null,
             isProbing: false,
+            isPlaying: false,
           }));
           return;
         }
       }
     }
 
-    // No extension hint or probing failed, try both
     const imageLoads = await probeImage(url);
     if (imageLoads) {
       setState((prev) => ({
+        ...prev,
         backgroundUrl: url,
-        mediaType: 'image',
+        mediaType: "image",
         youtubeVideoId: null,
-        youtubeVolume: prev.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
-        brightness: prev.brightness ?? DEFAULT_BRIGHTNESS,
         error: null,
         isProbing: false,
+        isPlaying: false,
       }));
       return;
     }
@@ -248,51 +275,50 @@ export function useBackground() {
     const videoLoads = await probeVideo(url);
     if (videoLoads) {
       setState((prev) => ({
+        ...prev,
         backgroundUrl: url,
-        mediaType: 'video',
+        mediaType: "video",
         youtubeVideoId: null,
-        youtubeVolume: prev.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
-        brightness: prev.brightness ?? DEFAULT_BRIGHTNESS,
         error: null,
         isProbing: false,
+        isPlaying: false,
       }));
       return;
     }
 
-    // Neither worked
     setState((prev) => ({
+      ...prev,
       backgroundUrl: null,
       mediaType: null,
       youtubeVideoId: null,
-      youtubeVolume: prev.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
-      brightness: prev.brightness ?? DEFAULT_BRIGHTNESS,
-      error: getUrlErrorMessage('load-failed'),
+      error: getUrlErrorMessage("load-failed"),
       isProbing: false,
+      isPlaying: false,
     }));
   }, []);
 
   const setBackgroundFromYouTubeUrl = useCallback((url: string) => {
     const result = parseYouTubeUrl(url);
-    
-    if ('error' in result) {
+
+    if ("error" in result) {
       setState((prev) => ({
+        ...prev,
         backgroundUrl: null,
         mediaType: null,
         youtubeVideoId: null,
-        youtubeVolume: prev.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
-        brightness: prev.brightness ?? DEFAULT_BRIGHTNESS,
         error: result.error,
+        isPlaying: false,
       }));
       return;
     }
 
     setState((prev) => ({
+      ...prev,
       backgroundUrl: null,
-      mediaType: 'youtube',
+      mediaType: "youtube",
       youtubeVideoId: result.videoId,
-      youtubeVolume: prev.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
-      brightness: prev.brightness ?? DEFAULT_BRIGHTNESS,
       error: null,
+      isPlaying: false,
     }));
   }, []);
 
@@ -312,12 +338,12 @@ export function useBackground() {
 
   const clearBackground = useCallback(() => {
     setState((prev) => ({
+      ...prev,
       backgroundUrl: null,
       mediaType: null,
       youtubeVideoId: null,
-      youtubeVolume: prev.youtubeVolume ?? DEFAULT_YOUTUBE_VOLUME,
-      brightness: prev.brightness ?? DEFAULT_BRIGHTNESS,
       error: null,
+      isPlaying: false,
     }));
   }, []);
 
@@ -328,8 +354,36 @@ export function useBackground() {
     }));
   }, []);
 
+  const setIsPlaying = useCallback((playing: boolean) => {
+    setState((prev) => ({
+      ...prev,
+      isPlaying: playing,
+    }));
+  }, []);
+
+  const togglePlayback = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      isPlaying: !prev.isPlaying,
+    }));
+  }, []);
+
+  const toggleTimerOverlay = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      showTimerOverlay: !prev.showTimerOverlay,
+    }));
+  }, []);
+
+  // isFullscreen is true when a video/youtube background is playing
+  const isVideoBackground =
+    state.mediaType === "video" || state.mediaType === "youtube";
+  const isFullscreen = isVideoBackground && state.isPlaying;
+
   return {
     ...state,
+    isFullscreen,
+    stageRef,
     setBackgroundFromFile,
     setBackgroundFromUrl,
     setBackgroundFromYouTubeUrl,
@@ -337,5 +391,8 @@ export function useBackground() {
     setBrightness,
     clearBackground,
     setRuntimeError,
+    setIsPlaying,
+    togglePlayback,
+    toggleTimerOverlay,
   };
 }

@@ -8,10 +8,48 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
-export const idlService = IDL.Service({});
+export const Character = IDL.Text;
+export const GameField = IDL.Vec(Character);
+export const Points = IDL.Nat;
+export const GameId = IDL.Nat;
+export const PointsDiff = IDL.Int;
+export const Features = IDL.Record({
+  'pointsPlayer1' : Points,
+  'pointsPlayer2' : Points,
+  'gameField' : GameField,
+  'gameId' : GameId,
+  'charactersPlayer1' : Character,
+  'charactersPlayer2' : Character,
+  'pointsDiffPlayer1' : PointsDiff,
+  'pointsDiffPlayer2' : PointsDiff,
+});
+
+export const idlService = IDL.Service({
+  'updateGameState' : IDL.Func([GameField, IDL.Bool], [Features], []),
+});
 
 export const idlInitArgs = [];
 
-export const idlFactory = ({ IDL }) => { return IDL.Service({}); };
+export const idlFactory = ({ IDL }) => {
+  const Character = IDL.Text;
+  const GameField = IDL.Vec(Character);
+  const Points = IDL.Nat;
+  const GameId = IDL.Nat;
+  const PointsDiff = IDL.Int;
+  const Features = IDL.Record({
+    'pointsPlayer1' : Points,
+    'pointsPlayer2' : Points,
+    'gameField' : GameField,
+    'gameId' : GameId,
+    'charactersPlayer1' : Character,
+    'charactersPlayer2' : Character,
+    'pointsDiffPlayer1' : PointsDiff,
+    'pointsDiffPlayer2' : PointsDiff,
+  });
+  
+  return IDL.Service({
+    'updateGameState' : IDL.Func([GameField, IDL.Bool], [Features], []),
+  });
+};
 
 export const init = ({ IDL }) => { return []; };

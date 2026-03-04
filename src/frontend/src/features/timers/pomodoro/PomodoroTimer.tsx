@@ -1,13 +1,11 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Play, Pause, RotateCcw, SkipForward } from 'lucide-react';
-import { usePomodoro } from './usePomodoro';
-import { formatTime } from '../shared/timeFormat';
-import { Badge } from '@/components/ui/badge';
-import { EditableNumberInput } from '../shared/EditableNumberInput';
-import { RotaryDial } from '../shared/RotaryDial';
-import { useTimerAlerts } from '@/features/alerts/TimerAlertsProvider';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { useTimerAlerts } from "@/features/alerts/TimerAlertsProvider";
+import { Pause, Play, RotateCcw, SkipForward } from "lucide-react";
+import { EditableNumberInput } from "../shared/EditableNumberInput";
+import { formatTime } from "../shared/timeFormat";
+import { usePomodoro } from "./usePomodoro";
 
 export function PomodoroTimer() {
   const { notifyCompletion } = useTimerAlerts();
@@ -25,145 +23,128 @@ export function PomodoroTimer() {
   } = usePomodoro({
     onSegmentComplete: (segment) => {
       const messages = {
-        work: 'Work session completed! Time for a break.',
-        shortBreak: 'Short break completed! Ready to work?',
-        longBreak: 'Long break completed! Ready to work?',
+        work: "Work session completed! Time for a break.",
+        shortBreak: "Short break completed! Ready to work?",
+        longBreak: "Long break completed! Ready to work?",
       };
       notifyCompletion(messages[segment]);
     },
   });
 
   const segmentLabels = {
-    work: 'Work',
-    shortBreak: 'Short Break',
-    longBreak: 'Long Break',
-  };
-
-  const handleWorkDurationChange = (newValue: number) => {
-    updateSettings({ workDuration: newValue });
-  };
-
-  const handleShortBreakChange = (newValue: number) => {
-    updateSettings({ shortBreakDuration: newValue });
-  };
-
-  const handleLongBreakChange = (newValue: number) => {
-    updateSettings({ longBreakDuration: newValue });
-  };
-
-  const handleLongBreakIntervalChange = (newValue: number) => {
-    updateSettings({ longBreakInterval: newValue });
+    work: "Work",
+    shortBreak: "Short Break",
+    longBreak: "Long Break",
   };
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-border/50">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Pomodoro Timer</CardTitle>
-            <CardDescription>Focus with the Pomodoro Technique</CardDescription>
-          </div>
-          <Badge variant={currentSegment === 'work' ? 'default' : 'secondary'}>
+    <Card className="w-full bg-settings-pink border border-settings-crimson/40 shadow-none rounded-xl">
+      <CardHeader className="pb-2 pt-4 px-4">
+        <CardTitle className="text-base font-bold text-settings-crimson flex items-center justify-between">
+          <span>Pomodoro</span>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-settings-crimson text-white font-semibold">
             {segmentLabels[currentSegment]}
-          </Badge>
-        </div>
+          </span>
+        </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="text-center">
-          <div className="timer-display text-7xl font-bold tracking-wider sm:text-8xl">
+      <CardContent className="px-4 pb-4 flex flex-col items-center gap-4">
+        {/* Time display */}
+        <div className="flex flex-col items-center">
+          <span className="text-5xl font-bold tabular-nums text-settings-crimson tracking-wider">
             {formatTime(timeLeft)}
-          </div>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Completed: {completedPomodoros} pomodoro{completedPomodoros !== 1 ? 's' : ''}
+          </span>
+          <span className="text-xs text-settings-crimson/60 mt-1">
+            Completed: {completedPomodoros} pomodoro
+            {completedPomodoros !== 1 ? "s" : ""}
+          </span>
+        </div>
+
+        {/* Controls */}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={reset}
+            className="border-2 border-settings-crimson text-settings-crimson bg-transparent hover:bg-settings-crimson hover:text-white"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </Button>
+          <Button
+            size="icon"
+            onClick={isRunning ? pause : start}
+            className="w-12 h-12 bg-settings-crimson text-white hover:bg-settings-crimson-hover border-2 border-settings-crimson"
+          >
+            {isRunning ? (
+              <Pause className="w-5 h-5" />
+            ) : (
+              <Play className="w-5 h-5" />
+            )}
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={skip}
+            className="border-2 border-settings-crimson text-settings-crimson bg-transparent hover:bg-settings-crimson hover:text-white"
+          >
+            <SkipForward className="w-4 h-4" />
+          </Button>
+        </div>
+
+        {/* Settings */}
+        <div className="w-full border-t border-settings-crimson/30 pt-3">
+          <p className="text-xs font-bold text-settings-crimson mb-3 uppercase tracking-wide">
+            Settings
           </p>
-        </div>
-
-        <div className="flex justify-center gap-2">
-          {!isRunning ? (
-            <Button size="lg" onClick={start} className="min-w-32">
-              <Play className="mr-2 h-5 w-5" />
-              Start
-            </Button>
-          ) : (
-            <Button size="lg" onClick={pause} variant="secondary" className="min-w-32">
-              <Pause className="mr-2 h-5 w-5" />
-              Pause
-            </Button>
-          )}
-          <Button size="lg" variant="outline" onClick={skip}>
-            <SkipForward className="mr-2 h-5 w-5" />
-            Skip
-          </Button>
-          <Button size="lg" variant="outline" onClick={reset}>
-            <RotateCcw className="mr-2 h-5 w-5" />
-            Reset
-          </Button>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="work-duration">Work Duration (min)</Label>
-            <EditableNumberInput
-              id="work-duration"
-              value={settings.workDuration}
-              onChange={handleWorkDurationChange}
-              min={1}
-              max={60}
-              disabled={isRunning}
-            />
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <Label className="text-xs font-semibold text-settings-crimson">
+                Work (min)
+              </Label>
+              <EditableNumberInput
+                value={settings.workDuration}
+                min={1}
+                max={120}
+                onChange={(v) => updateSettings({ workDuration: v })}
+                disabled={isRunning}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs font-semibold text-settings-crimson">
+                Short Break (min)
+              </Label>
+              <EditableNumberInput
+                value={settings.shortBreakDuration}
+                min={1}
+                max={60}
+                onChange={(v) => updateSettings({ shortBreakDuration: v })}
+                disabled={isRunning}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs font-semibold text-settings-crimson">
+                Long Break (min)
+              </Label>
+              <EditableNumberInput
+                value={settings.longBreakDuration}
+                min={1}
+                max={60}
+                onChange={(v) => updateSettings({ longBreakDuration: v })}
+                disabled={isRunning}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs font-semibold text-settings-crimson">
+                Long Break After
+              </Label>
+              <EditableNumberInput
+                value={settings.longBreakInterval}
+                min={1}
+                max={10}
+                onChange={(v) => updateSettings({ longBreakInterval: v })}
+                disabled={isRunning}
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="short-break">Short Break (min)</Label>
-            <EditableNumberInput
-              id="short-break"
-              value={settings.shortBreakDuration}
-              onChange={handleShortBreakChange}
-              min={1}
-              max={30}
-              disabled={isRunning}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="long-break">Long Break (min)</Label>
-            <EditableNumberInput
-              id="long-break"
-              value={settings.longBreakDuration}
-              onChange={handleLongBreakChange}
-              min={1}
-              max={60}
-              disabled={isRunning}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="long-break-interval">Long Break After</Label>
-            <EditableNumberInput
-              id="long-break-interval"
-              value={settings.longBreakInterval}
-              onChange={handleLongBreakIntervalChange}
-              min={1}
-              max={10}
-              disabled={isRunning}
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-center gap-8 pt-4">
-          <RotaryDial
-            value={settings.workDuration}
-            onChange={handleWorkDurationChange}
-            min={1}
-            max={60}
-            disabled={isRunning}
-            label="Work (min)"
-          />
-          <RotaryDial
-            value={settings.shortBreakDuration}
-            onChange={handleShortBreakChange}
-            min={1}
-            max={30}
-            disabled={isRunning}
-            label="Short Break (min)"
-          />
         </div>
       </CardContent>
     </Card>

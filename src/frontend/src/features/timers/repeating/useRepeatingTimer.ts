@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
-import { useAccurateInterval } from '../shared/useAccurateInterval';
+import { useCallback, useEffect, useState } from "react";
+import { useAccurateInterval } from "../shared/useAccurateInterval";
 
 interface RepeatingSettings {
   duration: number;
@@ -13,7 +13,7 @@ const DEFAULT_SETTINGS: RepeatingSettings = {
   infinite: false,
 };
 
-const STORAGE_KEY = 'repeating-timer-state';
+const STORAGE_KEY = "repeating-timer-state";
 
 interface UseRepeatingTimerOptions {
   onComplete?: () => void;
@@ -42,9 +42,12 @@ export function useRepeatingTimer(options?: UseRepeatingTimerOptions) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
   }, [settings]);
 
-  const updateSettings = useCallback((newSettings: Partial<RepeatingSettings>) => {
-    setSettings((prev) => ({ ...prev, ...newSettings }));
-  }, []);
+  const updateSettings = useCallback(
+    (newSettings: Partial<RepeatingSettings>) => {
+      setSettings((prev) => ({ ...prev, ...newSettings }));
+    },
+    [],
+  );
 
   const start = useCallback(() => {
     if (pausedTime !== null) {
@@ -80,7 +83,10 @@ export function useRepeatingTimer(options?: UseRepeatingTimerOptions) {
           const newCompletedRepeats = completedRepeats + 1;
           setCompletedRepeats(newCompletedRepeats);
 
-          if (!settings.infinite && newCompletedRepeats >= settings.repeatCount) {
+          if (
+            !settings.infinite &&
+            newCompletedRepeats >= settings.repeatCount
+          ) {
             setIsRunning(false);
             setTimeLeft(0);
             setStartTime(null);
@@ -97,7 +103,7 @@ export function useRepeatingTimer(options?: UseRepeatingTimerOptions) {
       }
     },
     100,
-    isRunning
+    isRunning,
   );
 
   return {

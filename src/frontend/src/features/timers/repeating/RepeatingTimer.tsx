@@ -1,14 +1,12 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Play, Pause, RotateCcw, Infinity } from 'lucide-react';
-import { useRepeatingTimer } from './useRepeatingTimer';
-import { formatTime } from '../shared/timeFormat';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
-import { EditableNumberInput } from '../shared/EditableNumberInput';
-import { RotaryDial } from '../shared/RotaryDial';
-import { useTimerAlerts } from '@/features/alerts/TimerAlertsProvider';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { useTimerAlerts } from "@/features/alerts/TimerAlertsProvider";
+import { Infinity as InfinityIcon, Pause, Play, RotateCcw } from "lucide-react";
+import { EditableNumberInput } from "../shared/EditableNumberInput";
+import { formatTime } from "../shared/timeFormat";
+import { useRepeatingTimer } from "./useRepeatingTimer";
 
 export function RepeatingTimer() {
   const { notifyCompletion } = useTimerAlerts();
@@ -22,7 +20,7 @@ export function RepeatingTimer() {
     pause,
     reset,
   } = useRepeatingTimer({
-    onComplete: () => notifyCompletion('All repeating timer cycles completed!'),
+    onComplete: () => notifyCompletion("All repeating timer cycles completed!"),
   });
 
   const minutes = Math.floor(settings.duration / 60);
@@ -36,126 +34,117 @@ export function RepeatingTimer() {
     updateSettings({ duration: minutes * 60 + newSeconds });
   };
 
-  const handleRepeatCountChange = (newCount: number) => {
-    updateSettings({ repeatCount: newCount });
-  };
-
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-border/50">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Repeating Timer</CardTitle>
-            <CardDescription>Auto-restart countdown timer</CardDescription>
-          </div>
+    <Card className="w-full bg-settings-pink border border-settings-crimson/40 shadow-none rounded-xl">
+      <CardHeader className="pb-2 pt-4 px-4">
+        <CardTitle className="text-base font-bold text-settings-crimson flex items-center justify-between">
+          <span>Repeating</span>
           {settings.infinite && (
-            <Badge variant="secondary">
-              <Infinity className="mr-1 h-3 w-3" />
-              Infinite
-            </Badge>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-settings-crimson text-white font-semibold flex items-center gap-1">
+              <InfinityIcon className="w-3 h-3" /> Infinite
+            </span>
           )}
-        </div>
+        </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="text-center">
-          <div className="timer-display text-7xl font-bold tracking-wider sm:text-8xl">
+      <CardContent className="px-4 pb-4 flex flex-col items-center gap-4">
+        {/* Time display */}
+        <div className="flex flex-col items-center">
+          <span className="text-5xl font-bold tabular-nums text-settings-crimson tracking-wider">
             {formatTime(timeLeft)}
-          </div>
-          <p className="mt-2 text-sm text-muted-foreground">
+          </span>
+          <span className="text-xs text-settings-crimson/60 mt-1">
             Completed: {completedRepeats}
             {!settings.infinite && ` / ${settings.repeatCount}`}
-          </p>
+          </span>
         </div>
 
-        <div className="flex justify-center gap-2">
-          {!isRunning ? (
-            <Button size="lg" onClick={start} className="min-w-32">
-              <Play className="mr-2 h-5 w-5" />
-              Start
-            </Button>
-          ) : (
-            <Button size="lg" onClick={pause} variant="secondary" className="min-w-32">
-              <Pause className="mr-2 h-5 w-5" />
-              Pause
-            </Button>
-          )}
-          <Button size="lg" variant="outline" onClick={reset}>
-            <RotateCcw className="mr-2 h-5 w-5" />
-            Reset
+        {/* Controls */}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={reset}
+            className="border-2 border-settings-crimson text-settings-crimson bg-transparent hover:bg-settings-crimson hover:text-white"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </Button>
+          <Button
+            size="icon"
+            onClick={isRunning ? pause : start}
+            className="w-12 h-12 bg-settings-crimson text-white hover:bg-settings-crimson-hover border-2 border-settings-crimson"
+          >
+            {isRunning ? (
+              <Pause className="w-5 h-5" />
+            ) : (
+              <Play className="w-5 h-5" />
+            )}
           </Button>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="minutes">Minutes</Label>
-            <EditableNumberInput
-              id="minutes"
-              value={minutes}
-              onChange={handleMinutesChange}
-              min={0}
-              max={59}
+        {/* Settings */}
+        <div className="w-full border-t border-settings-crimson/30 pt-3 space-y-3">
+          <p className="text-xs font-bold text-settings-crimson uppercase tracking-wide">
+            Settings
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <Label className="text-xs font-semibold text-settings-crimson">
+                Minutes
+              </Label>
+              <EditableNumberInput
+                value={minutes}
+                min={0}
+                max={59}
+                onChange={handleMinutesChange}
+                disabled={isRunning}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs font-semibold text-settings-crimson">
+                Seconds
+              </Label>
+              <EditableNumberInput
+                value={seconds}
+                min={0}
+                max={59}
+                onChange={handleSecondsChange}
+                disabled={isRunning}
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between rounded-lg border border-settings-crimson/30 bg-settings-pink-active p-3">
+            <div className="space-y-0.5">
+              <Label className="text-xs font-semibold text-settings-crimson">
+                Infinite Mode
+              </Label>
+              <p className="text-xs text-settings-crimson/60">
+                Repeat indefinitely
+              </p>
+            </div>
+            <Switch
+              checked={settings.infinite}
+              onCheckedChange={(checked) =>
+                updateSettings({ infinite: checked })
+              }
               disabled={isRunning}
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="seconds">Seconds</Label>
-            <EditableNumberInput
-              id="seconds"
-              value={seconds}
-              onChange={handleSecondsChange}
-              min={0}
-              max={59}
-              disabled={isRunning}
-            />
-          </div>
-        </div>
 
-        <div className="flex items-center justify-between rounded-lg border border-border p-4">
-          <div className="space-y-0.5">
-            <Label htmlFor="infinite-mode">Infinite Mode</Label>
-            <p className="text-sm text-muted-foreground">
-              Timer will repeat indefinitely
-            </p>
-          </div>
-          <Switch
-            id="infinite-mode"
-            checked={settings.infinite}
-            onCheckedChange={(checked) => updateSettings({ infinite: checked })}
-            disabled={isRunning}
-          />
-        </div>
-
-        {!settings.infinite && (
-          <div className="space-y-2">
-            <Label htmlFor="repeat-count">Repeat Count</Label>
-            <EditableNumberInput
-              id="repeat-count"
-              value={settings.repeatCount}
-              onChange={handleRepeatCountChange}
-              min={1}
-              max={100}
-              disabled={isRunning}
-            />
-          </div>
-        )}
-
-        <div className="flex justify-center gap-8 pt-4">
-          <RotaryDial
-            value={Math.max(1, minutes)}
-            onChange={handleMinutesChange}
-            min={1}
-            max={60}
-            disabled={isRunning}
-            label="Minutes"
-          />
-          <RotaryDial
-            value={Math.max(1, seconds)}
-            onChange={handleSecondsChange}
-            min={1}
-            max={60}
-            disabled={isRunning}
-            label="Seconds"
-          />
+          {!settings.infinite && (
+            <div className="space-y-1">
+              <Label className="text-xs font-semibold text-settings-crimson">
+                Repeat Count
+              </Label>
+              <EditableNumberInput
+                value={settings.repeatCount}
+                min={1}
+                max={100}
+                onChange={(v) => updateSettings({ repeatCount: v })}
+                disabled={isRunning}
+              />
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

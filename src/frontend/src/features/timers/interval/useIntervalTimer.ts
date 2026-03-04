@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
-import { useAccurateInterval } from '../shared/useAccurateInterval';
+import { useCallback, useEffect, useState } from "react";
+import { useAccurateInterval } from "../shared/useAccurateInterval";
 
 interface IntervalSettings {
   intervalA: number;
@@ -13,10 +13,10 @@ const DEFAULT_SETTINGS: IntervalSettings = {
   rounds: 8,
 };
 
-const STORAGE_KEY = 'interval-timer-state';
+const STORAGE_KEY = "interval-timer-state";
 
 interface UseIntervalTimerOptions {
-  onIntervalComplete?: (interval: 'A' | 'B') => void;
+  onIntervalComplete?: (interval: "A" | "B") => void;
   onCycleComplete?: () => void;
 }
 
@@ -35,7 +35,7 @@ export function useIntervalTimer(options?: UseIntervalTimerOptions) {
 
   const [timeLeft, setTimeLeft] = useState(settings.intervalA);
   const [isRunning, setIsRunning] = useState(false);
-  const [currentInterval, setCurrentInterval] = useState<'A' | 'B'>('A');
+  const [currentInterval, setCurrentInterval] = useState<"A" | "B">("A");
   const [currentRound, setCurrentRound] = useState(1);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [pausedTime, setPausedTime] = useState<number | null>(null);
@@ -44,19 +44,24 @@ export function useIntervalTimer(options?: UseIntervalTimerOptions) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
   }, [settings]);
 
-  const updateSettings = useCallback((newSettings: Partial<IntervalSettings>) => {
-    setSettings((prev) => ({ ...prev, ...newSettings }));
-  }, []);
+  const updateSettings = useCallback(
+    (newSettings: Partial<IntervalSettings>) => {
+      setSettings((prev) => ({ ...prev, ...newSettings }));
+    },
+    [],
+  );
 
   const totalRounds = settings.rounds;
 
   const getCurrentIntervalDuration = useCallback(() => {
-    return currentInterval === 'A' ? settings.intervalA : settings.intervalB;
+    return currentInterval === "A" ? settings.intervalA : settings.intervalB;
   }, [currentInterval, settings.intervalA, settings.intervalB]);
 
   const start = useCallback(() => {
     if (pausedTime !== null) {
-      setStartTime(Date.now() - (getCurrentIntervalDuration() - pausedTime) * 1000);
+      setStartTime(
+        Date.now() - (getCurrentIntervalDuration() - pausedTime) * 1000,
+      );
       setPausedTime(null);
     } else {
       setStartTime(Date.now());
@@ -72,7 +77,7 @@ export function useIntervalTimer(options?: UseIntervalTimerOptions) {
 
   const reset = useCallback(() => {
     setIsRunning(false);
-    setCurrentInterval('A');
+    setCurrentInterval("A");
     setCurrentRound(1);
     setTimeLeft(settings.intervalA);
     setStartTime(null);
@@ -84,8 +89,8 @@ export function useIntervalTimer(options?: UseIntervalTimerOptions) {
       options.onIntervalComplete(currentInterval);
     }
 
-    if (currentInterval === 'A') {
-      setCurrentInterval('B');
+    if (currentInterval === "A") {
+      setCurrentInterval("B");
       setTimeLeft(settings.intervalB);
       setStartTime(isRunning ? Date.now() : null);
       setPausedTime(null);
@@ -98,13 +103,21 @@ export function useIntervalTimer(options?: UseIntervalTimerOptions) {
         }
       } else {
         setCurrentRound((prev) => prev + 1);
-        setCurrentInterval('A');
+        setCurrentInterval("A");
         setTimeLeft(settings.intervalA);
         setStartTime(isRunning ? Date.now() : null);
         setPausedTime(null);
       }
     }
-  }, [currentInterval, currentRound, totalRounds, settings.intervalA, settings.intervalB, isRunning, options]);
+  }, [
+    currentInterval,
+    currentRound,
+    totalRounds,
+    settings.intervalA,
+    settings.intervalB,
+    isRunning,
+    options,
+  ]);
 
   useAccurateInterval(
     () => {
@@ -120,7 +133,7 @@ export function useIntervalTimer(options?: UseIntervalTimerOptions) {
       }
     },
     100,
-    isRunning
+    isRunning,
   );
 
   return {

@@ -1,5 +1,5 @@
-import { Input } from '@/components/ui/input';
-import { useState, useEffect } from 'react';
+import { Input } from "@/components/ui/input";
+import { useEffect, useState } from "react";
 
 interface EditableNumberInputProps {
   value: number;
@@ -32,24 +32,20 @@ export function EditableNumberInput({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    // Allow empty string or valid numbers
-    if (newValue === '' || /^\d+$/.test(newValue)) {
+    if (newValue === "" || /^\d+$/.test(newValue)) {
       setDisplayValue(newValue);
     }
   };
 
   const handleBlur = () => {
     setIsFocused(false);
-    // Commit the value
-    if (displayValue === '') {
-      // If empty, set to min value
-      onChange(min);
-      setDisplayValue(min.toString());
+    const parsed = Number.parseInt(displayValue, 10);
+    if (!Number.isNaN(parsed)) {
+      const clamped = Math.max(min, Math.min(max, parsed));
+      onChange(clamped);
+      setDisplayValue(clamped.toString());
     } else {
-      const numValue = parseInt(displayValue, 10);
-      const clampedValue = Math.max(min, Math.min(max, numValue));
-      onChange(clampedValue);
-      setDisplayValue(clampedValue.toString());
+      setDisplayValue(value.toString());
     }
   };
 
@@ -58,8 +54,13 @@ export function EditableNumberInput({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.currentTarget.blur();
+    if (e.key === "Enter") {
+      (e.target as HTMLInputElement).blur();
+    }
+    if (e.key === "Escape") {
+      setDisplayValue(value.toString());
+      setIsFocused(false);
+      (e.target as HTMLInputElement).blur();
     }
   };
 
@@ -74,7 +75,14 @@ export function EditableNumberInput({
       onFocus={handleFocus}
       onKeyDown={handleKeyDown}
       disabled={disabled}
-      className={className}
+      className={[
+        "text-center font-bold text-black bg-white border-2 border-black",
+        "focus:ring-2 focus:ring-black focus:ring-offset-1",
+        "disabled:opacity-40 disabled:cursor-not-allowed",
+        className ?? "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
     />
   );
 }

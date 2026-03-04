@@ -1,25 +1,34 @@
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Pencil, Trash2, Calendar } from 'lucide-react';
-import { useReminders, type Reminder } from './useReminders';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Clock, Pencil, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { type Reminder, useReminders } from "./useReminders";
 
 export function RemindersView() {
-  const { reminders, addReminder, updateReminder, deleteReminder } = useReminders();
+  const { reminders, addReminder, updateReminder, deleteReminder } =
+    useReminders();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingReminder, setEditingReminder] = useState<Reminder | null>(null);
-  const [formTitle, setFormTitle] = useState('');
-  const [formDueDate, setFormDueDate] = useState('');
+  const [formTitle, setFormTitle] = useState("");
+  const [formDueDate, setFormDueDate] = useState("");
 
   const handleAdd = () => {
     if (formTitle.trim() && formDueDate) {
       addReminder(formTitle.trim(), formDueDate);
-      setFormTitle('');
-      setFormDueDate('');
+      setFormTitle("");
+      setFormDueDate("");
       setIsAddDialogOpen(false);
     }
   };
@@ -34,158 +43,213 @@ export function RemindersView() {
     if (editingReminder && formTitle.trim() && formDueDate) {
       updateReminder(editingReminder.id, formTitle.trim(), formDueDate);
       setEditingReminder(null);
-      setFormTitle('');
-      setFormDueDate('');
+      setFormTitle("");
+      setFormDueDate("");
     }
   };
 
   const handleCancelEdit = () => {
     setEditingReminder(null);
-    setFormTitle('');
-    setFormDueDate('');
+    setFormTitle("");
+    setFormDueDate("");
   };
 
   const formatDisplayDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
+    return date.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
     });
   };
 
-  const sortedReminders = [...reminders].sort((a, b) => 
-    new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+  const sortedReminders = [...reminders].sort(
+    (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
   );
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-border/50">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Reminders</CardTitle>
-            <CardDescription>Keep track of important tasks and deadlines</CardDescription>
-          </div>
+    <Card className="w-full bg-settings-pink border border-settings-crimson/40 shadow-none rounded-xl">
+      <CardHeader className="pb-2 pt-4 px-4">
+        <CardTitle className="text-base font-bold text-settings-crimson flex items-center justify-between">
+          <span>Reminders</span>
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
-              <Button size="sm">
-                <Plus className="mr-2 h-4 w-4" />
-                Add
+              <Button
+                size="icon"
+                variant="outline"
+                className="w-7 h-7 border-2 border-settings-crimson text-settings-crimson bg-transparent hover:bg-settings-crimson hover:text-white"
+              >
+                <Plus className="w-4 h-4" />
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="bg-settings-pink border-2 border-settings-crimson/40">
               <DialogHeader>
-                <DialogTitle>Add Reminder</DialogTitle>
-                <DialogDescription>Create a new reminder with a title and due date</DialogDescription>
+                <DialogTitle className="text-settings-crimson">
+                  Add Reminder
+                </DialogTitle>
+                <DialogDescription className="text-settings-crimson/60">
+                  Create a new reminder with a title and due date
+                </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="add-title">Title</Label>
+                  <Label className="text-settings-crimson font-semibold">
+                    Title
+                  </Label>
                   <Input
-                    id="add-title"
                     placeholder="Enter reminder title"
                     value={formTitle}
                     onChange={(e) => setFormTitle(e.target.value)}
+                    className="bg-white text-settings-crimson border-2 border-settings-crimson/40 focus:ring-settings-crimson placeholder:text-settings-crimson/40"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="add-due-date">Due Date & Time</Label>
+                  <Label className="text-settings-crimson font-semibold">
+                    Due Date &amp; Time
+                  </Label>
                   <Input
-                    id="add-due-date"
                     type="datetime-local"
                     value={formDueDate}
                     onChange={(e) => setFormDueDate(e.target.value)}
+                    className="bg-white text-settings-crimson border-2 border-settings-crimson/40 focus:ring-settings-crimson"
                   />
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsAddDialogOpen(false)}
+                  className="border-2 border-settings-crimson text-settings-crimson bg-transparent hover:bg-settings-crimson hover:text-white"
+                >
                   Cancel
                 </Button>
-                <Button onClick={handleAdd} disabled={!formTitle.trim() || !formDueDate}>
+                <Button
+                  onClick={handleAdd}
+                  disabled={!formTitle.trim() || !formDueDate}
+                  className="bg-settings-crimson text-white hover:bg-settings-crimson-hover border-2 border-settings-crimson"
+                >
                   Add Reminder
                 </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
-        </div>
+        </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-4 pb-4">
         {sortedReminders.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Calendar className="mb-4 h-12 w-12 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">No reminders yet</p>
-            <p className="text-xs text-muted-foreground">Click "Add" to create your first reminder</p>
+          <div className="flex flex-col items-center justify-center py-8 gap-2">
+            <Clock className="w-8 h-8 text-settings-crimson/30" />
+            <p className="text-sm text-settings-crimson/50 text-center">
+              No reminders yet.
+              <br />
+              Tap + to add one.
+            </p>
           </div>
         ) : (
-          <ScrollArea className="h-[400px] pr-4">
-            <div className="space-y-3">
-              {sortedReminders.map((reminder) => (
-                <Card key={reminder.id} className="bg-background/50">
-                  <CardContent className="flex items-start justify-between p-4">
-                    <div className="flex-1 space-y-1">
-                      <h4 className="font-medium leading-none">{reminder.title}</h4>
-                      <p className="text-sm text-muted-foreground">
+          <ScrollArea className="h-48 w-full rounded border border-settings-crimson/30">
+            <div className="p-2 space-y-1">
+              {sortedReminders.map((reminder) => {
+                const isPast = new Date(reminder.dueDate) < new Date();
+                return (
+                  <div
+                    key={reminder.id}
+                    className={`flex items-center justify-between px-2 py-1.5 rounded border ${
+                      isPast
+                        ? "border-settings-crimson/20 bg-settings-pink-active/60"
+                        : "border-settings-crimson/20 bg-settings-pink-active"
+                    }`}
+                  >
+                    <div className="flex flex-col min-w-0">
+                      <span
+                        className={`text-sm font-semibold truncate text-settings-crimson ${
+                          isPast ? "line-through opacity-60" : ""
+                        }`}
+                      >
+                        {reminder.title}
+                      </span>
+                      <span className="text-xs text-settings-crimson/60">
                         {formatDisplayDate(reminder.dueDate)}
-                      </p>
+                      </span>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-1 ml-2 shrink-0">
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(reminder)}
+                        className="w-6 h-6 text-settings-crimson hover:bg-settings-crimson hover:text-white"
                       >
-                        <Pencil className="h-4 w-4" />
+                        <Pencil className="w-3 h-3" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => deleteReminder(reminder.id)}
+                        className="w-6 h-6 text-settings-crimson hover:bg-settings-crimson hover:text-white"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="w-3 h-3" />
                       </Button>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                  </div>
+                );
+              })}
             </div>
           </ScrollArea>
         )}
 
-        <Dialog open={!!editingReminder} onOpenChange={(open) => !open && handleCancelEdit()}>
-          <DialogContent>
+        {/* Edit Dialog */}
+        <Dialog
+          open={!!editingReminder}
+          onOpenChange={(open) => !open && handleCancelEdit()}
+        >
+          <DialogContent className="bg-settings-pink border-2 border-settings-crimson/40">
             <DialogHeader>
-              <DialogTitle>Edit Reminder</DialogTitle>
-              <DialogDescription>Update the reminder details</DialogDescription>
+              <DialogTitle className="text-settings-crimson">
+                Edit Reminder
+              </DialogTitle>
+              <DialogDescription className="text-settings-crimson/60">
+                Update the reminder details
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-title">Title</Label>
+                <Label className="text-settings-crimson font-semibold">
+                  Title
+                </Label>
                 <Input
-                  id="edit-title"
                   placeholder="Enter reminder title"
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
+                  className="bg-white text-settings-crimson border-2 border-settings-crimson/40 focus:ring-settings-crimson placeholder:text-settings-crimson/40"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-due-date">Due Date & Time</Label>
+                <Label className="text-settings-crimson font-semibold">
+                  Due Date &amp; Time
+                </Label>
                 <Input
-                  id="edit-due-date"
                   type="datetime-local"
                   value={formDueDate}
                   onChange={(e) => setFormDueDate(e.target.value)}
+                  className="bg-white text-settings-crimson border-2 border-settings-crimson/40 focus:ring-settings-crimson"
                 />
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={handleCancelEdit}>
+              <Button
+                variant="outline"
+                onClick={handleCancelEdit}
+                className="border-2 border-settings-crimson text-settings-crimson bg-transparent hover:bg-settings-crimson hover:text-white"
+              >
                 Cancel
               </Button>
-              <Button onClick={handleUpdate} disabled={!formTitle.trim() || !formDueDate}>
-                Update
+              <Button
+                onClick={handleUpdate}
+                disabled={!formTitle.trim() || !formDueDate}
+                className="bg-settings-crimson text-white hover:bg-settings-crimson-hover border-2 border-settings-crimson"
+              >
+                Save Changes
               </Button>
             </DialogFooter>
           </DialogContent>

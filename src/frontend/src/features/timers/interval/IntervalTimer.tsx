@@ -1,14 +1,11 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Play, Pause, RotateCcw, SkipForward } from 'lucide-react';
-import { useIntervalTimer } from './useIntervalTimer';
-import { formatTime } from '../shared/timeFormat';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { EditableNumberInput } from '../shared/EditableNumberInput';
-import { MinutesSecondsInput } from '../shared/MinutesSecondsInput';
-import { useTimerAlerts } from '@/features/alerts/TimerAlertsProvider';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { useTimerAlerts } from "@/features/alerts/TimerAlertsProvider";
+import { Pause, Play, RotateCcw, SkipForward } from "lucide-react";
+import { EditableNumberInput } from "../shared/EditableNumberInput";
+import { formatTime } from "../shared/timeFormat";
+import { useIntervalTimer } from "./useIntervalTimer";
 
 export function IntervalTimer() {
   const { notifyCompletion } = useTimerAlerts();
@@ -25,99 +22,103 @@ export function IntervalTimer() {
     reset,
     skip,
   } = useIntervalTimer({
-    onCycleComplete: () => notifyCompletion('All interval rounds completed!'),
+    onCycleComplete: () => notifyCompletion("All interval rounds completed!"),
   });
 
-  const progress = settings.intervalA > 0 && settings.intervalB > 0
-    ? ((currentRound - 1) / totalRounds) * 100 + (1 / totalRounds) * 
-      (currentInterval === 'A' 
-        ? ((settings.intervalA - timeLeft) / settings.intervalA) * 100
-        : ((settings.intervalB - timeLeft) / settings.intervalB) * 100)
-    : 0;
-
-  const handleIntervalAChange = (newValue: number) => {
-    updateSettings({ intervalA: newValue });
-  };
-
-  const handleIntervalBChange = (newValue: number) => {
-    updateSettings({ intervalB: newValue });
-  };
-
-  const handleRoundsChange = (newValue: number) => {
-    updateSettings({ rounds: newValue });
-  };
-
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-border/50">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Interval Timer</CardTitle>
-            <CardDescription>Alternate between work and rest intervals</CardDescription>
-          </div>
-          <Badge variant={currentInterval === 'A' ? 'default' : 'secondary'}>
-            Interval {currentInterval}
-          </Badge>
-        </div>
+    <Card className="w-full bg-settings-pink border border-settings-crimson/40 shadow-none rounded-xl">
+      <CardHeader className="pb-2 pt-4 px-4">
+        <CardTitle className="text-base font-bold text-settings-crimson flex items-center justify-between">
+          <span>Interval</span>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-settings-crimson text-white font-semibold">
+            Interval {currentInterval} · Round {currentRound}/{totalRounds}
+          </span>
+        </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="text-center">
-          <div className="timer-display text-7xl font-bold tracking-wider sm:text-8xl">
+      <CardContent className="px-4 pb-4 flex flex-col items-center gap-4">
+        {/* Time display */}
+        <div className="flex flex-col items-center">
+          <span className="text-5xl font-bold tabular-nums text-settings-crimson tracking-wider">
             {formatTime(timeLeft)}
-          </div>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Round {currentRound} of {totalRounds}
+          </span>
+          <span className="text-xs text-settings-crimson/60 mt-1">
+            {currentInterval === "A" ? "Work" : "Rest"}
+          </span>
+        </div>
+
+        {/* Controls */}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={reset}
+            className="border-2 border-settings-crimson text-settings-crimson bg-transparent hover:bg-settings-crimson hover:text-white"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </Button>
+          <Button
+            size="icon"
+            onClick={isRunning ? pause : start}
+            className="w-12 h-12 bg-settings-crimson text-white hover:bg-settings-crimson-hover border-2 border-settings-crimson"
+          >
+            {isRunning ? (
+              <Pause className="w-5 h-5" />
+            ) : (
+              <Play className="w-5 h-5" />
+            )}
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={skip}
+            className="border-2 border-settings-crimson text-settings-crimson bg-transparent hover:bg-settings-crimson hover:text-white"
+          >
+            <SkipForward className="w-4 h-4" />
+          </Button>
+        </div>
+
+        {/* Settings */}
+        <div className="w-full border-t border-settings-crimson/30 pt-3">
+          <p className="text-xs font-bold text-settings-crimson mb-3 uppercase tracking-wide">
+            Settings
           </p>
-          <Progress value={progress} className="mt-4 h-2" />
-        </div>
-
-        <div className="flex justify-center gap-2">
-          {!isRunning ? (
-            <Button size="lg" onClick={start} className="min-w-32">
-              <Play className="mr-2 h-5 w-5" />
-              Start
-            </Button>
-          ) : (
-            <Button size="lg" onClick={pause} variant="secondary" className="min-w-32">
-              <Pause className="mr-2 h-5 w-5" />
-              Pause
-            </Button>
-          )}
-          <Button size="lg" variant="outline" onClick={skip}>
-            <SkipForward className="mr-2 h-5 w-5" />
-            Skip
-          </Button>
-          <Button size="lg" variant="outline" onClick={reset}>
-            <RotateCcw className="mr-2 h-5 w-5" />
-            Reset
-          </Button>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-3">
-          <MinutesSecondsInput
-            id="interval-a"
-            label="Interval A"
-            value={settings.intervalA}
-            onChange={handleIntervalAChange}
-            disabled={isRunning}
-          />
-          <MinutesSecondsInput
-            id="interval-b"
-            label="Interval B"
-            value={settings.intervalB}
-            onChange={handleIntervalBChange}
-            disabled={isRunning}
-          />
-          <div className="space-y-2">
-            <Label htmlFor="rounds">Rounds</Label>
-            <EditableNumberInput
-              id="rounds"
-              value={settings.rounds}
-              onChange={handleRoundsChange}
-              min={1}
-              max={50}
-              disabled={isRunning}
-            />
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="space-y-1">
+              <Label className="text-xs font-semibold text-settings-crimson">
+                Interval A (sec)
+              </Label>
+              <EditableNumberInput
+                value={settings.intervalA}
+                min={1}
+                max={3600}
+                onChange={(v) => updateSettings({ intervalA: v })}
+                disabled={isRunning}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs font-semibold text-settings-crimson">
+                Interval B (sec)
+              </Label>
+              <EditableNumberInput
+                value={settings.intervalB}
+                min={1}
+                max={3600}
+                onChange={(v) => updateSettings({ intervalB: v })}
+                disabled={isRunning}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs font-semibold text-settings-crimson">
+                Rounds
+              </Label>
+              <EditableNumberInput
+                value={settings.rounds}
+                min={1}
+                max={50}
+                onChange={(v) => updateSettings({ rounds: v })}
+                disabled={isRunning}
+              />
+            </div>
           </div>
         </div>
       </CardContent>

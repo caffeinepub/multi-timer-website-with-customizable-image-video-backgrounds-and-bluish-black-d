@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
+import { safeGetItem, safeSetItem } from "@/lib/safeStorage";
+import { useCallback, useEffect, useState } from "react";
 
 export interface Reminder {
   id: string;
@@ -7,11 +8,11 @@ export interface Reminder {
   createdAt: string;
 }
 
-const STORAGE_KEY = 'reminders';
+const STORAGE_KEY = "reminders";
 
 export function useReminders() {
   const [reminders, setReminders] = useState<Reminder[]>(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = safeGetItem(STORAGE_KEY, "local");
     if (stored) {
       try {
         return JSON.parse(stored);
@@ -23,7 +24,7 @@ export function useReminders() {
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(reminders));
+    safeSetItem(STORAGE_KEY, JSON.stringify(reminders), "local");
   }, [reminders]);
 
   const addReminder = useCallback((title: string, dueDate: string) => {
@@ -36,13 +37,16 @@ export function useReminders() {
     setReminders((prev) => [...prev, newReminder]);
   }, []);
 
-  const updateReminder = useCallback((id: string, title: string, dueDate: string) => {
-    setReminders((prev) =>
-      prev.map((reminder) =>
-        reminder.id === id ? { ...reminder, title, dueDate } : reminder
-      )
-    );
-  }, []);
+  const updateReminder = useCallback(
+    (id: string, title: string, dueDate: string) => {
+      setReminders((prev) =>
+        prev.map((reminder) =>
+          reminder.id === id ? { ...reminder, title, dueDate } : reminder,
+        ),
+      );
+    },
+    [],
+  );
 
   const deleteReminder = useCallback((id: string) => {
     setReminders((prev) => prev.filter((reminder) => reminder.id !== id));

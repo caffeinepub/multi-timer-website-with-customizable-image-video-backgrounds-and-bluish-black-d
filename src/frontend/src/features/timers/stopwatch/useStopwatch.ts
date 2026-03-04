@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { useAccurateInterval } from '../shared/useAccurateInterval';
+import { useCallback, useState } from "react";
+import { useAccurateInterval } from "../shared/useAccurateInterval";
 
 export function useStopwatch() {
   const [elapsed, setElapsed] = useState(0);
@@ -35,7 +35,7 @@ export function useStopwatch() {
       }
     },
     10,
-    isRunning
+    isRunning,
   );
 
   return {

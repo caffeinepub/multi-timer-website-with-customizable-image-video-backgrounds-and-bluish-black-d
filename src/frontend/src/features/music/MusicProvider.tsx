@@ -1,9 +1,9 @@
-import { createContext, useContext, ReactNode } from 'react';
-import { useMusic } from './useMusic';
+import { type ReactNode, createContext, useContext } from "react";
+import { useMusic } from "./useMusic";
 
 interface MusicContextValue {
   sourceUrl: string | null;
-  sourceType: 'spotify' | 'apple' | 'direct-audio' | null;
+  sourceType: "spotify" | "apple" | "direct-audio" | null;
   embedUrl: string | null;
   error: string | null;
   volume: number;
@@ -20,16 +20,14 @@ export function MusicProvider({ children }: { children: ReactNode }) {
   const music = useMusic();
 
   return (
-    <MusicContext.Provider value={music}>
-      {children}
-    </MusicContext.Provider>
+    <MusicContext.Provider value={music}>{children}</MusicContext.Provider>
   );
 }
 
 export function useMusicContext() {
   const context = useContext(MusicContext);
   if (!context) {
-    throw new Error('useMusicContext must be used within MusicProvider');
+    throw new Error("useMusicContext must be used within MusicProvider");
   }
   return context;
 }

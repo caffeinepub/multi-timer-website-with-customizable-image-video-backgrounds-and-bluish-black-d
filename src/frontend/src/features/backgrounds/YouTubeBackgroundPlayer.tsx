@@ -1,20 +1,41 @@
-import { useEffect, useRef, useState } from 'react';
-import { loadYouTubeIFrameApi, YTPlayer } from './loadYouTubeIFrameApi';
+import { memo, useEffect, useRef, useState } from "react";
+import { type YTPlayer, loadYouTubeIFrameApi } from "./loadYouTubeIFrameApi";
 
 interface YouTubeBackgroundPlayerProps {
   videoId: string;
   volume: number;
+  isPlaying?: boolean;
   onError?: (error: string | null) => void;
 }
 
-export function YouTubeBackgroundPlayer({ videoId, volume, onError }: YouTubeBackgroundPlayerProps) {
+export const YouTubeBackgroundPlayer = memo(function YouTubeBackgroundPlayer({
+  videoId,
+  volume,
+  isPlaying = true,
+  onError,
+}: YouTubeBackgroundPlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YTPlayer | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [hasInteractionError, setHasInteractionError] = useState(false);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
-  // Calculate dimensions to cover viewport (object-cover equivalent)
+  const onErrorRef = useRef(onError);
+  useEffect(() => {
+    onErrorRef.current = onError;
+  });
+
+  const volumeRef = useRef(volume);
+  useEffect(() => {
+    volumeRef.current = volume;
+  });
+
+  const isPlayingRef = useRef(isPlaying);
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  });
+
+  const dimensionsRef = useRef({ width: 0, height: 0 });
+
   useEffect(() => {
     const updateDimensions = () => {
       const viewportWidth = window.innerWidth;
@@ -26,24 +47,31 @@ export function YouTubeBackgroundPlayer({ videoId, volume, onError }: YouTubeBac
       let height: number;
 
       if (viewportRatio > videoRatio) {
-        // Viewport is wider than video - fit to width
         width = viewportWidth;
         height = viewportWidth / videoRatio;
       } else {
-        // Viewport is taller than video - fit to height
         height = viewportHeight;
         width = viewportHeight * videoRatio;
       }
 
-      setDimensions({ width: Math.ceil(width), height: Math.ceil(height) });
+      const newWidth = Math.ceil(width);
+      const newHeight = Math.ceil(height);
+      dimensionsRef.current = { width: newWidth, height: newHeight };
+
+      if (containerRef.current) {
+        const iframe = containerRef.current.querySelector("iframe");
+        if (iframe) {
+          iframe.width = String(newWidth);
+          iframe.height = String(newHeight);
+        }
+      }
     };
 
     updateDimensions();
-    window.addEventListener('resize', updateDimensions);
-    return () => window.removeEventListener('resize', updateDimensions);
+    window.addEventListener("resize", updateDimensions);
+    return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
-  // Initialize the YouTube player
   useEffect(() => {
     let mounted = true;
     let player: YTPlayer | null = null;
@@ -54,23 +82,26 @@ export function YouTubeBackgroundPlayer({ videoId, volume, onError }: YouTubeBac
 
         if (!mounted || !containerRef.current) return;
 
-        // Clear any existing player
         if (containerRef.current.firstChild) {
-          containerRef.current.innerHTML = '';
+          containerRef.current.innerHTML = "";
         }
 
-        // Create a unique ID for the player element
+        setIsReady(false);
+        setHasInteractionError(false);
+
+        const { width, height } = dimensionsRef.current;
+
         const playerId = `youtube-player-${Date.now()}`;
-        const playerElement = document.createElement('div');
+        const playerElement = document.createElement("div");
         playerElement.id = playerId;
         containerRef.current.appendChild(playerElement);
 
         player = new window.YT.Player(playerId, {
           videoId,
-          width: dimensions.width || window.innerWidth,
-          height: dimensions.height || window.innerHeight,
+          width: width || window.innerWidth,
+          height: height || window.innerHeight,
           playerVars: {
-            autoplay: 1,
+            autoplay: 0,
             controls: 0,
             disablekb: 1,
             fs: 0,
@@ -80,51 +111,54 @@ export function YouTubeBackgroundPlayer({ videoId, volume, onError }: YouTubeBac
             rel: 0,
             showinfo: 0,
             loop: 1,
-            playlist: videoId, // Required for looping
-            mute: 0, // Start unmuted so we can control volume
+            playlist: videoId,
+            mute: 0,
           },
           events: {
             onReady: (event: any) => {
               if (!mounted) return;
-              
               playerRef.current = player;
               setIsReady(true);
-
-              // Set initial volume
               try {
-                event.target.setVolume(volume);
-                event.target.playVideo();
-              } catch (err) {
-                // Browser may block autoplay with audio
+                event.target.setVolume(volumeRef.current);
+                // Only play if isPlaying is true
+                if (isPlayingRef.current) {
+                  event.target.playVideo();
+                } else {
+                  event.target.pauseVideo();
+                }
+              } catch (_err) {
                 setHasInteractionError(true);
-                onError?.('Your browser blocked audio. Click anywhere on the page to enable sound.');
+                onErrorRef.current?.(
+                  "Your browser blocked audio. Click anywhere on the page to enable sound.",
+                );
               }
             },
             onError: (event: any) => {
               if (!mounted) return;
-              
               const errorMessages: Record<number, string> = {
-                2: 'Invalid YouTube video ID.',
-                5: 'HTML5 player error. The video may not be available.',
-                100: 'Video not found. It may have been removed or is private.',
-                101: 'Video cannot be embedded. The owner has restricted playback.',
-                150: 'Video cannot be embedded. The owner has restricted playback.',
+                2: "Invalid YouTube video ID.",
+                5: "HTML5 player error. The video may not be available.",
+                100: "Video not found. It may have been removed or is private.",
+                101: "Video cannot be embedded. The owner has restricted playback.",
+                150: "Video cannot be embedded. The owner has restricted playback.",
               };
-              
-              const message = errorMessages[event.data] || 'YouTube video failed to load.';
-              onError?.(message);
+              const message =
+                errorMessages[event.data] || "YouTube video failed to load.";
+              onErrorRef.current?.(message);
             },
             onStateChange: (event: any) => {
-              // Handle any state changes if needed
               if (event.data === window.YT.PlayerState.ENDED) {
-                // Video ended, it should loop automatically due to playlist param
+                // loops via playlist param
               }
             },
           },
         });
-      } catch (err) {
+      } catch (_err) {
         if (mounted) {
-          onError?.('Failed to load YouTube player. Please check your internet connection.');
+          onErrorRef.current?.(
+            "Failed to load YouTube player. Please check your internet connection.",
+          );
         }
       }
     };
@@ -136,15 +170,28 @@ export function YouTubeBackgroundPlayer({ videoId, volume, onError }: YouTubeBac
       if (player) {
         try {
           player.destroy();
-        } catch (err) {
-          // Ignore cleanup errors
+        } catch (_err) {
+          /* ignore */
         }
       }
       playerRef.current = null;
     };
-  }, [videoId, onError, dimensions]);
+  }, [videoId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Update volume when it changes
+  // Control play/pause based on isPlaying prop
+  useEffect(() => {
+    if (!isReady || !playerRef.current) return;
+    try {
+      if (isPlaying) {
+        playerRef.current.playVideo();
+      } else {
+        playerRef.current.pauseVideo();
+      }
+    } catch (_err) {
+      // ignore
+    }
+  }, [isPlaying, isReady]);
+
   useEffect(() => {
     if (isReady && playerRef.current) {
       try {
@@ -156,49 +203,69 @@ export function YouTubeBackgroundPlayer({ videoId, volume, onError }: YouTubeBac
           }
           playerRef.current.setVolume(volume);
         }
-        
-        // If we had an interaction error, try playing again
         if (hasInteractionError) {
-          playerRef.current.playVideo();
+          if (isPlayingRef.current) {
+            playerRef.current.playVideo();
+          }
           setHasInteractionError(false);
-          onError?.(null);
+          onErrorRef.current?.(null);
         }
-      } catch (err) {
-        // Volume change might fail if user hasn't interacted yet
+      } catch (_err) {
         if (!hasInteractionError) {
           setHasInteractionError(true);
-          onError?.('Your browser blocked audio. Click anywhere on the page and adjust the volume to enable sound.');
+          onErrorRef.current?.(
+            "Your browser blocked audio. Click anywhere on the page and adjust the volume to enable sound.",
+          );
         }
       }
     }
-  }, [volume, isReady, hasInteractionError, onError]);
+  }, [volume, isReady, hasInteractionError]);
 
-  // Add click handler to recover from autoplay restrictions
   useEffect(() => {
     if (!hasInteractionError) return;
-
     const handleClick = () => {
       if (playerRef.current) {
         try {
           playerRef.current.unMute();
-          playerRef.current.setVolume(volume);
-          playerRef.current.playVideo();
+          playerRef.current.setVolume(volumeRef.current);
+          if (isPlayingRef.current) {
+            playerRef.current.playVideo();
+          }
           setHasInteractionError(false);
-          onError?.(null);
-        } catch (err) {
-          // Still blocked
+          onErrorRef.current?.(null);
+        } catch (_err) {
+          /* still blocked */
         }
       }
     };
-
-    document.addEventListener('click', handleClick, { once: true });
-    return () => document.removeEventListener('click', handleClick);
-  }, [hasInteractionError, volume, onError]);
+    document.addEventListener("click", handleClick, { once: true });
+    return () => document.removeEventListener("click", handleClick);
+  }, [hasInteractionError]);
 
   return (
     <div
-      ref={containerRef}
-      className="youtube-background-wrapper"
-    />
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+      }}
+    >
+      {/* YouTube iframe container */}
+      <div ref={containerRef} className="youtube-background-wrapper" />
+      {/* Slim bottom strip — just enough to cover YouTube watermark */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: "8px",
+          zIndex: 2,
+          pointerEvents: "none",
+          background: "#000000",
+        }}
+      />
+    </div>
   );
-}
+});

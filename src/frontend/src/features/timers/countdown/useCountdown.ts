@@ -1,7 +1,7 @@
-import { useState, useCallback } from 'react';
-import { useAccurateInterval } from '../shared/useAccurateInterval';
+import { useCallback, useState } from "react";
+import { useAccurateInterval } from "../shared/useAccurateInterval";
 
-const STORAGE_KEY = 'countdown-duration';
+const STORAGE_KEY = "countdown-duration";
 
 interface UseCountdownOptions {
   onComplete?: () => void;
@@ -10,7 +10,7 @@ interface UseCountdownOptions {
 export function useCountdown(options?: UseCountdownOptions) {
   const [duration, setDurationState] = useState(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? parseInt(stored) : 300;
+    return stored ? Number.parseInt(stored) : 300;
   });
 
   const [timeLeft, setTimeLeft] = useState(duration);
@@ -69,7 +69,7 @@ export function useCountdown(options?: UseCountdownOptions) {
       }
     },
     100,
-    isRunning
+    isRunning,
   );
 
   return {

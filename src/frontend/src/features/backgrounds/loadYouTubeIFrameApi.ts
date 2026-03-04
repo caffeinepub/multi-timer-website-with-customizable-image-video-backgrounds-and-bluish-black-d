@@ -1,7 +1,7 @@
 /**
  * Loads the YouTube IFrame Player API script and returns a promise
  * that resolves when the API is ready to use.
- * 
+ *
  * This function ensures the script is only loaded once, even if called
  * multiple times concurrently.
  */
@@ -15,7 +15,7 @@ export function loadYouTubeIFrameApi(): Promise<void> {
   }
 
   // Check if the API is already loaded
-  if (window.YT && window.YT.Player) {
+  if (window.YT?.Player) {
     return Promise.resolve();
   }
 
@@ -26,12 +26,12 @@ export function loadYouTubeIFrameApi(): Promise<void> {
     };
 
     // Create and inject the script tag
-    const script = document.createElement('script');
-    script.src = 'https://www.youtube.com/iframe_api';
+    const script = document.createElement("script");
+    script.src = "https://www.youtube.com/iframe_api";
     script.async = true;
     script.onerror = () => {
       apiLoadPromise = null;
-      reject(new Error('Failed to load YouTube IFrame API'));
+      reject(new Error("Failed to load YouTube IFrame API"));
     };
 
     document.head.appendChild(script);

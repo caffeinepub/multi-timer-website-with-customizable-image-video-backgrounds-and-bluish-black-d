@@ -89,10 +89,40 @@ export class ExternalBlob {
         return this;
     }
 }
+export interface Features {
+    pointsPlayer1: Points;
+    pointsPlayer2: Points;
+    gameField: GameField;
+    gameId: GameId;
+    charactersPlayer1: Character;
+    charactersPlayer2: Character;
+    pointsDiffPlayer1: PointsDiff;
+    pointsDiffPlayer2: PointsDiff;
+}
+export type Points = bigint;
+export type Character = string;
+export type GameId = bigint;
+export type PointsDiff = bigint;
+export type GameField = Array<Character>;
 export interface backendInterface {
+    updateGameState(gameField: GameField, isPlayer1: boolean): Promise<Features>;
 }
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
+    async updateGameState(arg0: GameField, arg1: boolean): Promise<Features> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateGameState(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateGameState(arg0, arg1);
+            return result;
+        }
+    }
 }
 export interface CreateActorOptions {
     agent?: Agent;

@@ -1,6 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
-export function useAccurateInterval(callback: () => void, delay: number | null, running: boolean) {
+export function useAccurateInterval(
+  callback: () => void,
+  delay: number | null,
+  running: boolean,
+) {
   const savedCallback = useRef(callback);
 
   useEffect(() => {

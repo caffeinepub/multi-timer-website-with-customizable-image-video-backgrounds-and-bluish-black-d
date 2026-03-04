@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
 
 /**
  * Detects whether the app is running inside an iframe (e.g., Caffeine editor preview).
@@ -11,7 +11,7 @@ export function useIsEmbeddedPreview(): boolean {
     try {
       // If window.self !== window.top, we're in an iframe
       setIsEmbedded(window.self !== window.top);
-    } catch (e) {
+    } catch (_e) {
       // Cross-origin restrictions may throw; assume embedded if we can't check
       setIsEmbedded(true);
     }

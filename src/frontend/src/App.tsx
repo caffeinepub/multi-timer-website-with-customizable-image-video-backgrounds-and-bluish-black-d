@@ -1,172 +1,312 @@
-import { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BackgroundProvider, useBackgroundContext } from '@/features/backgrounds/BackgroundProvider';
-import { BackgroundStage } from '@/features/backgrounds/BackgroundStage';
-import { BackgroundCustomizer } from '@/features/backgrounds/BackgroundCustomizer';
-import { MusicProvider } from '@/features/music/MusicProvider';
-import { MusicStage } from '@/features/music/MusicStage';
-import { MusicSettings } from '@/features/music/MusicSettings';
-import { PomodoroTimer } from '@/features/timers/pomodoro/PomodoroTimer';
-import { StopwatchTimer } from '@/features/timers/stopwatch/StopwatchTimer';
-import { CountdownTimer } from '@/features/timers/countdown/CountdownTimer';
-import { IntervalTimer } from '@/features/timers/interval/IntervalTimer';
-import { RepeatingTimer } from '@/features/timers/repeating/RepeatingTimer';
-import { RemindersView } from '@/features/reminders/RemindersView';
-import { useTimerVisibility } from '@/features/timers/visibility/useTimerVisibility';
-import { TimerVisibilityBar } from '@/features/timers/visibility/TimerVisibilityBar';
-import { TimerAlertsProvider } from '@/features/alerts/TimerAlertsProvider';
-import { TimerAlertSettings } from '@/features/alerts/TimerAlertSettings';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Tabs as SettingsTabs, TabsContent as SettingsTabsContent, TabsList as SettingsTabsList, TabsTrigger as SettingsTabsTrigger } from '@/components/ui/tabs';
-import { PublishShareSheet } from '@/features/publishShare/PublishShareSheet';
-import { Settings } from 'lucide-react';
-import { APP_NAME } from '@/branding';
-import { Toaster } from '@/components/ui/sonner';
-import { Heart } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  RouterProvider,
+  createRootRoute,
+  createRoute,
+  createRouter,
+} from "@tanstack/react-router";
+import {
+  Component,
+  type ErrorInfo,
+  type ReactNode,
+  memo,
+  useState,
+} from "react";
+import { APP_NAME } from "./branding";
+import { TimerAlertsProvider } from "./features/alerts/TimerAlertsProvider";
+import { BackgroundFullscreenButton } from "./features/backgrounds/BackgroundFullscreenButton";
+import { BackgroundPlayButton } from "./features/backgrounds/BackgroundPlayButton";
+import {
+  BackgroundProvider,
+  useBackgroundContext,
+} from "./features/backgrounds/BackgroundProvider";
+import { BackgroundStage } from "./features/backgrounds/BackgroundStage";
+import { MusicProvider } from "./features/music/MusicProvider";
+import { MusicStage } from "./features/music/MusicStage";
+import { RemindersDueNotifier } from "./features/reminders/RemindersDueNotifier";
+import { RemindersView } from "./features/reminders/RemindersView";
+import { CustomSoundsProvider } from "./features/sounds/CustomSoundsProvider";
+import { SoundCustomizationPanel } from "./features/sounds/SoundCustomizationPanel";
+import { TasksPanel } from "./features/tasks/TasksPanel";
+import { useTasksPanelVisibility } from "./features/tasks/useTasksPanelVisibility";
+import { CountdownTimer } from "./features/timers/countdown/CountdownTimer";
+import { IntervalTimer } from "./features/timers/interval/IntervalTimer";
+import { ReorderableTimerTabs } from "./features/timers/navigation/ReorderableTimerTabs";
+import { useTimerTabOrder } from "./features/timers/navigation/useTimerTabOrder";
+import { PomodoroTimer } from "./features/timers/pomodoro/PomodoroTimer";
+import { RepeatingTimer } from "./features/timers/repeating/RepeatingTimer";
+import { StopwatchTimer } from "./features/timers/stopwatch/StopwatchTimer";
+import { TimerVisibilityBar } from "./features/timers/visibility/TimerVisibilityBar";
+import { useTimerVisibility } from "./features/timers/visibility/useTimerVisibility";
 
-export type TimerMode = 'pomodoro' | 'stopwatch' | 'countdown' | 'interval' | 'repeating' | 'reminders';
+const queryClient = new QueryClient();
 
-function AppContent() {
-  const [activeMode, setActiveMode] = useState<TimerMode>('pomodoro');
-  const { backgroundUrl, youtubeVideoId, error: backgroundError } = useBackgroundContext();
-  
-  const hasActiveBackground = (backgroundUrl || youtubeVideoId) && !backgroundError;
-  const { isVisible: isTimerVisible, toggleVisibility } = useTimerVisibility(!!hasActiveBackground);
+export type TimerMode =
+  | "pomodoro"
+  | "stopwatch"
+  | "countdown"
+  | "interval"
+  | "repeating"
+  | "reminders";
 
+// Error boundary to prevent blank screens
+class ErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error("App error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex min-h-screen items-center justify-center bg-background p-4">
+          <div className="max-w-md space-y-4 text-center">
+            <h1 className="text-2xl font-bold text-destructive">
+              Something went wrong
+            </h1>
+            <p className="text-muted-foreground">
+              {this.state.error?.message || "An unexpected error occurred"}
+            </p>
+            <Button onClick={() => window.location.reload()}>Reload App</Button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+// Stable media layer — rendered once, never unmounted due to UI state changes.
+const StableMediaLayer = memo(function StableMediaLayer() {
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
+    <>
       <BackgroundStage />
       <MusicStage />
-      <Toaster />
-      
-      <div className="relative z-10 flex min-h-screen flex-col pb-12">
-        <header className="border-b border-border/50 bg-card/85 backdrop-blur-xl">
-          <div className="container mx-auto flex items-center justify-between px-4 py-4">
-            <h1 className="text-xl font-semibold text-foreground">{APP_NAME}</h1>
-            <div className="flex items-center gap-2">
-              <PublishShareSheet />
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="outline" size="icon" className="bg-card/95 backdrop-blur-sm" aria-label="Settings">
-                    <Settings className="h-5 w-5" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent className="w-full sm:max-w-md overflow-y-auto">
-                  <SheetHeader>
-                    <SheetTitle>Settings</SheetTitle>
-                    <SheetDescription>
-                      Customize your timer experience
-                    </SheetDescription>
-                  </SheetHeader>
-                  <div className="mt-6">
-                    <SettingsTabs defaultValue="background" className="w-full">
-                      <SettingsTabsList className="grid w-full grid-cols-3">
-                        <SettingsTabsTrigger value="background">Background</SettingsTabsTrigger>
-                        <SettingsTabsTrigger value="music">Music</SettingsTabsTrigger>
-                        <SettingsTabsTrigger value="alerts">Alerts</SettingsTabsTrigger>
-                      </SettingsTabsList>
-                      <SettingsTabsContent value="background" className="mt-4">
-                        <BackgroundCustomizer />
-                      </SettingsTabsContent>
-                      <SettingsTabsContent value="music" className="mt-4">
-                        <MusicSettings />
-                      </SettingsTabsContent>
-                      <SettingsTabsContent value="alerts" className="mt-4">
-                        <TimerAlertSettings />
-                      </SettingsTabsContent>
-                    </SettingsTabs>
-                  </div>
-                </SheetContent>
-              </Sheet>
-            </div>
-          </div>
-        </header>
+    </>
+  );
+});
 
-        <main className="container mx-auto flex flex-1 flex-col items-center justify-center px-4 py-8">
-          <div className="w-full max-w-4xl">
-            <Tabs value={activeMode} onValueChange={(v) => setActiveMode(v as TimerMode)} className="w-full">
-              {isTimerVisible && (
-                <>
-                  <TabsList className="mb-8 grid w-full grid-cols-6 bg-card/95 backdrop-blur-xl">
-                    <TabsTrigger value="pomodoro" className="text-xs sm:text-sm">
-                      Pomodoro
-                    </TabsTrigger>
-                    <TabsTrigger value="stopwatch" className="text-xs sm:text-sm">
-                      Stopwatch
-                    </TabsTrigger>
-                    <TabsTrigger value="countdown" className="text-xs sm:text-sm">
-                      Countdown
-                    </TabsTrigger>
-                    <TabsTrigger value="interval" className="text-xs sm:text-sm">
-                      Interval
-                    </TabsTrigger>
-                    <TabsTrigger value="repeating" className="text-xs sm:text-sm">
-                      Repeating
-                    </TabsTrigger>
-                    <TabsTrigger value="reminders" className="text-xs sm:text-sm">
-                      Reminders
-                    </TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="pomodoro" className="mt-0" forceMount hidden={activeMode !== 'pomodoro'}>
-                    <PomodoroTimer />
-                  </TabsContent>
-
-                  <TabsContent value="stopwatch" className="mt-0" forceMount hidden={activeMode !== 'stopwatch'}>
-                    <StopwatchTimer />
-                  </TabsContent>
-
-                  <TabsContent value="countdown" className="mt-0" forceMount hidden={activeMode !== 'countdown'}>
-                    <CountdownTimer />
-                  </TabsContent>
-
-                  <TabsContent value="interval" className="mt-0" forceMount hidden={activeMode !== 'interval'}>
-                    <IntervalTimer />
-                  </TabsContent>
-
-                  <TabsContent value="repeating" className="mt-0" forceMount hidden={activeMode !== 'repeating'}>
-                    <RepeatingTimer />
-                  </TabsContent>
-
-                  <TabsContent value="reminders" className="mt-0" forceMount hidden={activeMode !== 'reminders'}>
-                    <RemindersView />
-                  </TabsContent>
-                </>
-              )}
-            </Tabs>
-          </div>
-        </main>
-
-        <footer className="border-t border-border/50 bg-card/85 backdrop-blur-xl py-4">
-          <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} · Built with <Heart className="inline h-4 w-4 text-red-500" /> using{' '}
-            <a
-              href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-foreground"
-            >
-              caffeine.ai
-            </a>
-          </div>
-        </footer>
+// Timer overlay shown on top of fullscreen video
+function TimerOverlay({ activeMode }: { activeMode: TimerMode }) {
+  return (
+    <div
+      className="fixed inset-0 z-20 flex items-center justify-center pointer-events-none"
+      style={{ paddingBottom: "0" }}
+    >
+      <div
+        className="pointer-events-auto w-full max-w-sm mx-4"
+        style={{
+          filter: "drop-shadow(0 4px 32px rgba(0,0,0,0.7))",
+        }}
+      >
+        {activeMode === "pomodoro" && <PomodoroTimer />}
+        {activeMode === "stopwatch" && <StopwatchTimer />}
+        {activeMode === "countdown" && <CountdownTimer />}
+        {activeMode === "interval" && <IntervalTimer />}
+        {activeMode === "repeating" && <RepeatingTimer />}
+        {activeMode === "reminders" && <RemindersView />}
       </div>
-      
-      <TimerVisibilityBar isVisible={isTimerVisible} onToggle={toggleVisibility} />
     </div>
   );
 }
 
+// Fullscreen exit hint shown briefly when video is playing
+function FullscreenHint() {
+  return (
+    <div
+      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full text-xs text-white/80 select-none pointer-events-none"
+      style={{
+        background: "rgba(0,0,0,0.55)",
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
+        border: "1px solid rgba(255,255,255,0.12)",
+      }}
+    >
+      Press <kbd className="font-mono font-bold">Space</kbd> to pause
+    </div>
+  );
+}
+
+function Layout() {
+  const {
+    backgroundUrl,
+    mediaType,
+    youtubeVideoId,
+    isFullscreen,
+    showTimerOverlay,
+  } = useBackgroundContext();
+  const hasActiveBackground = !!(backgroundUrl || youtubeVideoId || mediaType);
+  const {
+    isVisible,
+    toggleVisibility,
+    toggleA,
+    toggleA_fn,
+    toggleB,
+    toggleB_fn,
+  } = useTimerVisibility(hasActiveBackground);
+  const {
+    order: timerOrder,
+    setOrder: setTimerOrder,
+    resetOrder: resetTimerOrder,
+  } = useTimerTabOrder();
+  const [activeMode, setActiveMode] = useState<TimerMode>(timerOrder[0]);
+  const { isVisible: tasksVisible, toggle: toggleTasks } =
+    useTasksPanelVisibility();
+
+  const bannerClasses =
+    "border-b bg-banner dark:bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-banner/80 dark:supports-[backdrop-filter]:bg-card/80";
+
+  // Fullscreen mode: show only the video background + optional timer overlay + space hint
+  if (isFullscreen) {
+    return (
+      <div className="relative min-h-screen">
+        <RemindersDueNotifier />
+        {showTimerOverlay && <TimerOverlay activeMode={activeMode} />}
+        <FullscreenHint />
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative min-h-screen">
+      <RemindersDueNotifier />
+
+      <div className={`relative z-10 ${isVisible ? "pb-32" : "pb-12"}`}>
+        {/* Header — hidden when a custom background is active */}
+        {!hasActiveBackground && (
+          <header className={bannerClasses}>
+            <div className="container mx-auto px-4 py-4">
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-bold text-primary">{APP_NAME}</h1>
+              </div>
+            </div>
+          </header>
+        )}
+
+        <main className="container mx-auto px-4 py-8">
+          {/*
+            Timer panel is always mounted to preserve running timer state.
+            Visibility is controlled via CSS only (hidden class) so timers
+            keep ticking even when the panel is "hidden".
+          */}
+          <div className={isVisible ? "mb-8" : "hidden"}>
+            <ReorderableTimerTabs
+              order={timerOrder}
+              activeMode={activeMode}
+              onReorder={setTimerOrder}
+              onModeChange={setActiveMode}
+            />
+            <div>
+              {activeMode === "pomodoro" && <PomodoroTimer />}
+              {activeMode === "stopwatch" && <StopwatchTimer />}
+              {activeMode === "countdown" && <CountdownTimer />}
+              {activeMode === "interval" && <IntervalTimer />}
+              {activeMode === "repeating" && <RepeatingTimer />}
+              {activeMode === "reminders" && <RemindersView />}
+            </div>
+          </div>
+        </main>
+
+        {isVisible && !hasActiveBackground && (
+          <footer className={bannerClasses}>
+            <div className="container mx-auto px-4 py-6">
+              <p className="text-center text-sm text-muted-foreground">
+                © {new Date().getFullYear()} {APP_NAME}. Built with ❤️ using{" "}
+                <a
+                  href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(
+                    typeof window !== "undefined"
+                      ? window.location.hostname
+                      : "unknown-app",
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  caffeine.ai
+                </a>
+              </p>
+            </div>
+          </footer>
+        )}
+      </div>
+
+      {/* Floating play button — visible when video background is active but not fullscreen */}
+      <BackgroundPlayButton />
+
+      {/* Floating fullscreen button — visible when any background is active */}
+      <BackgroundFullscreenButton />
+
+      {/* Tasks panel — shown when tasks toggle is active */}
+      {tasksVisible && <TasksPanel onClose={toggleTasks} />}
+
+      {/* Bottom visibility bar — always visible */}
+      <TimerVisibilityBar
+        isVisible={isVisible}
+        onToggle={toggleVisibility}
+        toggleA={toggleA}
+        onToggleA={toggleA_fn}
+        toggleB={toggleB}
+        onToggleB={toggleB_fn}
+        onResetTimerOrder={resetTimerOrder}
+        tasksVisible={tasksVisible}
+        onToggleTasks={toggleTasks}
+      />
+
+      {isVisible && <SoundCustomizationPanel />}
+    </div>
+  );
+}
+
+const rootRoute = createRootRoute({
+  component: Layout,
+});
+
+const indexRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/",
+  component: () => null,
+});
+
+const routeTree = rootRoute.addChildren([indexRoute]);
+
+const router = createRouter({ routeTree });
+
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
+
 function App() {
   return (
-    <TimerAlertsProvider>
-      <BackgroundProvider>
-        <MusicProvider>
-          <AppContent />
-        </MusicProvider>
-      </BackgroundProvider>
-    </TimerAlertsProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <BackgroundProvider>
+          <MusicProvider>
+            <CustomSoundsProvider>
+              <TimerAlertsProvider>
+                <StableMediaLayer />
+                <RouterProvider router={router} />
+                <Toaster />
+              </TimerAlertsProvider>
+            </CustomSoundsProvider>
+          </MusicProvider>
+        </BackgroundProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
