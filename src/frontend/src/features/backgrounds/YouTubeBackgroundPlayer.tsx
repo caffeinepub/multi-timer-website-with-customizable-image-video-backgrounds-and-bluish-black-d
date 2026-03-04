@@ -47,11 +47,18 @@ export const YouTubeBackgroundPlayer = memo(function YouTubeBackgroundPlayer({
       let height: number;
 
       if (viewportRatio > videoRatio) {
-        width = viewportWidth;
-        height = viewportWidth / videoRatio;
+        width = viewportWidth + 20; // +10px each side
+        height = (viewportWidth + 20) / videoRatio;
       } else {
-        height = viewportHeight;
-        width = viewportHeight * videoRatio;
+        height = viewportHeight + 120; // +60px top and bottom
+        width = (viewportHeight + 120) * videoRatio;
+      }
+
+      // Always ensure we have enough height to cover the expanded container
+      const extraHeight = viewportHeight + 120;
+      if (height < extraHeight) {
+        height = extraHeight;
+        width = extraHeight * videoRatio;
       }
 
       const newWidth = Math.ceil(width);
@@ -251,19 +258,16 @@ export const YouTubeBackgroundPlayer = memo(function YouTubeBackgroundPlayer({
         overflow: "hidden",
       }}
     >
-      {/* YouTube iframe container */}
-      <div ref={containerRef} className="youtube-background-wrapper" />
-      {/* Slim bottom strip — just enough to cover YouTube watermark */}
+      {/* Push YouTube UI chrome (title bar + bottom bar) outside the clipping area */}
       <div
+        ref={containerRef}
+        className="youtube-background-wrapper"
         style={{
           position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: "8px",
-          zIndex: 2,
-          pointerEvents: "none",
-          background: "#000000",
+          top: "-60px",
+          left: "-10px",
+          right: "-10px",
+          bottom: "-60px",
         }}
       />
     </div>

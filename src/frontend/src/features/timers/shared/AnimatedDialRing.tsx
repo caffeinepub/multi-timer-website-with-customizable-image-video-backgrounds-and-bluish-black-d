@@ -61,7 +61,7 @@ export function AnimatedDialRing({
       {/* Tick marks */}
       {ticks.map((t) => (
         <line
-          key={`${t.x1}-${t.y1}`}
+          key={`tick-${t.x1.toFixed(2)}-${t.y1.toFixed(2)}`}
           x1={t.x1}
           y1={t.y1}
           x2={t.x2}

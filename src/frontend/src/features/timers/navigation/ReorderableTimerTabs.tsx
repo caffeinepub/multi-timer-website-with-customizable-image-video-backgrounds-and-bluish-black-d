@@ -28,7 +28,7 @@ export function ReorderableTimerTabs({
   const overIndexRef = useRef<number | null>(null);
   const clickThreshold = 5;
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally re-measures when order changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: order change should trigger tab width recalculation
   useEffect(() => {
     const widths = tabRefs.current.map((el) => el?.offsetWidth ?? 0);
     setTabWidths(widths);

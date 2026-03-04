@@ -51,12 +51,12 @@ export const BackgroundStage = memo(function BackgroundStage() {
   const isVideoBackground = mediaType === "video" || mediaType === "youtube";
 
   // Reset errors when background changes
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally triggered by backgroundUrl
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset errors when background identity changes
   useEffect(() => {
     setVideoError(null);
     setImageError(null);
     setYoutubeError(null);
-  }, [backgroundUrl]);
+  }, [backgroundUrl, mediaType, youtubeVideoId]);
 
   // Only load video when the source URL or media type actually changes
   const prevVideoUrlRef = useRef<string | null>(null);

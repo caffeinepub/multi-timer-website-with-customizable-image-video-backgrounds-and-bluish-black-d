@@ -52,7 +52,7 @@ export const MusicStage = memo(function MusicStage() {
       {/* Spotify embed */}
       {sourceType === "spotify" && embedUrl && (
         <iframe
-          title="Spotify player"
+          title="Spotify music player"
           src={embedUrl}
           width="0"
           height="0"

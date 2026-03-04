@@ -65,13 +65,13 @@ export function StopwatchTimer() {
             </p>
             <ScrollArea className="h-32 w-full rounded border border-settings-crimson/30">
               <div className="p-2 space-y-1">
-                {laps.map((lap, lapNumber) => (
+                {Array.from(laps.entries()).map(([lapIdx, lap]) => (
                   <div
-                    key={`lap-${lap}`}
+                    key={`lap-${lapIdx}`}
                     className="flex items-center justify-between px-2 py-1 rounded bg-settings-pink-active"
                   >
                     <span className="text-xs font-semibold text-settings-crimson">
-                      Lap {lapNumber + 1}
+                      Lap {lapIdx + 1}
                     </span>
                     <span className="text-xs tabular-nums text-settings-crimson">
                       {formatMilliseconds(lap)}

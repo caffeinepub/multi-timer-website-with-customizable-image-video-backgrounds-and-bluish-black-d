@@ -230,7 +230,7 @@ export function SoundCustomizationPanel() {
           onClick={toggle}
           size="sm"
           variant="outline"
-          className="h-6 px-3 gap-1.5 bg-settings-pink border-settings-crimson/30 text-settings-crimson hover:bg-settings-pink-active shadow-md"
+          className="h-6 px-3 gap-1.5 bg-white dark:bg-card shadow-md border"
         >
           <Music className="h-3 w-3" />
           <span className="text-xs">Custom Sounds</span>
@@ -242,23 +242,21 @@ export function SoundCustomizationPanel() {
 
       {/* Collapsible Panel */}
       {isVisible && (
-        <div className="border-t border-settings-crimson/20 bg-settings-pink shadow-lg">
+        <div className="border-t bg-white dark:bg-card shadow-lg">
           <div className="container mx-auto px-2 py-1">
             <Card className="border-0 bg-transparent shadow-none">
               <CardHeader className="px-0 py-0.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1">
-                    <CardTitle className="text-xs text-settings-crimson">
-                      Manage Sounds
-                    </CardTitle>
-                    <span className="text-[10px] text-settings-crimson/60">
+                    <CardTitle className="text-xs">Manage Sounds</CardTitle>
+                    <span className="text-[10px] text-muted-foreground">
                       ({sounds.length}/{getMaxCustomSounds()})
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     {/* Volume control */}
                     <div className="flex items-center gap-1.5">
-                      <Volume2 className="h-3 w-3 text-settings-crimson/70 shrink-0" />
+                      <Volume2 className="h-3 w-3 text-muted-foreground shrink-0" />
                       <Slider
                         min={0}
                         max={100}
@@ -268,7 +266,7 @@ export function SoundCustomizationPanel() {
                         className="w-20"
                         aria-label="Preview volume"
                       />
-                      <span className="text-[10px] text-settings-crimson/70 w-7 text-right">
+                      <span className="text-[10px] text-muted-foreground w-7 text-right">
                         {Math.round(volume * 100)}%
                       </span>
                     </div>
@@ -280,20 +278,16 @@ export function SoundCustomizationPanel() {
                         <Button
                           size="sm"
                           disabled={!canAddMore}
-                          className="gap-1 h-6 text-xs px-2 bg-settings-pink-active border border-settings-crimson/30 text-settings-crimson hover:bg-settings-crimson hover:text-settings-pink"
-                          variant="outline"
-                          data-ocid="sounds.open_modal_button"
+                          className="gap-1 h-6 text-xs px-2"
                         >
                           <Plus className="h-3 w-3" />
                           Add
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="!bg-settings-pink border-settings-crimson/30 [&>button]:text-settings-crimson [&>button]:hover:bg-settings-pink-active">
+                      <DialogContent>
                         <DialogHeader>
-                          <DialogTitle className="text-settings-crimson">
-                            Add Custom Sound
-                          </DialogTitle>
-                          <DialogDescription className="text-settings-crimson/70">
+                          <DialogTitle>Add Custom Sound</DialogTitle>
+                          <DialogDescription>
                             Add a custom sound by URL (including YouTube links)
                             or upload an audio file.
                           </DialogDescription>
@@ -304,89 +298,57 @@ export function SoundCustomizationPanel() {
                             setAddMode(v as "url" | "upload")
                           }
                         >
-                          <TabsList className="grid w-full grid-cols-2 bg-settings-pink-active border border-settings-crimson/20">
-                            <TabsTrigger
-                              value="url"
-                              className="text-settings-crimson/70 data-[state=active]:bg-settings-pink data-[state=active]:text-settings-crimson"
-                            >
+                          <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="url">
                               <LinkIcon className="mr-2 h-4 w-4" />
                               URL
                             </TabsTrigger>
-                            <TabsTrigger
-                              value="upload"
-                              className="text-settings-crimson/70 data-[state=active]:bg-settings-pink data-[state=active]:text-settings-crimson"
-                            >
+                            <TabsTrigger value="upload">
                               <Upload className="mr-2 h-4 w-4" />
                               Upload
                             </TabsTrigger>
                           </TabsList>
                           <TabsContent value="url" className="space-y-4">
                             <div className="space-y-2">
-                              <Label
-                                htmlFor="sound-name"
-                                className="text-settings-crimson font-medium"
-                              >
-                                Name
-                              </Label>
+                              <Label htmlFor="sound-name">Name</Label>
                               <Input
                                 id="sound-name"
                                 placeholder="My Custom Sound"
                                 value={formName}
                                 onChange={(e) => setFormName(e.target.value)}
-                                className="border-settings-crimson/30 bg-settings-pink text-settings-crimson placeholder:text-settings-crimson/40 focus-visible:ring-settings-crimson/40"
-                                data-ocid="sounds.input"
                               />
                             </div>
                             <div className="space-y-2">
-                              <Label
-                                htmlFor="sound-url"
-                                className="text-settings-crimson font-medium"
-                              >
-                                URL
-                              </Label>
+                              <Label htmlFor="sound-url">URL</Label>
                               <Input
                                 id="sound-url"
                                 placeholder="https://example.com/sound.mp3 or YouTube URL"
                                 value={formUrl}
                                 onChange={(e) => setFormUrl(e.target.value)}
-                                className="border-settings-crimson/30 bg-settings-pink text-settings-crimson placeholder:text-settings-crimson/40 focus-visible:ring-settings-crimson/40"
                               />
                             </div>
                           </TabsContent>
                           <TabsContent value="upload" className="space-y-4">
                             <div className="space-y-2">
-                              <Label
-                                htmlFor="sound-name-upload"
-                                className="text-settings-crimson font-medium"
-                              >
-                                Name
-                              </Label>
+                              <Label htmlFor="sound-name-upload">Name</Label>
                               <Input
                                 id="sound-name-upload"
                                 placeholder="My Custom Sound"
                                 value={formName}
                                 onChange={(e) => setFormName(e.target.value)}
-                                className="border-settings-crimson/30 bg-settings-pink text-settings-crimson placeholder:text-settings-crimson/40 focus-visible:ring-settings-crimson/40"
                               />
                             </div>
                             <div className="space-y-2">
-                              <Label
-                                htmlFor="sound-file"
-                                className="text-settings-crimson font-medium"
-                              >
-                                Audio File
-                              </Label>
+                              <Label htmlFor="sound-file">Audio File</Label>
                               <Input
                                 id="sound-file"
                                 type="file"
                                 accept="audio/*"
                                 ref={fileInputRef}
                                 onChange={handleFileChange}
-                                className="border-settings-crimson/30 bg-settings-pink text-settings-crimson file:text-settings-crimson file:bg-settings-pink-active focus-visible:ring-settings-crimson/40"
-                                data-ocid="sounds.upload_button"
                               />
                               {selectedFile && (
-                                <p className="text-sm text-settings-crimson/70">
+                                <p className="text-sm text-muted-foreground">
                                   Selected: {selectedFile.name}
                                 </p>
                               )}
@@ -398,8 +360,6 @@ export function SoundCustomizationPanel() {
                             <Button
                               onClick={handleAddUrl}
                               disabled={!formName.trim() || !formUrl.trim()}
-                              className="bg-settings-crimson text-settings-pink hover:bg-settings-crimson-hover disabled:opacity-50"
-                              data-ocid="sounds.submit_button"
                             >
                               Add Sound
                             </Button>
@@ -407,8 +367,6 @@ export function SoundCustomizationPanel() {
                             <Button
                               onClick={handleAddFile}
                               disabled={!selectedFile}
-                              className="bg-settings-crimson text-settings-pink hover:bg-settings-crimson-hover disabled:opacity-50"
-                              data-ocid="sounds.submit_button"
                             >
                               Upload Sound
                             </Button>
@@ -421,7 +379,7 @@ export function SoundCustomizationPanel() {
               </CardHeader>
               <CardContent className="px-0 py-0.5">
                 {sounds.length === 0 ? (
-                  <p className="text-center text-[10px] text-settings-crimson/60 py-1">
+                  <p className="text-center text-[10px] text-muted-foreground py-1">
                     No custom sounds yet. Click "Add" to create one.
                   </p>
                 ) : (
@@ -432,9 +390,9 @@ export function SoundCustomizationPanel() {
                           key={sound.id}
                           data-sound-index={index}
                           onPointerDown={(e) => handlePointerDown(e, index)}
-                          className={`flex items-center gap-1 rounded border border-settings-crimson/20 bg-settings-pink-active p-0.5 transition-opacity ${
+                          className={`flex items-center gap-1 rounded border bg-card p-0.5 transition-opacity ${
                             draggedIndex === index ? "opacity-50" : ""
-                          } ${dragOverIndex === index ? "border-settings-crimson" : ""}`}
+                          } ${dragOverIndex === index ? "border-primary" : ""}`}
                         >
                           <button
                             type="button"
@@ -442,7 +400,7 @@ export function SoundCustomizationPanel() {
                             className="cursor-grab active:cursor-grabbing touch-none p-0.5"
                             aria-label="Drag to reorder"
                           >
-                            <GripVertical className="h-3 w-3 text-settings-crimson/50" />
+                            <GripVertical className="h-3 w-3 text-muted-foreground" />
                           </button>
                           <div className="flex-1 min-w-0">
                             {editingId === sound.id ? (
@@ -451,21 +409,21 @@ export function SoundCustomizationPanel() {
                                   value={formName}
                                   onChange={(e) => setFormName(e.target.value)}
                                   placeholder="Name"
-                                  className="h-5 text-xs border-settings-crimson/30 bg-settings-pink text-settings-crimson placeholder:text-settings-crimson/40"
+                                  className="h-5 text-xs"
                                 />
                                 <Input
                                   value={formUrl}
                                   onChange={(e) => setFormUrl(e.target.value)}
                                   placeholder="URL"
-                                  className="h-5 text-xs border-settings-crimson/30 bg-settings-pink text-settings-crimson placeholder:text-settings-crimson/40"
+                                  className="h-5 text-xs"
                                 />
                               </div>
                             ) : (
                               <div className="truncate">
-                                <span className="text-xs font-medium text-settings-crimson">
+                                <span className="text-xs font-medium">
                                   {sound.name}
                                 </span>
-                                <span className="text-[10px] text-settings-crimson/50 ml-1 truncate">
+                                <span className="text-[10px] text-muted-foreground ml-1 truncate">
                                   {sound.url.startsWith("data:")
                                     ? "(uploaded file)"
                                     : sound.url}
@@ -480,7 +438,7 @@ export function SoundCustomizationPanel() {
                                   size="sm"
                                   variant="ghost"
                                   onClick={handleUpdate}
-                                  className="h-5 w-5 p-0 text-settings-crimson hover:bg-settings-pink"
+                                  className="h-5 w-5 p-0"
                                 >
                                   <span className="text-xs">✓</span>
                                 </Button>
@@ -488,7 +446,7 @@ export function SoundCustomizationPanel() {
                                   size="sm"
                                   variant="ghost"
                                   onClick={handleCancelEdit}
-                                  className="h-5 w-5 p-0 text-settings-crimson hover:bg-settings-pink"
+                                  className="h-5 w-5 p-0"
                                 >
                                   <span className="text-xs">✕</span>
                                 </Button>
@@ -499,7 +457,7 @@ export function SoundCustomizationPanel() {
                                   size="sm"
                                   variant="ghost"
                                   onClick={() => previewSound(sound.url)}
-                                  className="h-5 w-5 p-0 text-settings-crimson hover:bg-settings-pink"
+                                  className="h-5 w-5 p-0"
                                 >
                                   <Play className="h-3 w-3" />
                                 </Button>
@@ -507,7 +465,7 @@ export function SoundCustomizationPanel() {
                                   size="sm"
                                   variant="ghost"
                                   onClick={() => handleEdit(sound.id)}
-                                  className="h-5 w-5 p-0 text-settings-crimson hover:bg-settings-pink"
+                                  className="h-5 w-5 p-0"
                                 >
                                   <Pencil className="h-3 w-3" />
                                 </Button>
@@ -515,7 +473,7 @@ export function SoundCustomizationPanel() {
                                   size="sm"
                                   variant="ghost"
                                   onClick={() => removeSound(sound.id)}
-                                  className="h-5 w-5 p-0 text-settings-crimson hover:bg-settings-pink"
+                                  className="h-5 w-5 p-0"
                                 >
                                   <Trash2 className="h-3 w-3" />
                                 </Button>
@@ -525,7 +483,7 @@ export function SoundCustomizationPanel() {
                                     variant="ghost"
                                     onClick={() => handleMoveUp(index)}
                                     disabled={index === 0}
-                                    className="h-2.5 w-4 p-0 text-settings-crimson hover:bg-settings-pink disabled:opacity-30"
+                                    className="h-2.5 w-4 p-0"
                                   >
                                     <ChevronUp className="h-2.5 w-2.5" />
                                   </Button>
@@ -534,7 +492,7 @@ export function SoundCustomizationPanel() {
                                     variant="ghost"
                                     onClick={() => handleMoveDown(index)}
                                     disabled={index === sounds.length - 1}
-                                    className="h-2.5 w-4 p-0 text-settings-crimson hover:bg-settings-pink disabled:opacity-30"
+                                    className="h-2.5 w-4 p-0"
                                   >
                                     <ChevronDown className="h-2.5 w-2.5" />
                                   </Button>

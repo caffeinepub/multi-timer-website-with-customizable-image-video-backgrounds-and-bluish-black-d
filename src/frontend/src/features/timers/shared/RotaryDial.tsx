@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+function valueToRotation(val: number, min: number, max: number): number {
+  const range = max - min + 1;
+  const normalizedValue = val - min;
+  return (normalizedValue / range) * 360;
+}
 
 interface RotaryDialProps {
   value: number;
@@ -23,28 +29,29 @@ export function RotaryDial({
   const [currentRotation, setCurrentRotation] = useState(0);
 
   useEffect(() => {
-    const range = max - min + 1;
-    const normalizedValue = value - min;
-    setCurrentRotation((normalizedValue / range) * 360);
+    setCurrentRotation(valueToRotation(value, min, max));
   }, [value, min, max]);
 
-  const getAngleFromEvent = (e: MouseEvent | TouchEvent, rect: DOMRect) => {
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+  const getAngleFromEvent = useCallback(
+    (e: MouseEvent | TouchEvent, rect: DOMRect) => {
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
 
-    let clientX: number;
-    let clientY: number;
-    if ("touches" in e) {
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
-    } else {
-      clientX = e.clientX;
-      clientY = e.clientY;
-    }
+      let clientX: number;
+      let clientY: number;
+      if ("touches" in e) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
 
-    const angle = Math.atan2(clientY - centerY, clientX - centerX);
-    return (angle * 180) / Math.PI + 90;
-  };
+      const angle = Math.atan2(clientY - centerY, clientX - centerX);
+      return (angle * 180) / Math.PI + 90;
+    },
+    [],
+  );
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (disabled) return;
@@ -66,21 +73,7 @@ export function RotaryDial({
       const rect = dialRef.current?.getBoundingClientRect();
       if (!rect) return;
 
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      let evtClientX: number;
-      let evtClientY: number;
-      if ("touches" in e) {
-        evtClientX = e.touches[0].clientX;
-        evtClientY = e.touches[0].clientY;
-      } else {
-        evtClientX = e.clientX;
-        evtClientY = e.clientY;
-      }
-      const angle =
-        (Math.atan2(evtClientY - centerY, evtClientX - centerX) * 180) /
-          Math.PI +
-        90;
+      const angle = getAngleFromEvent(e, rect);
       let newRotation = angle - startAngle;
 
       while (newRotation < 0) newRotation += 360;
@@ -112,7 +105,7 @@ export function RotaryDial({
       document.removeEventListener("touchmove", handlePointerMove);
       document.removeEventListener("touchend", handlePointerUp);
     };
-  }, [isDragging, startAngle, value, min, max, onChange]);
+  }, [isDragging, startAngle, value, min, max, onChange, getAngleFromEvent]);
 
   return (
     <div className="flex flex-col items-center gap-2">
