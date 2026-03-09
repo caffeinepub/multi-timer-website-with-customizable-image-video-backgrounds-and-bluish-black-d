@@ -53,13 +53,12 @@ export function TasksPanel({ onClose }: TasksPanelProps) {
 
   return (
     <div
-      className="fixed z-40 flex flex-col"
+      className="fixed z-40 flex flex-col bg-background"
       style={{
         bottom: "50px",
         right: "16px",
         width: "300px",
         maxHeight: "420px",
-        background: "#ffffff",
         border: `1.5px solid ${PINK_BORDER}`,
         borderRadius: "12px",
         boxShadow: "0 8px 32px rgba(155,28,58,0.12)",
@@ -157,14 +156,11 @@ export function TasksPanel({ onClose }: TasksPanelProps) {
 
       {/* Task list */}
       <div
-        className="flex-1 overflow-y-auto"
-        style={{ background: "#ffffff", minHeight: 0 }}
+        className="flex-1 overflow-y-auto bg-background"
+        style={{ minHeight: 0 }}
       >
         {items.length === 0 ? (
-          <div
-            className="flex items-center justify-center py-8 text-xs"
-            style={{ color: "#9ca3af" }}
-          >
+          <div className="flex items-center justify-center py-8 text-xs text-muted-foreground">
             No tasks yet. Add one below!
           </div>
         ) : (
@@ -172,13 +168,12 @@ export function TasksPanel({ onClose }: TasksPanelProps) {
             {items.map((item, index) => (
               <li
                 key={item.id}
-                className="group flex items-start gap-2 px-4 py-2 transition-colors"
-                style={{ background: "#ffffff" }}
+                className="group flex items-start gap-2 px-4 py-2 transition-colors bg-background"
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = PINK_BG;
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "#ffffff";
+                  (e.currentTarget as HTMLElement).style.background = "";
                 }}
               >
                 {/* Prefix */}
@@ -219,9 +214,8 @@ export function TasksPanel({ onClose }: TasksPanelProps) {
 
                 {/* Text */}
                 <span
-                  className="flex-1 text-sm leading-snug break-words"
+                  className="flex-1 text-sm leading-snug break-words text-foreground"
                   style={{
-                    color: "#111827",
                     textDecoration:
                       mode === "todo" && item.completed
                         ? "line-through"
@@ -266,9 +260,8 @@ export function TasksPanel({ onClose }: TasksPanelProps) {
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Add a task..."
-          className="flex-1 text-sm outline-none bg-transparent"
+          className="flex-1 text-sm outline-none bg-transparent text-foreground"
           style={{
-            color: "#111827",
             caretColor: CRIMSON,
           }}
         />

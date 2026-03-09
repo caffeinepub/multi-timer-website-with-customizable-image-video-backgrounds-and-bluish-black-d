@@ -156,11 +156,9 @@ export function TimerVisibilityBar({
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-30"
+      className="fixed bottom-0 left-0 right-0 z-30 bg-background border-t border-border"
       style={{
         height: "38px",
-        background: "#ffffff",
-        borderTop: "1px solid #e5e7eb",
         boxShadow: "0 -2px 8px rgba(0,0,0,0.06)",
       }}
     >
@@ -170,10 +168,7 @@ export function TimerVisibilityBar({
           className="flex items-center shrink-0"
           style={{ minWidth: "90px" }}
         >
-          <span
-            className="text-sm font-semibold tabular-nums tracking-wide select-none"
-            style={{ color: "#374151" }}
-          >
+          <span className="text-sm font-semibold tabular-nums tracking-wide select-none text-foreground">
             {formatWallClock(now)}
           </span>
         </div>
