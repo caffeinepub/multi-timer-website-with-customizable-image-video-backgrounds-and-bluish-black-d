@@ -280,7 +280,7 @@ export function SoundCustomizationPanel() {
                         <Button
                           size="sm"
                           disabled={!canAddMore}
-                          className="gap-1 h-6 text-xs px-2 bg-settings-crimson text-white hover:bg-settings-crimson-hover border-0"
+                          className="gap-1 h-6 text-xs px-2 bg-settings-pink text-settings-crimson border border-settings-crimson/30 hover:bg-settings-pink-active"
                         >
                           <Plus className="h-3 w-3" />
                           Add
@@ -394,7 +394,7 @@ export function SoundCustomizationPanel() {
                             <Button
                               onClick={handleAddUrl}
                               disabled={!formName.trim() || !formUrl.trim()}
-                              className="bg-settings-crimson text-white hover:bg-settings-crimson-hover border-0"
+                              className="bg-settings-pink text-settings-crimson border border-settings-crimson/30 hover:bg-settings-pink-active"
                             >
                               Add Sound
                             </Button>
@@ -402,7 +402,7 @@ export function SoundCustomizationPanel() {
                             <Button
                               onClick={handleAddFile}
                               disabled={!selectedFile}
-                              className="bg-settings-crimson text-white hover:bg-settings-crimson-hover border-0"
+                              className="bg-settings-pink text-settings-crimson border border-settings-crimson/30 hover:bg-settings-pink-active"
                             >
                               Upload Sound
                             </Button>

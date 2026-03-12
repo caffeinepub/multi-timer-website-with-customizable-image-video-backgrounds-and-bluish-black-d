@@ -436,7 +436,7 @@ function ShareTabContent() {
       <div className="flex gap-2">
         <Button
           onClick={handleCopyLink}
-          className="flex-1 bg-settings-crimson text-white hover:bg-settings-crimson-hover border-0"
+          className="flex-1 bg-settings-pink text-settings-crimson border border-settings-crimson/30 hover:bg-settings-pink-active"
         >
           {copied ? (
             <>

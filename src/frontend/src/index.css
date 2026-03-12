@@ -5,19 +5,19 @@
 @layer base {
   :root {
     --radius: 0.625rem;
-    --background: 0.965 0.018 5;
+    --background: 0.965 0.025 5;
     --foreground: 0.35 0.145 12;
-    --card: 0.965 0.018 5;
+    --card: 0.965 0.025 5;
     --card-foreground: 0.35 0.145 12;
-    --popover: 0.965 0.018 5;
+    --popover: 0.965 0.025 5;
     --popover-foreground: 0.35 0.145 12;
-    --primary: 0.35 0.145 12;
-    --primary-foreground: 0.965 0.018 5;
-    --secondary: 0.945 0.025 5;
+    --primary: 0.88 0.055 5;
+    --primary-foreground: 0.3 0.145 12;
+    --secondary: 0.945 0.03 5;
     --secondary-foreground: 0.35 0.145 12;
-    --muted: 0.945 0.025 5;
+    --muted: 0.945 0.03 5;
     --muted-foreground: 0.52 0.1 12;
-    --accent: 0.945 0.025 5;
+    --accent: 0.945 0.03 5;
     --accent-foreground: 0.35 0.145 12;
     --destructive: 0.577 0.245 27.325;
     --destructive-foreground: 0.985 0 0;
@@ -29,23 +29,23 @@
     --chart-3: 0.398 0.07 227.392;
     --chart-4: 0.828 0.189 84.429;
     --chart-5: 0.769 0.188 70.08;
-    --sidebar: 0.965 0.018 5;
+    --sidebar: 0.965 0.025 5;
     --sidebar-foreground: 0.35 0.145 12;
-    --sidebar-primary: 0.35 0.145 12;
-    --sidebar-primary-foreground: 0.965 0.018 5;
-    --sidebar-accent: 0.945 0.025 5;
+    --sidebar-primary: 0.88 0.055 5;
+    --sidebar-primary-foreground: 0.3 0.145 12;
+    --sidebar-accent: 0.945 0.03 5;
     --sidebar-accent-foreground: 0.35 0.145 12;
     --sidebar-border: 0.88 0.04 8;
     --sidebar-ring: 0.35 0.145 12;
-    --banner: 0.965 0.018 5;
+    --banner: 0.965 0.025 5;
     --success: oklch(0.55 0.15 145);
     --warning: oklch(0.75 0.15 75);
 
     /* Settings panel pink/crimson theme — matches global tokens */
-    --settings-pink: 0.965 0.018 5;
+    --settings-pink: 0.965 0.025 5;
     --settings-crimson: 0.35 0.145 12;
     --settings-crimson-hover: 0.28 0.16 12;
-    --settings-pink-active: 0.945 0.025 5;
+    --settings-pink-active: 0.945 0.03 5;
   }
 
   .dark {
