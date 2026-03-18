@@ -42,13 +42,13 @@ export function MinutesSecondsInput({
   return (
     <div className="space-y-2">
       {label && (
-        <Label className="text-xs font-semibold text-black">{label}</Label>
+        <Label className="text-xs font-semibold text-foreground">{label}</Label>
       )}
       <div className="flex items-center gap-2">
         <div className="flex-1 space-y-1">
           <Label
             htmlFor={id ? `${id}-minutes` : undefined}
-            className="text-xs font-semibold text-black"
+            className="text-xs font-semibold text-foreground"
           >
             Min
           </Label>
@@ -61,11 +61,11 @@ export function MinutesSecondsInput({
             disabled={disabled}
           />
         </div>
-        <span className="text-2xl font-bold text-black pt-5">:</span>
+        <span className="text-2xl font-bold text-foreground pt-5">:</span>
         <div className="flex-1 space-y-1">
           <Label
             htmlFor={id ? `${id}-seconds` : undefined}
-            className="text-xs font-semibold text-black"
+            className="text-xs font-semibold text-foreground"
           >
             Sec
           </Label>

@@ -102,7 +102,7 @@ export function RemindersView() {
                     placeholder="Enter reminder title"
                     value={formTitle}
                     onChange={(e) => setFormTitle(e.target.value)}
-                    className="bg-white text-settings-crimson border-2 border-settings-crimson/40 focus:ring-settings-crimson placeholder:text-settings-crimson/40"
+                    className="bg-background text-settings-crimson border-2 border-settings-crimson/40 focus:ring-settings-crimson placeholder:text-settings-crimson/40"
                   />
                 </div>
                 <div className="space-y-2">
@@ -113,7 +113,7 @@ export function RemindersView() {
                     type="datetime-local"
                     value={formDueDate}
                     onChange={(e) => setFormDueDate(e.target.value)}
-                    className="bg-white text-settings-crimson border-2 border-settings-crimson/40 focus:ring-settings-crimson"
+                    className="bg-background text-settings-crimson border-2 border-settings-crimson/40 focus:ring-settings-crimson"
                   />
                 </div>
               </div>
@@ -221,7 +221,7 @@ export function RemindersView() {
                   placeholder="Enter reminder title"
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  className="bg-white text-settings-crimson border-2 border-settings-crimson/40 focus:ring-settings-crimson placeholder:text-settings-crimson/40"
+                  className="bg-background text-settings-crimson border-2 border-settings-crimson/40 focus:ring-settings-crimson placeholder:text-settings-crimson/40"
                 />
               </div>
               <div className="space-y-2">
@@ -232,7 +232,7 @@ export function RemindersView() {
                   type="datetime-local"
                   value={formDueDate}
                   onChange={(e) => setFormDueDate(e.target.value)}
-                  className="bg-white text-settings-crimson border-2 border-settings-crimson/40 focus:ring-settings-crimson"
+                  className="bg-background text-settings-crimson border-2 border-settings-crimson/40 focus:ring-settings-crimson"
                 />
               </div>
             </div>

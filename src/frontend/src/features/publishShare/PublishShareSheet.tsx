@@ -72,23 +72,34 @@ export function PublishShareSheet() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button
+          variant="outline"
+          size="icon"
+          className="border-2 border-settings-crimson text-settings-crimson bg-settings-pink hover:bg-settings-crimson hover:text-white"
+        >
           <Share2 className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-md overflow-y-auto">
+      <SheetContent className="w-full sm:max-w-md overflow-y-auto bg-settings-pink border-settings-crimson/40">
         <SheetHeader>
-          <SheetTitle>Publish & Share</SheetTitle>
-          <SheetDescription>Share your timer app with others</SheetDescription>
+          <SheetTitle className="text-settings-crimson">
+            Publish &amp; Share
+          </SheetTitle>
+          <SheetDescription className="text-settings-crimson/60">
+            Share your timer app with others
+          </SheetDescription>
         </SheetHeader>
 
         <div className="mt-6 space-y-6">
           {/* Embedded Preview Warning - Prominent */}
           {isEmbedded && (
-            <Alert variant="default" className="border-primary/50 bg-primary/5">
-              <AlertCircle className="h-4 w-4 text-primary" />
-              <AlertDescription className="text-sm">
-                <strong>Preview Mode:</strong> You're viewing the editor
+            <Alert
+              variant="default"
+              className="border-settings-crimson/50 bg-settings-pink-active"
+            >
+              <AlertCircle className="h-4 w-4 text-settings-crimson" />
+              <AlertDescription className="text-sm text-settings-crimson">
+                <strong>Preview Mode:</strong> You&apos;re viewing the editor
                 preview. The URL below is temporary. To get a public URL, use
                 the <strong>Live</strong> tab and click <strong>Go live</strong>
                 .
@@ -98,11 +109,11 @@ export function PublishShareSheet() {
 
           {/* Current URL Display */}
           <div className="space-y-2">
-            <p className="text-sm font-medium">
+            <p className="text-sm font-medium text-settings-crimson">
               {isEmbedded ? "Preview URL (This Session)" : "Current URL"}
             </p>
             <div className="flex items-center gap-2">
-              <div className="flex-1 rounded-md border bg-muted/50 px-3 py-2 text-sm break-all">
+              <div className="flex-1 rounded-md border border-settings-crimson/40 bg-settings-pink-active px-3 py-2 text-sm break-all text-settings-crimson">
                 {currentUrl}
               </div>
             </div>
@@ -112,8 +123,7 @@ export function PublishShareSheet() {
           <div className="space-y-2">
             <Button
               onClick={handleCopyLink}
-              className="w-full"
-              variant="default"
+              className="w-full bg-settings-crimson text-white hover:bg-settings-crimson-hover border-2 border-settings-crimson"
             >
               {copied ? (
                 <>
@@ -130,7 +140,7 @@ export function PublishShareSheet() {
 
             <Button
               onClick={handleOpenInNewTab}
-              className="w-full"
+              className="w-full border-2 border-settings-crimson text-settings-crimson bg-transparent hover:bg-settings-crimson hover:text-white"
               variant="outline"
             >
               <ExternalLink className="mr-2 h-4 w-4" />
@@ -139,15 +149,17 @@ export function PublishShareSheet() {
           </div>
 
           {/* Public URL Section */}
-          <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
+          <div className="rounded-lg border border-settings-crimson/30 bg-settings-pink-active p-4 space-y-3">
             <div className="flex items-start gap-2">
-              <Info className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+              <Info className="h-5 w-5 text-settings-crimson mt-0.5 flex-shrink-0" />
               <div className="space-y-2 text-sm">
-                <p className="font-medium">Get Your Public URL</p>
-                <p className="text-muted-foreground">
+                <p className="font-medium text-settings-crimson">
+                  Get Your Public URL
+                </p>
+                <p className="text-settings-crimson/70">
                   To publish your app and get a permanent public URL:
                 </p>
-                <ol className="list-decimal list-inside space-y-1.5 text-muted-foreground ml-1">
+                <ol className="list-decimal list-inside space-y-1.5 text-settings-crimson/70 ml-1">
                   <li>
                     Click the <strong>Live</strong> tab (top right of Caffeine)
                   </li>
@@ -157,7 +169,7 @@ export function PublishShareSheet() {
                   <li>Wait a few seconds for deployment</li>
                   <li>Your public URL will appear at the top</li>
                 </ol>
-                <p className="text-xs text-muted-foreground pt-2">
+                <p className="text-xs text-settings-crimson/60 pt-2">
                   The public URL will remain accessible even after you close the
                   editor.
                 </p>
@@ -166,16 +178,18 @@ export function PublishShareSheet() {
           </div>
 
           {/* Publish to App Market Section */}
-          <div className="rounded-lg border bg-gradient-to-br from-primary/5 to-primary/10 p-4 space-y-3">
+          <div className="rounded-lg border border-settings-crimson/30 bg-settings-pink-active p-4 space-y-3">
             <div className="flex items-start gap-2">
-              <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+              <Sparkles className="h-5 w-5 text-settings-crimson mt-0.5 flex-shrink-0" />
               <div className="space-y-2 text-sm">
-                <p className="font-medium">Publish to the App Market</p>
-                <p className="text-muted-foreground">
+                <p className="font-medium text-settings-crimson">
+                  Publish to the App Market
+                </p>
+                <p className="text-settings-crimson/70">
                   Once your app is live, you can submit it to the Caffeine App
                   Market:
                 </p>
-                <ol className="list-decimal list-inside space-y-1.5 text-muted-foreground ml-1">
+                <ol className="list-decimal list-inside space-y-1.5 text-settings-crimson/70 ml-1">
                   <li>
                     Ensure your app is <strong>live</strong> with a public URL
                     (see above)
@@ -185,8 +199,8 @@ export function PublishShareSheet() {
                     section in the left sidebar
                   </li>
                   <li>
-                    Click <strong>"Submit Your App"</strong> or{" "}
-                    <strong>"Publish to Market"</strong>
+                    Click <strong>&quot;Submit Your App&quot;</strong> or{" "}
+                    <strong>&quot;Publish to Market&quot;</strong>
                   </li>
                   <li>
                     Fill in your app details: name, description, category, and
@@ -200,10 +214,10 @@ export function PublishShareSheet() {
                 </ol>
                 <Alert
                   variant="default"
-                  className="mt-3 border-muted bg-background/50"
+                  className="mt-3 border-settings-crimson/30 bg-settings-pink"
                 >
-                  <Info className="h-4 w-4" />
-                  <AlertDescription className="text-xs">
+                  <Info className="h-4 w-4 text-settings-crimson" />
+                  <AlertDescription className="text-xs text-settings-crimson">
                     <strong>Note:</strong> This publishing flow is for apps
                     built and deployed via Caffeine. It does not apply to Wix
                     sites or integrate with the Wix App Market.

@@ -51,7 +51,6 @@ export type TimerMode =
   | "repeating"
   | "reminders";
 
-// Error boundary to prevent blank screens
 class ErrorBoundary extends Component<
   { children: ReactNode },
   { hasError: boolean; error: Error | null }
@@ -89,7 +88,6 @@ class ErrorBoundary extends Component<
   }
 }
 
-// Stable media layer — rendered once, never unmounted due to UI state changes.
 const StableMediaLayer = memo(function StableMediaLayer() {
   return (
     <>
@@ -99,7 +97,6 @@ const StableMediaLayer = memo(function StableMediaLayer() {
   );
 });
 
-// Timer overlay shown on top of fullscreen video
 function TimerOverlay({ activeMode }: { activeMode: TimerMode }) {
   return (
     <div
@@ -108,9 +105,7 @@ function TimerOverlay({ activeMode }: { activeMode: TimerMode }) {
     >
       <div
         className="pointer-events-auto w-full max-w-sm mx-4"
-        style={{
-          filter: "drop-shadow(0 4px 32px rgba(0,0,0,0.7))",
-        }}
+        style={{ filter: "drop-shadow(0 4px 32px rgba(0,0,0,0.7))" }}
       >
         {activeMode === "pomodoro" && <PomodoroTimer />}
         {activeMode === "stopwatch" && <StopwatchTimer />}
@@ -123,7 +118,6 @@ function TimerOverlay({ activeMode }: { activeMode: TimerMode }) {
   );
 }
 
-// Fullscreen exit hint shown briefly when video is playing
 function FullscreenHint() {
   return (
     <div
@@ -169,7 +163,6 @@ function Layout() {
   const bannerClasses =
     "border-b bg-banner dark:bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-banner/80 dark:supports-[backdrop-filter]:bg-card/80";
 
-  // Fullscreen mode: show only the video background + optional timer overlay + space hint
   if (isFullscreen) {
     return (
       <div className="relative min-h-screen">
@@ -185,7 +178,6 @@ function Layout() {
       <RemindersDueNotifier />
 
       <div className={`relative z-10 ${isVisible ? "pb-32" : "pb-12"}`}>
-        {/* Header — hidden when a custom background is active */}
         {!hasActiveBackground && (
           <header className={bannerClasses}>
             <div className="container mx-auto px-4 py-4">
@@ -197,11 +189,6 @@ function Layout() {
         )}
 
         <main className="container mx-auto px-4 py-8">
-          {/*
-            Timer panel is always mounted to preserve running timer state.
-            Visibility is controlled via CSS only (hidden class) so timers
-            keep ticking even when the panel is "hidden".
-          */}
           <div className={isVisible ? "mb-8" : "hidden"}>
             <ReorderableTimerTabs
               order={timerOrder}
@@ -219,40 +206,13 @@ function Layout() {
             </div>
           </div>
         </main>
-
-        {isVisible && !hasActiveBackground && (
-          <footer className={bannerClasses}>
-            <div className="container mx-auto px-4 py-6">
-              <p className="text-center text-sm text-muted-foreground">
-                © {new Date().getFullYear()} {APP_NAME}. Built with ❤️ using{" "}
-                <a
-                  href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(
-                    typeof window !== "undefined"
-                      ? window.location.hostname
-                      : "unknown-app",
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline"
-                >
-                  caffeine.ai
-                </a>
-              </p>
-            </div>
-          </footer>
-        )}
       </div>
 
-      {/* Floating play button — visible when video background is active but not fullscreen */}
       <BackgroundPlayButton />
-
-      {/* Floating fullscreen button — visible when any background is active */}
       <BackgroundFullscreenButton />
 
-      {/* Tasks panel — shown when tasks toggle is active */}
       {tasksVisible && <TasksPanel onClose={toggleTasks} />}
 
-      {/* Bottom visibility bar — always visible */}
       <TimerVisibilityBar
         isVisible={isVisible}
         onToggle={toggleVisibility}

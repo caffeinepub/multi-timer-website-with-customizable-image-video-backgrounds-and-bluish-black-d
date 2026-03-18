@@ -110,14 +110,14 @@ export function RotaryDial({
   return (
     <div className="flex flex-col items-center gap-2">
       {label && (
-        <div className="text-xs font-semibold text-black uppercase tracking-wide">
+        <div className="text-xs font-semibold text-foreground uppercase tracking-wide">
           {label}
         </div>
       )}
       <div
         ref={dialRef}
         className={[
-          "relative w-20 h-20 rounded-full border-2 border-black bg-white",
+          "relative w-20 h-20 rounded-full border-2 border-border bg-background",
           "flex items-center justify-center",
           disabled
             ? "opacity-40 cursor-not-allowed"
@@ -128,10 +128,10 @@ export function RotaryDial({
         style={{ transform: `rotate(${currentRotation}deg)` }}
       >
         {/* Indicator dot */}
-        <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-black" />
+        <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-foreground" />
         {/* Center value — counter-rotate so text stays upright */}
         <div
-          className="text-base font-bold text-black select-none"
+          className="text-base font-bold text-foreground select-none"
           style={{ transform: `rotate(${-currentRotation}deg)` }}
         >
           {value}

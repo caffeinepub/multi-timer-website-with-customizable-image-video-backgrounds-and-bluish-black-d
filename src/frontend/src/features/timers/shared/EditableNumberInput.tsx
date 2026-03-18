@@ -76,8 +76,8 @@ export function EditableNumberInput({
       onKeyDown={handleKeyDown}
       disabled={disabled}
       className={[
-        "text-center font-bold text-black bg-white border-2 border-black",
-        "focus:ring-2 focus:ring-black focus:ring-offset-1",
+        "text-center font-bold text-foreground bg-background border-2 border-border",
+        "focus:ring-2 focus:ring-ring focus:ring-offset-1",
         "disabled:opacity-40 disabled:cursor-not-allowed",
         className ?? "",
       ]

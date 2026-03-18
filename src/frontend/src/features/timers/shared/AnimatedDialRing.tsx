@@ -66,7 +66,7 @@ export function AnimatedDialRing({
           y1={t.y1}
           x2={t.x2}
           y2={t.y2}
-          stroke="#000000"
+          stroke="#8B1A2F"
           strokeWidth={t.isMajor ? 1.5 : 0.8}
           strokeLinecap="round"
           opacity={t.isMajor ? 0.7 : 0.35}
@@ -79,7 +79,7 @@ export function AnimatedDialRing({
         cy={center}
         r={outerRadius}
         fill="none"
-        stroke="#000000"
+        stroke="#8B1A2F"
         strokeWidth={strokeWidth}
         opacity={0.15}
       />
@@ -90,7 +90,7 @@ export function AnimatedDialRing({
         cy={center}
         r={outerRadius}
         fill="none"
-        stroke="#000000"
+        stroke="#8B1A2F"
         strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeDasharray={`${secondsDash} ${outerCircumference}`}
@@ -113,7 +113,7 @@ export function AnimatedDialRing({
             outerRadius * Math.sin(secondsFraction * 2 * Math.PI - Math.PI / 2)
           }
           r={strokeWidth / 2 + 1}
-          fill="#000000"
+          fill="#8B1A2F"
           style={{
             transition:
               "cx 0.6s cubic-bezier(0.4, 0, 0.2, 1), cy 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -127,7 +127,7 @@ export function AnimatedDialRing({
         cy={center}
         r={innerRadius}
         fill="none"
-        stroke="#000000"
+        stroke="#8B1A2F"
         strokeWidth={strokeWidth}
         opacity={0.15}
       />
@@ -138,7 +138,7 @@ export function AnimatedDialRing({
         cy={center}
         r={innerRadius}
         fill="none"
-        stroke="#000000"
+        stroke="#8B1A2F"
         strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeDasharray={`${minutesDash} ${innerCircumference}`}
@@ -161,7 +161,7 @@ export function AnimatedDialRing({
             innerRadius * Math.sin(minutesFraction * 2 * Math.PI - Math.PI / 2)
           }
           r={strokeWidth / 2 + 1}
-          fill="#000000"
+          fill="#8B1A2F"
           style={{
             transition:
               "cx 0.6s cubic-bezier(0.4, 0, 0.2, 1), cy 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
